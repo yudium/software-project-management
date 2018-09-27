@@ -24,6 +24,10 @@ require.config({
 
 window.tabler = {
     colors: {
+<<<<<<< HEAD
+=======
+        
+>>>>>>> origin/developmentt
         'blue': '#467fcf',
         'blue-darkest': '#0e1929',
         'blue-darker': '#1c3353',
@@ -125,4 +129,8 @@ window.tabler = {
     }
 };
 
+<<<<<<< HEAD
 require(['core']);
+=======
+require(['core']);
+>>>>>>> origin/developmentt

@@ -14,6 +14,12 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/test',function(){
+    return view('template.master');
+});
+
+Route::get('/client/client-list/','ClientController@index')->name('clientList');
+Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');
