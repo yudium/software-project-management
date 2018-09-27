@@ -15,8 +15,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
-
+<title>SI MANAJEMEN PROYEK | @yield('title')</title>
 @include('template.css')
+@yield('css')
 </head>
 <body class="">
     <div class="page">
@@ -29,6 +30,7 @@
     </div>
     @include('template.footer')
     @include('template.js')
+    @yield('js')
     </div>
 </body>
 </html>

@@ -17,3 +17,6 @@ Route::get('/', function () {
 Route::get('/test',function(){
     return view('template.master');
 });
+
+Route::get('/client/client-list/','ClientController@index')->name('clientList');
+Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
