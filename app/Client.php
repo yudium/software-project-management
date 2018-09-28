@@ -22,7 +22,7 @@ class Client extends Model
 
     public function type()
     {
-        return $this->hasOne('App\ClientType');
+        return $this->hasOne('App\ClientType','client_type_id');
     }
 
 }
