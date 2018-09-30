@@ -13,7 +13,7 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
-        'prices',
+        'price',
         'starttime',
         'endtime',
         'endtime_actual',
