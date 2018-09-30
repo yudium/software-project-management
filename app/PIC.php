@@ -14,4 +14,6 @@ class PIC extends Model
     protected $fillable = [
         'name',
     ];
+
+    public $timestamps = false;
 }

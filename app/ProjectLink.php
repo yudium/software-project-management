@@ -14,4 +14,6 @@ class ProjectLink extends Model
     protected $fillable = [
         'link_text',
     ];
+
+    public $timestamps = false;
 }
