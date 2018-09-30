@@ -71,5 +71,29 @@ class ProjectController extends Controller
 
         return view('project.create-form', compact('client', 'project_type'));
     }
+
+    public function createStep3Post(\App\Http\Requests\StoreProject $request)
+    {
+        // we need to convert date to mysql format
+        $request->merge(['starttime' => date('Y-m-d', strtotime($request->starttime))]);
+        $request->merge(['endtime' => date('Y-m-d', strtotime($request->endtime))]);
+        $request->merge(['DP_time' => date('Y-m-d', strtotime($request->DP_time))]);
+
+        $project = Project::create($request->except(['PIC', 'backup_source_code_project_link', 'project_link']));
+
+        foreach ($request->only('PIC')['PIC'] as $PIC_name) {
+            $project->PICs()->create(['name' => $PIC_name]);
+        }
+        foreach ($request->backup_source_code_project_link as $link) {
+            $project->backup_source_code_project_links()->create(['link_text' => $link]);
+        }
+        foreach ($request->project_link as $link) {
+            $project->project_links()->create(['link_text' => $link]);
+        }
+
+        return redirect('projectDetail', ['id' => $project->id])
+            ->with('message', 'Berhasil menambah proyek')
+            ->with('messageType', 'success');
+    }
 }
 
