@@ -35,5 +35,11 @@ class Client extends Model
     {
         return $this->belongsTo('App\ClientType', 'client_type_id');
     }
+
+
+    public function getStatusTextAttribute($value)
+    {
+        return ($value == self::IS_CLIENT) ? 'client' : 'prospect';
+    }
 }
 
