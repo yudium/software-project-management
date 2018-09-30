@@ -21,12 +21,12 @@ class Client extends Model
         'name', 'business_relationship_status', 'photo'
     ];
 
-   	public function email()
-	{
-		return $this->hasMany('App\ClientEmail');
-	}
+    public function email()
+    {
+        return $this->hasMany('App\ClientEmail');
+    }
 
-	public function phone()
+    public function phone()
     {
         return $this->hasMany('App\ClientPhone');
     }
