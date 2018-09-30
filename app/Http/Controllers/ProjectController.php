@@ -67,7 +67,9 @@ class ProjectController extends Controller
     public function createStep3(Request $request)
     {
         $client = Client::find($request->input('client_id'));
+        $project_type = ProjectType::find($request->input('project_type_id') OR $request->old('project_type_id'));
 
-        return view('project.create-form', compact('client'));
+        return view('project.create-form', compact('client', 'project_type'));
     }
 }
+
