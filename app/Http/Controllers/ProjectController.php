@@ -32,14 +32,14 @@ class ProjectController extends Controller
 
     public function createStep1AjaxClient()
     {
-        $clients = Client::with('type')->where('status', '=', 0)->get();
+        $clients = Client::with('type')->where('status', '=', Client::IS_CLIENT)->get();
 
         return DataTables::of($clients)->make(true);
     }
 
     public function createStep1AjaxProspect()
     {
-        $prospects = Client::with('type')->where('status', '=', 1)->get();
+        $prospects = Client::with('type')->where('status', '=', Client::IS_PROSPECT)->get();
 
         return DataTables::of($prospects)->make(true);
     }
