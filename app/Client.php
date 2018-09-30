@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     /**
+     * correspond to `status` column in table
+     */
+    const IS_CLIENT         = 0;
+    const IS_PROSPECT       = 1;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
