@@ -24,9 +24,12 @@ Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');
 
-Route::get('/project/new/select-client', 'ProjectController@createStep1');
-Route::get('/project/new/select-client/ajax/client', 'ProjectController@createStep1AjaxClient');
-Route::get('/project/new/select-client/ajax/prospect', 'ProjectController@createStep1AjaxProspect');
+Route::get('/project/new/step-1', 'ProjectController@createStep1')->name('newProjectStep1');
+Route::get('/project/new/step-1/ajax/client', 'ProjectController@createStep1AjaxClient')->name('newProjectStep1AjaxClient');
+Route::get('/project/new/step-1/ajax/prospect', 'ProjectController@createStep1AjaxProspect')->name('newProjectStep1AjaxProspect');
 
-Route::get('/project/new/select-project-type', 'ProjectController@createStep2');
-Route::get('/project/new/step-3', 'ProjectController@createStep3');
+Route::get('/project/new/step-2', 'ProjectController@createStep2')->name('newProjectStep2');
+
+Route::get('/project/new/step-3', 'ProjectController@createStep3')->name('newProjectStep3');
+Route::post('/project/new/step-3', 'ProjectController@createStep3Post')->name('newProjectStep3Post');
+
