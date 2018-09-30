@@ -1,3 +1,4 @@
+<!-- TODO: ambil keputusan untuk file ini karena tidak dipakai -->
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
