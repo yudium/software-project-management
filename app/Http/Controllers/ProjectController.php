@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Project;
 use App\Client;
 use DataTables;
-
+use App\ProjectType;
 
 class ProjectController extends Controller
 {
@@ -44,9 +44,24 @@ class ProjectController extends Controller
         return DataTables::of($prospects)->make(true);
     }
 
-    public function createStep2()
+    public function createStep2(Request $request)
     {
-        return view('project.create-select_type');
+        // TODO: use query() method
+        $queryString = $request->getQueryString();
+
+        // client_id AND client_status is a must
+        if (! str_contains($queryString, 'client_id') OR
+            ! str_contains($queryString, 'client_status'))
+        {
+            $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
+            $request->session()->flash('messageType', 'warning');
+
+            return redirect('project/new/select-client');
+        }
+
+        $project_types = ProjectType::all();
+
+        return view('project.create-select_type', compact('project_types', 'queryString'));
     }
 
     public function createStep3(Request $request)
