@@ -32,4 +32,19 @@ class Project extends Model
     {
         return $this->belongsTo('App\ProjectType');
     }
+
+    public function PICs()
+    {
+        return $this->hasMany('App\PIC');
+    }
+
+    public function backup_source_code_project_links()
+    {
+        return $this->hasMany('App\BackupSourceCodeProjectLink');
+    }
+
+    public function project_links()
+    {
+        return $this->hasMany('App\ProjectLink');
+    }
 }
