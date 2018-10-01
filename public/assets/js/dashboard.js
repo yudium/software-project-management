@@ -24,7 +24,6 @@ require.config({
 
 window.tabler = {
     colors: {
-        
         'blue': '#467fcf',
         'blue-darkest': '#0e1929',
         'blue-darker': '#1c3353',

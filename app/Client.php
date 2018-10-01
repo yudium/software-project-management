@@ -6,9 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    //
-    protected $filable = ['name','business_relationship_status','status',];
-    protected $tables = 'clients';
+    /**
+     * correspond to `status` column in table
+     */
+    const IS_CLIENT         = 0;
+    const IS_PROSPECT       = 1;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'business_relationship_status', 'photo'
+    ];
 
     public function email()
     {
@@ -22,8 +33,13 @@ class Client extends Model
 
     public function type()
     {
-        return $this->hasOne('App\ClientType','client_type_id');
+        return $this->belongsTo('App\ClientType', 'client_type_id');
     }
 
+
+    public function getStatusTextAttribute($value)
+    {
+        return ($value == self::IS_CLIENT) ? 'client' : 'prospect';
+    }
 }
 

@@ -36,10 +36,12 @@
 
 <script src="{{ asset('assets/plugins/datatables/plugin.js') }}"></script>
 
+<!-- Pick a Date Plugin -->
+<link href="{{ asset('assets/plugins/pickadate/lib/themes/classic.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/pickadate/lib/themes/classic.date.css') }}" rel="stylesheet">
+<script src="{{ asset('assets/plugins/pickadate/plugin.js') }}"></script>
 
-<!-- Maintenance page only-->
-{{-- 
-<script src="{{  }}assets/js/vendors/jquery.nestable.js"></script> --}}
+
 <style>
     .dropdown-item {
         padding-left: 35px;
