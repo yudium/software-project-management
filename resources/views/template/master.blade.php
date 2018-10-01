@@ -16,20 +16,19 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <title>SI MANAJEMEN PROYEK | @yield('title')</title>
-@include('template.css')
+@include('template.library')
 @yield('css')
 </head>
 <body class="">
     <div class="page">
     <div class="page-main">
     @include('template.header')
-    @include('template.sidebar')
+    @include('template.menu')
     <div class="my-3 my-md-5">
         @yield('content')
     </div>
     </div>
     @include('template.footer')
-    @include('template.js')
     @yield('js')
     </div>
 </body>

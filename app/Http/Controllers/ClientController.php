@@ -38,4 +38,15 @@ class ClientController extends Controller
             return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
         })->rawColumns(['options'])->make(true);
     }
+
+    public function newProspectType()
+    {
+    $listProspectTypes = ClientType::get();
+    return view('prospect.new-prospect-types',['listProspectTypes'=>$listProspectTypes]);
+    }
+
+    public function newProspectForm()
+    {
+        return view('prospect.new-prospect-form');
+    }
 }

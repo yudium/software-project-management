@@ -18,5 +18,8 @@ Route::get('/test',function(){
     return view('template.master');
 });
 
-Route::get('/client/client-list/','ClientController@index')->name('clientList');
+Route::get('/client/prospect-list/','ClientController@index')->name('prospectList');
 Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
+Route::get('/client/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
+Route::post('/client/new/prospect-types/{prospect_id}','ClientCOntroller@getProspectType')->name('getProspectTypegit ');
+Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
