@@ -41,6 +41,16 @@ class Client extends Model
         return $this->hasMany('App\ClientBankAccount');
     }
 
+    public function webAddress()
+    {
+        return $this->hasMany('App\ClientWebAddresses');
+    }
+
+    public function address()
+    {
+        return $this->hasOne('App\ClientAddresses');
+    }
+
     public function type()
     {
         return $this->belongsTo('App\ClientType', 'client_type_id');

@@ -88,16 +88,22 @@ class ClientController extends Controller
         $prospect->status   = $prospect->getStatusTextAttribute(Client::IS_PROSPECT);
         $prospect->save();
 
-        foreach ($request->kota as $kota) {
-            $project->city()->create(['city' => $kota]);
+        $prospect->address()->create(['address'=>$req->alamat]);
+
+        foreach ($req->kota as $kota) {
+            $prospect->city()->create(['city' => $kota]);
         }
 
-        foreach ($request->email as $email) {
-            $project->email()->create(['email' => $email]);
+        foreach ($req->email as $email) {
+            $prospect->email()->create(['email' => $email]);
         }
 
-        foreach ($request->norek as $norek) {
-            $project->city()->create(['city' => $norek]);
+        foreach ($req->norek as $norek) {
+            $prospect->bankAccount()->create(['bank_account' => $norek]);
+        }
+
+        foreach ($req->web as $web) {
+            $prospect->webAddress()->create(['web_addresses' => $web]);
         }
  
 
