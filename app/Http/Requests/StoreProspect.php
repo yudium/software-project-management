@@ -32,10 +32,10 @@ class StoreProspect extends FormRequest
             'statusHub'=>'',
             'alamat'=>'required',
             'kota'=>'required',
-            'telepon'=>'required|numeric',
-            'email'=>'required|email',
-            'norek'=>'required|numeric',
-            'web'=>'required|url',
+            'telepon'=>'required',
+            'email'=>'required',
+            'norek'=>'required',
+            'web'=>'required',
         
 
         ];

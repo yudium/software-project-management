@@ -99,11 +99,7 @@
                         <div class="form-group">
                             <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
                             <input class="form-control" type="text" name="nama">
-                            @if ($errors->has('nama'))
-                            @foreach ($errors->get('nama') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
+                            
                         </div>
                         <div class="form-group">
                             <label class="form-label">Jenis</label>
@@ -140,11 +136,6 @@
                             'name' => 'kota[]',
                             'number' => 1,
                             ])
-                            @if ($errors->has('kota'))
-                            @foreach ($errors->get('kota') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
                         </div>
                     </div>
 
@@ -165,11 +156,6 @@
                             'name' => 'telepon[]',
                             'number' => 1,
                             ])
-                            @if ($errors->has('telepon'))
-                            @foreach ($errors->get('telepon') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email</label>
@@ -178,11 +164,6 @@
                             'name' => 'email[]',
                             'number' => 1,
                             ])
-                            @if ($errors->has('email'))
-                            @foreach ($errors->get('email') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
                         </div>
                         <div class="form-group">
                             <label class="form-label">No. Rekening</label>
@@ -191,11 +172,6 @@
                             'name' => 'norek[]',
                             'number' => 1,
                             ])
-                            @if ($errors->has('norek'))
-                            @foreach ($errors->get('norek') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
                         </div>
                         <div class="form-group">
                             <label class="form-label">Alamat web</label>
@@ -204,11 +180,6 @@
                             'name' => 'web[]',
                             'number' => 1,
                             ])
-                            @if ($errors->has('web'))
-                            @foreach ($errors->get('web') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
                         </div>
                     </div>
                 </div>

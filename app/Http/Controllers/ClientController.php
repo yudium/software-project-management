@@ -94,6 +94,10 @@ class ClientController extends Controller
             $prospect->city()->create(['city' => $kota]);
         }
 
+        foreach ($req->telepon as $telepon) {
+            $prospect->phone()->create(['phone' => $telepon]);
+        }
+
         foreach ($req->email as $email) {
             $prospect->email()->create(['email' => $email]);
         }
@@ -106,6 +110,8 @@ class ClientController extends Controller
             $prospect->webAddress()->create(['web_addresses' => $web]);
         }
  
-
+        // return redirect('projectDetail', ['id' => $prospect->id])
+        // ->with('message', 'Berhasil menambah prospect')
+        // ->with('messageType', 'success');
     }
 }
