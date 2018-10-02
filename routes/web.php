@@ -21,8 +21,10 @@ Route::get('/test',function(){
 Route::get('/client/prospect-list/','ClientController@index')->name('prospectList');
 Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
 Route::get('/client/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
-Route::post('/client/new/prospect-types/{prospect_id}','ClientCOntroller@getProspectType')->name('getProspectTypegit ');
+Route::get('/client/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
 Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
+Route::post('/client/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
+
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');

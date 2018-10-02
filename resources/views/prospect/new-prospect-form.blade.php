@@ -84,134 +84,161 @@
 
 
 <div class="container">
+    <div class="page-header">
+        <h1 class="page-title">
+            Form Tambah Prospect
+        </h1>
+    </div>
+    <form method="post" action="{{ route('createProspectForm') }}">
+            @csrf
+        <div class="row row-cards">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
 
-<div class="page-header">
-    <h1 class="page-title">
-        Form Tambah Prospect
-    </h1>
-</div>
-<div class="row row-cards">
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="form-group">
-                    <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
-                    <input class="form-control" type="text" name="name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Jenis</label>
-                    <div class="form-control-plaintext"><i class="fe fe-user mr-3"></i> Individu</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Status hubungan bisnis</label>
-                    <div class="selectgroup w-100">
-                        <label class="selectgroup-item">
-                            <input name="value" value="50" class="selectgroup-input" checked="" type="radio">
-                            <span class="selectgroup-button">Dekat</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input name="value" value="100" class="selectgroup-input" type="radio">
-                            <span class="selectgroup-button">Normal</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input name="value" value="200" class="selectgroup-input" type="radio">
-                            <span class="selectgroup-button">Buruk</span>
-                        </label>
+                        <div class="form-group">
+                            <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
+                            <input class="form-control" type="text" name="nama">
+                            @if ($errors->has('nama'))
+                            @foreach ($errors->get('nama') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jenis</label>
+                            <input name="tipeProspect" type="hidden" value="{{ $idType->id }}">
+                            <div class="form-control-plaintext"><i class="{{ $idType->icon }} mr-3" value="{{ $idType->id }}"
+                                    name="jenisProspect"></i> {{ $idType->name }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status hubungan bisnis</label>
+                            <div class="selectgroup w-100">
+                                <label class="selectgroup-item">
+                                    <input name="statusHub" value="Dekat" class="selectgroup-input" checked="" type="radio"
+                                        name="statusHub">
+                                    <span class="selectgroup-button">Dekat</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input name="statusHub" value="Normal" class="selectgroup-input" type="radio" name="statusHub">
+                                    <span class="selectgroup-button">Normal</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input name="statusHub" value="Buruk" class="selectgroup-input" type="radio" name="statusHub">
+                                    <span class="selectgroup-button">Buruk</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alamat</label>
+                            <textarea class="form-control" name="alamat" type="text"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kota</label>
+                            @include('includes.form-element.multiple-input', [
+                            'id' => 'multi-kota',
+                            'name' => 'kota[]',
+                            'number' => 1,
+                            ])
+                            @if ($errors->has('kota'))
+                            @foreach ($errors->get('kota') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Alamat</label>
-                    <input class="form-control" name="example-text-input" type="text">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Kota</label>
-                    <div class="input-group mb-2 multiple-field-copy-target">
-                        <input class="form-control" type="text">
-                        <span class="input-group-append">
-                            <button type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-                        </span>
-                    </div>
-                    <input class="form-control multiple-field-js" name="example-text-input" type="text" placeholder="Add item..">
-                </div>
-            </div>
-            <!--
+
+                    <!--
                     <div class="card-footer">
                         This is standard card footer
                     </div>
                 -->
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="form-group">
-                    <label class="form-label">Telepon</label>
-                    <div class="input-group mb-2 multiple-field-copy-target">
-                        <input class="form-control" type="text">
-                        <span class="input-group-append">
-                            <button type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-                        </span>
-                    </div>
-                    <input class="form-control multiple-field-js" name="example-text-input" type="text" placeholder="Add item..">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <div class="input-group mb-2 multiple-field-copy-target">
-                        <input class="form-control" type="text">
-                        <span class="input-group-append">
-                            <button type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-                        </span>
-                    </div>
-                    <input class="form-control multiple-field-js" name="example-text-input" type="text" placeholder="Add item..">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">No. Rekening</label>
-                    <div class="input-group mb-2 multiple-field-copy-target">
-                        <input class="form-control" type="text">
-                        <span class="input-group-append">
-                            <button type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-                        </span>
-                    </div>
-                    <input class="form-control multiple-field-js" name="example-text-input" type="text" placeholder="Add item..">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Alamat web</label>
-                    <div class="input-group mb-2 multiple-field-copy-target">
-                        <input class="form-control" type="text">
-                        <span class="input-group-append">
-                            <button type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-                        </span>
-                    </div>
-                    <input class="form-control multiple-field-js" name="example-text-input" type="text" placeholder="Add item..">
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="row row-cards">
-            <div class="col-12">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-body">
-                        <h6 class="text-center">Unggah Foto</h6>
-                        <div id="photo-preview" class="mb-4 mt-4">
-                            <i class="fe fe-user"></i>
+                        <div class="form-group">
+                            <label class="form-label">Telepon</label>
+                            @include('includes.form-element.multiple-input', [
+                            'id' => 'multi-telepon',
+                            'name' => 'telepon[]',
+                            'number' => 1,
+                            ])
+                            @if ($errors->has('telepon'))
+                            @foreach ($errors->get('telepon') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
                         </div>
                         <div class="form-group">
-                            <div class="custom-file">
-                                <input class="custom-file-input" name="example-file-input-custom" type="file">
-                                <label class="custom-file-label">Choose file</label>
+                            <label class="form-label">Email</label>
+                            @include('includes.form-element.multiple-input', [
+                            'id' => 'multi-email',
+                            'name' => 'email[]',
+                            'number' => 1,
+                            ])
+                            @if ($errors->has('email'))
+                            @foreach ($errors->get('email') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">No. Rekening</label>
+                            @include('includes.form-element.multiple-input', [
+                            'id' => 'multi-norek',
+                            'name' => 'norek[]',
+                            'number' => 1,
+                            ])
+                            @if ($errors->has('norek'))
+                            @foreach ($errors->get('norek') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alamat web</label>
+                            @include('includes.form-element.multiple-input', [
+                            'id' => 'multi-web',
+                            'name' => 'web[]',
+                            'number' => 1,
+                            ])
+                            @if ($errors->has('web'))
+                            @foreach ($errors->get('web') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row row-cards">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-center">Unggah Foto</h6>
+                                <div id="photo-preview" class="mb-4 mt-4">
+
+                                    <i class="fe fe-user"></i>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <input class="custom-file-input" name="foto" type="file" id="fotoProfile">
+                                        <label class="custom-file-label">Choose file</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">Simpan</button>
+                    </div>
                 </div>
             </div>
-            <div class="col-12">
-                <button class="btn btn-primary btn-block">Simpan</button>
-            </div>
         </div>
-    </div>
-</div>
-
+    </form>
 </div>
 
 @endsection
@@ -228,8 +255,34 @@
                 .val("")
                 .focus();
         });
+
+        
+        $('#fotoProfile').change(function () {
+            var imgPath = $(this)[0].value;
+            var ext = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+            if (ext == "gif" || ext == "png" || ext == "jpg" || ext == "jpeg")
+                readURL(this);
+            else
+                alert("Please select image file (jpg, jpeg, png).")
+        });
+
+        $('#btn-kota').on('click',function(){
+            $('.btn-kota').parent.parent.remove()
+        })
+
+        $('.custom')
     })
 })
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.readAsDataURL(input.files[0]);
+        reader.onload = function (e) {
+            $('#photo-preview').html('<img src="'+e.target.result+'" height="128" width="128"> ');
+        }
+    }
+}
 </script>
 
 @endsection

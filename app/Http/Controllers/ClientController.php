@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Session;
 use App\Client;
 use App\ClientEmail;
 use App\ClientPhone;
@@ -41,12 +42,64 @@ class ClientController extends Controller
 
     public function newProspectType()
     {
-    $listProspectTypes = ClientType::get();
-    return view('prospect.new-prospect-types',['listProspectTypes'=>$listProspectTypes]);
+        $listProspectTypes = ClientType::get();
+        return view('prospect.new-prospect-types',['listProspectTypes'=>$listProspectTypes]);
     }
 
     public function newProspectForm()
     {
         return view('prospect.new-prospect-form');
+    }
+
+    public function getProspectType(Request $req)
+    {
+        //get parameter
+        $idType = $req->getQueryString();
+        //get value type id
+        $valueId  = $req->input('prospect_type_id');
+       
+        $clientType = CLientType::where('id','=',$valueId)->first();
+        if (!str_contains($idType,'prospect_type_id'))
+        {
+            Session::flash('message', 'Pilih type prospect dahulu !!!'); 
+            Session::flash('alert-class', 'alert-warning'); 
+
+            return redirect('/client/new/prospect-types');
+        }
+
+        return view('prospect.new-prospect-form',['idType'=>$clientType]);
+    }
+
+    public function createProspectForm(\App\Http\Requests\StoreProspect $req)
+    {
+        // $data = $req->all();
+        // print_r($data);
+        // $prospect = Client::create($request->except(''))
+        $prospect = new Client();
+        $prospect->client_type_id   = $req->tipeProspect;
+        $prospect->name             = $req->nama;
+        $prospect->business_relationship_status = $req->statusHub;
+        if($req->has('photo'))
+        {
+            $prospectImage = $req->file('photo');
+            dd($prospectImage);
+        }
+        // $prospect->photo = 'test';
+        $prospect->status   = $prospect->getStatusTextAttribute(Client::IS_PROSPECT);
+        $prospect->save();
+
+        foreach ($request->kota as $kota) {
+            $project->city()->create(['city' => $kota]);
+        }
+
+        foreach ($request->email as $email) {
+            $project->email()->create(['email' => $email]);
+        }
+
+        foreach ($request->norek as $norek) {
+            $project->city()->create(['city' => $norek]);
+        }
+ 
+
     }
 }

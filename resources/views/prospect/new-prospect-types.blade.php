@@ -85,7 +85,9 @@
 </div>
 
 <div class="container">
-
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-warning') }}">{{ Session::get('message') }}</p>
+    @endif
     <div class="page-header">
 	<h1 class="page-title">
 		Pilih Jenis Prospect
@@ -104,7 +106,7 @@
                                 <td width="10%" class="text-center"><i class="{{ $type->icon }} text-muted"></i></td>
                                 <td width="80%" >{{ $type->name }}</td>
                                 <td width="10%" class="text-center">
-                                    <a href="javascript:select({{ $type->id  }})" class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
+                                    <a href="javascript:select({{ $type->id  }})"  class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
                                 </td>
                             </tr>
                             @endforeach
@@ -121,7 +123,7 @@
     </div>
     <div class="row row-cards">
         <div class="col col-3 mx-auto">
-            <a href="/new/prospect-types" class="btn btn-primary" id="btn-next">Berikutnya</a>
+            <a href="/client/new/prospect" class="btn btn-primary" id="btn-next">Berikutnya</a>
         </div>
     </div>
 </div>
@@ -130,12 +132,13 @@
 <script>
 require(['jquery'], function ($) {
     $(document).ready(function(){
-       
-       
-    })
 
  
+    })
+ 
 })
+
+
 function select(prospect_id_type)
 {
     //alert(prospect_id_type)
@@ -145,7 +148,10 @@ function select(prospect_id_type)
     //add parameters in url
     next_btn.href = next_btn.href+'?prospect_type_id='+prospect_id_type
 
+
 }
+
+
 </script>
 @endsection
 

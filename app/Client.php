@@ -31,6 +31,16 @@ class Client extends Model
         return $this->hasMany('App\ClientPhone');
     }
 
+    public function city()
+    {
+        return $this->hasMany('App\ClientCity');
+    }
+
+    public function bankAccount()
+    {
+        return $this->hasMany('App\ClientBankAccount');
+    }
+
     public function type()
     {
         return $this->belongsTo('App\ClientType', 'client_type_id');
