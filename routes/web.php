@@ -24,6 +24,9 @@ Route::get('/client/new/prospect-types','ClientController@newProspectType')->nam
 Route::get('/client/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
 Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
 Route::post('/client/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
+Route::get('/client/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
+Route::post('/client/new/prospect-insider','ClientController@createProspectInsider')->name('createProspectInsider');
+
 
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');

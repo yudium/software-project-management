@@ -114,4 +114,15 @@ class ClientController extends Controller
         // ->with('message', 'Berhasil menambah prospect')
         // ->with('messageType', 'success');
     }
+
+    public function newProspectInsider()
+    {
+        return view('prospect.new-prospect-insider');
+    }
+
+    public function createProspectInsider(\App\Http\Requests\StoreInsider $req)
+    {
+        $data = $req->all();
+        print_r($data);
+    }
 }

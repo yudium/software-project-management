@@ -241,7 +241,7 @@
             $('.btn-kota').parent.parent.remove()
         })
 
-        $('.custom')
+       
     })
 })
 
