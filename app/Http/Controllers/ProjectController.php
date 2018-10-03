@@ -84,7 +84,7 @@ class ProjectController extends Controller
 
         $project = Project::create($request->except(['PIC', 'backup_source_code_project_link', 'project_link']));
 
-        foreach ($request->only('PIC')['PIC'] as $PIC_name) {
+        foreach ($request->PIC as $PIC_name) {
             $project->PICs()->create(['name' => $PIC_name]);
         }
         foreach ($request->backup_source_code_project_link as $link) {
