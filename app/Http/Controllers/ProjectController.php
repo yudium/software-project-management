@@ -7,6 +7,7 @@ use App\Project;
 use App\Client;
 use DataTables;
 use App\ProjectType;
+use App\PIC;
 
 class ProjectController extends Controller
 {
@@ -67,10 +68,11 @@ class ProjectController extends Controller
     public function createStep3(Request $request)
     {
         $client = Client::find($request->input('client_id'));
-
         $project_type = ProjectType::find($request->input('project_type_id', $request->old('project_type_id')));
+        // alternative to distinct sql
+        $PICs = PIC::orderBy('name','asc')->groupBy('name')->get();
 
-        return view('project.create-form', compact('client', 'project_type'));
+        return view('project.create-form', compact('client', 'project_type', 'PICs'));
     }
 
     public function createStep3Post(\App\Http\Requests\StoreProject $request)

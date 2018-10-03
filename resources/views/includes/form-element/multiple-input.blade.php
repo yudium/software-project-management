@@ -17,17 +17,24 @@ if (old($name_stripped)) $number = old($name_stripped);
     <label class="form-label" for="project_link">{{ $label }}</label>
     @endisset
 
+    {{-- TODO: refactor --}}
     @for ($i = 0; $i < $number; $i++)
-    <div class="input-group mb-2 multi-input-copy-target">
-        <input name="{{ $name }}" class="form-control" type="text" value="{{ old($name) }}">
-        <span class="input-group-append">
-            <!-- I need CSS's height auto because this button behave weirdly.
-                It is height is set to 100% and display normally when this code
-                still in Tabler source code environment. Then goes weirdly
-                after I put the code inside this laravel -->
-            <button style="height: auto" type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
-        </span>
-    </div>
+        {{-- I need this to cover autocomplete with awesomplete js library
+             see views project/create-form.blade.php --}}
+        @if (isset($slot))
+            {{ $slot }}
+        @else
+        <div class="input-group mb-2 multi-input-copy-target">
+            <input name="{{ $name }}" class="form-control" type="text" value="{{ old($name) }}">
+            <span class="input-group-append">
+                <!-- I need CSS's height auto because this button behave weirdly.
+                    It is height is set to 100% and display normally when this code
+                    still in Tabler source code environment. Then goes weirdly
+                    after I put the code inside this laravel -->
+                <button style="height: auto" type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
+            </span>
+        </div>
+        @endif
     @endfor
     <input class="form-control multi-input-control" name="{{ $id }}" type="text" placeholder="Add item..">
 </div>
