@@ -144,43 +144,43 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        
-                        <div class="row gutters-xs multiple-row-copy-target">
+                    <script type="text/template" id="insiderTemplate">
+                        <div class="row gutters-xs multiple-row-copy-target" id="multiple-row-copy@{{ idInsider}}" >
                             <div class="col-2">
-                                <input class="form-control" name="nama" placeholder="Nama" type="text">
+                                <input class="form-control" name="nama@{{idInsider}}" placeholder="Nama" type="text">
                             </div>
                             <div class="col-1">
-                                <input class="form-control focus-long-field" name="jabatan" placeholder="Jabatan"
+                                <input class="form-control focus-long-field" name="jabatan@{{idInsider}}" placeholder="Jabatan"
                                     type="text" data-focus-width="200px">
                             </div>
                             <div class="col-1">
-                                <input class="form-control focus-long-field" name="alamat" placeholder="Alamat"
+                                <input class="form-control focus-long-field" name="alamat@{{idInsider}}" placeholder="Alamat"
                                     type="text" data-focus-width="400px">
                             </div>
                             <div class="col-2">
                                 <div class="input-group mb-2 multiple-field-copy-target">
-                                    <input class="form-control" name="telepon[]" type="text" placeholder="Telepon">
+                                    <input class="form-control" name="telepon@{{idInsider}}[]" type="text" placeholder="Telepon">
                                     <span class="input-group-append">
                                         <button type="button" class="btn btn-secondary removeTelepon"><i class="fe fe-x"></i></button>
                                     </span>
                                 </div>
-                                <input class="form-control multiple-field-js mb-2" name="telepon[]" type="text"
+                                <input class="form-control multiple-field-js mb-2" name="telepon@{{idInsider}}[]" type="text"
                                     placeholder="Add item..">
                             </div>
                             <div class="col-2">
                                 <div class="input-group mb-2 multiple-field-copy-target">
-                                    <input class="form-control" type="text" name="email[]" placeholder="Email">
+                                    <input class="form-control" type="text" name="email@{{idInsider}}[]" placeholder="Email">
                                     <span class="input-group-append">
                                         <button type="button" class="btn btn-secondary removeEmail"><i class="fe fe-x" ></i></button>
                                     </span>
                                 </div>
-                                <input class="form-control multiple-field-js mb-2" name="email[]" type="text"
+                                <input class="form-control multiple-field-js mb-2" name="email@{{idInsider}}[]" type="text"
                                     placeholder="Add item..">
                             </div>
                             <div class="col-2">
                                 <div class="form-group" style="width: 128.217px; height: 2.375rem !important; margin: 0 auto">
                                     <div class="custom-file">
-                                        <input class="custom-file-input fotoProfile" name="fotoProfile" id="fotoProfile" type="file">
+                                        <input class="custom-file-input fotoProfile" name="fotoProfile@{{idInsider}}" id="fotoProfile" type="file">
                                         <label class="custom-file-label">Choose file</label>
                                         <div class="preview-foto">
                                         <span class="photo-preview avatar"  style="background-image: url(./demo/faces/female/25.jpg)"></span></div>
@@ -196,7 +196,8 @@
                                 </div>
                             </div>
                         </div>
-                        
+                    </script>
+                    <div id='insider-copy'></div>
                         <input class="form-control multiple-row-js mt-3 mb-2" name="example-text-input" type="text"
                             placeholder="Tambah baris..">
                     </div>
@@ -236,11 +237,30 @@
                 .focus();
         });
 
+        let clone = (function(){
+            let cloneIndex = 0
+            let template = $('#insiderTemplate').text()
+
+            return function(){
+                return template.replace(/@{{idInsider}}/g, ++cloneIndex);
+            }
+        })();
+
+        let insider = $("#insider-copy")
+
+        $(document).on("click", '.multiple-row-js', function(){
+            insider.append(clone()); 
+          });
+          
+        insider.append(clone())
+
         $("body").on("click", ".removeEmail, .removeTelepon", function () {
             // var id = $(this).attr('id').split('-')[1];
             $(this).parent().parent().remove();
 
         });
+
+        
 
         $("form").on("change", '.fotoProfile', function (e) {
             e.preventDefault();
@@ -252,14 +272,14 @@
                 alert("Please select image file (jpg, jpeg, png).")
         });
 
-        $(".form-group").on("click", ".multiple-row-js", function(){
+        /*$(".form-group").on("click", ".multiple-row-js", function(){
             let el = $(this);
             let clonedTarget = el.parent().children(".multiple-row-copy-target").first().clone();
             let insertedEl = clonedTarget.insertBefore(el);
             insertedEl.find("input").first()
                 .val("")
                 .focus();
-        });
+        });*/
     
         $(".form-group").on("focus", ".focus-long-field, .focus-long-field-right-to-left", function(){
             let el = $(this);
