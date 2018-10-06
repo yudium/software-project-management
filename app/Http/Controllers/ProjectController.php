@@ -51,13 +51,12 @@ class ProjectController extends Controller
         $queryString = $request->getQueryString();
 
         // client_id AND client_status is a must
-        if (! str_contains($queryString, 'client_id') OR
-            ! str_contains($queryString, 'client_status'))
+        if (! str_contains($queryString, 'client_id'))
         {
             $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
             $request->session()->flash('messageType', 'warning');
 
-            return redirect('project/new/select-client');
+            return redirect()->route('newProjectStep2');
         }
 
         $project_types = ProjectType::all();
