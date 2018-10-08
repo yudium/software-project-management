@@ -45,6 +45,9 @@
 <link href="{{ asset('assets/plugins/awesomplete/awesomplete.css') }}" rel="stylesheet">
 <script src="{{ asset('assets/plugins/awesomplete/plugin.js') }}"></script>
 
+<!-- Moment Plugin -->
+<script src="{{ asset('assets/plugins/moment/plugin.js') }}"></script>
+
 
 <style>
     .dropdown-item {
