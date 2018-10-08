@@ -33,3 +33,4 @@ Route::get('/project/new/step-2', 'ProjectController@createStep2')->name('newPro
 Route::get('/project/new/step-3', 'ProjectController@createStep3')->name('newProjectStep3');
 Route::post('/project/new/step-3', 'ProjectController@createStep3Post')->name('newProjectStep3Post');
 
+Route::get('/project/new/step-4', 'ProjectController@createStep4')->name('newProjectStep4');

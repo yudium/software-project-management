@@ -97,5 +97,10 @@ class ProjectController extends Controller
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
     }
+
+    public function createStep4()
+    {
+        return view('project.create-termin_pembayaran');
+    }
 }
 
