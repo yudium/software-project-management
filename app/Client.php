@@ -23,12 +23,12 @@ class Client extends Model
 
     public function email()
     {
-        return $this->hasMany('App\ClientEmail');
+        return $this->hasMany('App\ClientEmail','client_id');
     }
 
     public function phone()
     {
-        return $this->hasMany('App\ClientPhone');
+        return $this->hasMany('App\ClientPhone','client_id');
     }
 
     public function city()

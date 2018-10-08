@@ -13,9 +13,14 @@ use App\ClientType;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function prospectList()
     {
         return view('prospect.prospect-list');
+    }
+
+    public function clientList()
+    {
+        return view('client.client-list');
     }
 
     public function getProspect()
@@ -36,6 +41,21 @@ class ClientController extends Controller
 
         return Datatables::of($prospect)
         ->addColumn('options',function($prospect){
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
+        })->rawColumns(['options'])->make(true);
+    }
+
+    public function getClient()
+    {
+        $client = Client::with(['type','phone','email'])->where('clients.status','=','client')->get();
+//         dd($client);
+// // foreach($client as $row)
+// {
+//     dd($row->phone);
+// }
+
+        return Datatables::of($client)
+        ->addColumn('options',function($client){
             return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
         })->rawColumns(['options'])->make(true);
     }
