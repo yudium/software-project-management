@@ -522,7 +522,7 @@ require(['datatables', 'jquery'], function(datatable, $) {
             {
                 render: function(data, type, row) {
                     return `
-                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}&client_status=client" class="btn btn-outline-info btn-sm">Pilih</a>
+                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
                     `;
                 },
                 orderable: false,
@@ -570,7 +570,7 @@ require(['datatables', 'jquery'], function(datatable, $) {
             {
                 render: function(data, type, row) {
                     return `
-                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}&client_status=prospect" class="btn btn-outline-info btn-sm">Pilih</a>
+                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
                     `;
                 },
                 orderable: false,

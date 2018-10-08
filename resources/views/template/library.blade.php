@@ -41,6 +41,13 @@
 <link href="{{ asset('assets/plugins/pickadate/lib/themes/classic.date.css') }}" rel="stylesheet">
 <script src="{{ asset('assets/plugins/pickadate/plugin.js') }}"></script>
 
+<!-- Awesomplete Plugin -->
+<link href="{{ asset('assets/plugins/awesomplete/awesomplete.css') }}" rel="stylesheet">
+<script src="{{ asset('assets/plugins/awesomplete/plugin.js') }}"></script>
+
+<!-- Moment Plugin -->
+<script src="{{ asset('assets/plugins/moment/plugin.js') }}"></script>
+
 
 <style>
     .dropdown-item {

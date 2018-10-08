@@ -70,6 +70,20 @@ display: table;
 .clearfix .left, .clearfix .right {display: inline-block}
 .clearfix .left {float: left}
 .clearfix .right {float:right}
+
+.check-circle-container {
+    position: relative;
+}
+.check-circle {
+    display: hidden;
+    position: absolute;
+    top: -7px;
+    right: -3px;
+    font-size: 17px;
+    color: green;
+    font-weight: bold;
+    text-shadow: 0px 1px #fff;
+}
 </style>
 @endsection
 
@@ -112,7 +126,10 @@ display: table;
                                 <td width="10%" class="text-center"><i class="{{ $project_type->icon }} text-muted"></i></td>
                                 <td width="80%">{{ $project_type->name }}</td>
                                 <td width="10%" class="text-center">
-                                    <a href="javascript:select({{ $project_type->id }})" class="btn btn-outline-info btn-sm">Pilih</a>
+                                    <span class="check-circle-container">
+                                        <a href="#" data-project-type-id="{{ $project_type->id }}" class="btn btn-outline-info btn-sm">Pilih</a>
+                                        <i class="fe fe-check-circle check-circle"></i>
+                                    </span>
                                 </td>
                             </tr>
                             @endforeach
@@ -134,12 +151,19 @@ display: table;
 <script>
     window.scroll(0, 65.133 + 55.5 + 1);
 
-    function select(project_type_id) {
-        let next_btn = document.getElementById('next_button');
-        // reset last selected k
-        next_btn.href = next_btn.href.replace(/&project_type_id=\d+/, '');
-        // now append the project type id
-        next_btn.href = next_btn.href + '&project_type_id=' + project_type_id;
-    }
+    require(['jquery'], function($) {
+        $(document).ready(function(){
+            $(".check-circle").hide();
+            $(".check-circle-container a").click(function(e){
+                e.preventDefault();
+                $(".check-circle").hide();
+                $(this).closest(".check-circle-container").find(".check-circle").show();
+
+                let project_type_id = $(this).data('project-type-id');
+                $("#next_button").attr('href', $("#next_button").attr('href').replace(/&project_type_id=\d+/, ''));
+                $("#next_button").attr('href', $("#next_button").attr('href') + '&project_type_id=' + project_type_id);
+            });
+        });
+    });
 </script>
 @endsection

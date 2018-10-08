@@ -7,6 +7,7 @@ use App\Project;
 use App\Client;
 use DataTables;
 use App\ProjectType;
+use App\PIC;
 
 class ProjectController extends Controller
 {
@@ -50,13 +51,12 @@ class ProjectController extends Controller
         $queryString = $request->getQueryString();
 
         // client_id AND client_status is a must
-        if (! str_contains($queryString, 'client_id') OR
-            ! str_contains($queryString, 'client_status'))
+        if (! str_contains($queryString, 'client_id'))
         {
             $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
             $request->session()->flash('messageType', 'warning');
 
-            return redirect('project/new/select-client');
+            return redirect()->route('newProjectStep2');
         }
 
         $project_types = ProjectType::all();
@@ -67,9 +67,11 @@ class ProjectController extends Controller
     public function createStep3(Request $request)
     {
         $client = Client::find($request->input('client_id'));
-        $project_type = ProjectType::find($request->input('project_type_id') OR $request->old('project_type_id'));
+        $project_type = ProjectType::find($request->input('project_type_id', $request->old('project_type_id')));
+        // alternative to distinct sql
+        $PICs = PIC::orderBy('name','asc')->groupBy('name')->get();
 
-        return view('project.create-form', compact('client', 'project_type'));
+        return view('project.create-form', compact('client', 'project_type', 'PICs'));
     }
 
     public function createStep3Post(\App\Http\Requests\StoreProject $request)
@@ -81,7 +83,7 @@ class ProjectController extends Controller
 
         $project = Project::create($request->except(['PIC', 'backup_source_code_project_link', 'project_link']));
 
-        foreach ($request->only('PIC')['PIC'] as $PIC_name) {
+        foreach ($request->PIC as $PIC_name) {
             $project->PICs()->create(['name' => $PIC_name]);
         }
         foreach ($request->backup_source_code_project_link as $link) {
@@ -94,6 +96,11 @@ class ProjectController extends Controller
         return redirect('projectDetail', ['id' => $project->id])
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
+    }
+
+    public function createStep4()
+    {
+        return view('project.create-termin_pembayaran');
     }
 }
 

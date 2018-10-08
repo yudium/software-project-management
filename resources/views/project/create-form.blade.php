@@ -68,11 +68,24 @@
                             @endcomponent
                         @endif
                         <fieldset class="form-fieldset">
-                            @include('includes.form-element.multiple-input', [
+                            <datalist id="PIC_list">
+                                @foreach ($PICs as $PIC)
+                                <option>{{ $PIC->name }}</option>
+                                @endforeach
+                            </datalist>
+                            @component('includes.form-element.multiple-input', [
                                 'id' => 'multi-pic',
                                 'name' => 'PIC[]',
                                 'number' => 2,
                             ])
+                            <div class="input-group mb-2 multi-input-copy-target">
+                                <input type="text" name="PIC[]" class="awesomplete form-control mb-2" list="PIC_list" autocomplete="off">
+                                <span class="input-group-append">
+                                    <!-- I don't know why the button X below has wrong size so I add height to style attribute -->
+                                    <button style="height: 38px" type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
+                                </span>
+                            </div>
+                            @endcomponent
                         </fieldset>
                         @endcomponent
                     </div>
