@@ -37,7 +37,7 @@ class StoreInsider extends FormRequest
     public function sanitize()
     {
         $input = $this->all();
-        // dd($input);
+        print_r($input);
         // $old_nama = $input['nama'];
         // $input['nama'] = [];
         // foreach($old_nama as $key=>$nama){
@@ -56,17 +56,22 @@ class StoreInsider extends FormRequest
         //     if(trim($alamat)) array_push($input['alamat'],$alamat);
         // }
 
-        $old_telepon = $input['telepon'];
-        $input['telepon'] = [];
-        foreach($old_telepon as $key=>$telepon){
-            if(trim($telepon)) array_push($input['telepon'],$telepon);
-        }
+        // $old_telepon = $input['telepon'];
+        // $input['telepon'][$i] = [][];
+        
+        // foreach($old_telepon as $key=>$telepon){
+        //     if(trim($telepon)) array_push($input['telepon'],$telepon);
+        //     foreach($telepon as $key=>$tel){
+        //         print_r($tel[3]);
+        //     }
+         
+        // }
 
-        $old_email = $input['email'];
-        $input['email'] = [];
-        foreach($old_email as $key=>$email){
-            if(trim($email)) array_push($input['email'],$email);
-        }
+        // $old_email = $input['email'];
+        // $input['email'] = [];
+        // foreach($old_email as $key=>$email){
+        //     if(trim($email)) array_push($input['email'],$email);
+        // }
 
         $this->replace($input);
         

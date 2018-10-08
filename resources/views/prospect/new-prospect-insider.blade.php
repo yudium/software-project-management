@@ -147,40 +147,40 @@
                     <script type="text/template" id="insiderTemplate">
                         <div class="row gutters-xs multiple-row-copy-target" id="multiple-row-copy@{{ idInsider}}" >
                             <div class="col-2">
-                                <input class="form-control" name="nama@{{idInsider}}" placeholder="Nama" type="text">
+                                <input class="form-control" name="nama[@{{idInsider}}]" placeholder="Nama" type="text">
                             </div>
                             <div class="col-1">
-                                <input class="form-control focus-long-field" name="jabatan@{{idInsider}}" placeholder="Jabatan"
+                                <input class="form-control focus-long-field" name="jabatan[@{{idInsider}}]" placeholder="Jabatan"
                                     type="text" data-focus-width="200px">
                             </div>
                             <div class="col-1">
-                                <input class="form-control focus-long-field" name="alamat@{{idInsider}}" placeholder="Alamat"
+                                <input class="form-control focus-long-field" name="alamat[@{{idInsider}}]" placeholder="Alamat"
                                     type="text" data-focus-width="400px">
                             </div>
                             <div class="col-2">
                                 <div class="input-group mb-2 multiple-field-copy-target">
-                                    <input class="form-control" name="telepon@{{idInsider}}[]" type="text" placeholder="Telepon">
+                                    <input class="form-control" name="telepon[@{{idInsider}}][]" type="text" placeholder="Telepon">
                                     <span class="input-group-append">
                                         <button type="button" class="btn btn-secondary removeTelepon"><i class="fe fe-x"></i></button>
                                     </span>
                                 </div>
-                                <input class="form-control multiple-field-js mb-2" name="telepon@{{idInsider}}[]" type="text"
+                                <input class="form-control multiple-field-js mb-2" name="telepon[@{{idInsider}}][]" type="text"
                                     placeholder="Add item..">
                             </div>
                             <div class="col-2">
                                 <div class="input-group mb-2 multiple-field-copy-target">
-                                    <input class="form-control" type="text" name="email@{{idInsider}}[]" placeholder="Email">
+                                    <input class="form-control" type="text" name="email[@{{idInsider}}][]" placeholder="Email">
                                     <span class="input-group-append">
                                         <button type="button" class="btn btn-secondary removeEmail"><i class="fe fe-x" ></i></button>
                                     </span>
                                 </div>
-                                <input class="form-control multiple-field-js mb-2" name="email@{{idInsider}}[]" type="text"
+                                <input class="form-control multiple-field-js mb-2" name="email[@{{idInsider}}][]" type="text"
                                     placeholder="Add item..">
                             </div>
                             <div class="col-2">
                                 <div class="form-group" style="width: 128.217px; height: 2.375rem !important; margin: 0 auto">
                                     <div class="custom-file">
-                                        <input class="custom-file-input fotoProfile" name="fotoProfile@{{idInsider}}" id="fotoProfile" type="file">
+                                        <input class="custom-file-input fotoProfile" name="fotoProfile[@{{idInsider}}]" id="fotoProfile" type="file">
                                         <label class="custom-file-label">Choose file</label>
                                         <div class="preview-foto">
                                         <span class="photo-preview avatar"  style="background-image: url(./demo/faces/female/25.jpg)"></span></div>
@@ -191,7 +191,7 @@
                             </div>
                             <div class="col-2">
                                 <div class="form-group">
-                                    <textarea class="form-control focus-long-field-right-to-left" name="keterangan"
+                                    <textarea class="form-control focus-long-field-right-to-left" name="keterangan[@{{idInsider}}]"
                                         placeholder="Content.." data-focus-width="500" data-focus-height="200">Keterangan...</textarea>
                                 </div>
                             </div>
