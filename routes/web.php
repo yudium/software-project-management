@@ -32,6 +32,7 @@ Route::get('/getClient','ClientController@getClient')->name('getClient');
 Route::get('/client/new/client-types','ClientController@newClientType')->name('newClientTypes');
 Route::get('/client/new/client','ClientController@getClientType')->name('getClientTypegit ');
 Route::get('/client/new/client-form','ClientController@newClientForm')->name('newClientForm');
+Route::post('/client/new/client-form','ClientController@createClientForm')->name('createClientForm');
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');

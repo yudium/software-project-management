@@ -116,7 +116,7 @@ class ClientController extends Controller
         return view('client.new-client-form',['idType'=>$clientType]);
     }
 
-    public function createProspectForm(\App\Http\Requests\StoreProspect $req)
+    public function createProspectForm(\App\Http\Requests\StoreCLient $req)
     {
 
         $prospect = new Client();
@@ -155,6 +155,49 @@ class ClientController extends Controller
         }
  
         return redirect()->route('newProspectInsider',['id'=>$prospect->id]);
+        // ->with('message', 'Berhasil menambah prospect')
+        // ->with('messageType', 'success');
+    }
+
+    public function createClientForm(\App\Http\Requests\StoreCLient $req)
+    {
+
+        $client = new Client();
+        $client->client_type_id   = $req->tipeClient;
+        $client->name             = $req->nama;
+        $client->business_relationship_status = $req->statusHub;
+        if($req->has('photo'))
+        {
+            $clientImage = $req->file('photo');
+            dd($prospectImage);
+        }
+        // $prospect->photo = 'test';
+        $client->status   = $client->getStatusTextAttribute(Client::IS_CLIENT);
+        $client->save();
+
+        $client->address()->create(['address'=>$req->alamat]);
+
+        foreach ($req->kota as $kota) {
+            $client->city()->create(['city' => $kota]);
+        }
+
+        foreach ($req->telepon as $telepon) {
+            $client->phone()->create(['phone' => $telepon]);
+        }
+
+        foreach ($req->email as $email) {
+            $client->email()->create(['email' => $email]);
+        }
+
+        foreach ($req->norek as $norek) {
+            $client->bankAccount()->create(['bank_account' => $norek]);
+        }
+
+        foreach ($req->web as $web) {
+            $client->webAddress()->create(['web_addresses' => $web]);
+        }
+ 
+        return redirect()->route('newClientInsider',['id'=>$client->id]);
         // ->with('message', 'Berhasil menambah prospect')
         // ->with('messageType', 'success');
     }
