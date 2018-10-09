@@ -62,6 +62,12 @@ class ClientController extends Controller
         return view('prospect.new-prospect-types',['listProspectTypes'=>$listProspectTypes]);
     }
 
+    public function newClientType()
+    {
+        $listClientTypes = ClientType::get();
+        return view('client.new-client-types',['listClientTypes'=>$listClientTypes]);
+    }
+
     public function newProspectForm()
     {
         return view('prospect.new-prospect-form');
