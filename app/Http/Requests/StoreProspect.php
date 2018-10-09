@@ -28,7 +28,7 @@ class StoreProspect extends FormRequest
 
         return [
             'tipeProspect'=>'',
-            'nama'=>'required|min:2|max:255',
+            'nama'=>'required',
             'statusHub'=>'',
             'alamat'=>'required',
             'kota'=>'required',

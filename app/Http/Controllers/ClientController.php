@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use DataTables;
 use Session;
+use App\Insider;
 use App\Client;
 use App\ClientEmail;
 use App\ClientPhone;
@@ -48,11 +49,6 @@ class ClientController extends Controller
     public function getClient()
     {
         $client = Client::with(['type','phone','email'])->where('clients.status','=','client')->get();
-//         dd($client);
-// // foreach($client as $row)
-// {
-//     dd($row->phone);
-// }
 
         return Datatables::of($client)
         ->addColumn('options',function($client){
@@ -92,9 +88,7 @@ class ClientController extends Controller
 
     public function createProspectForm(\App\Http\Requests\StoreProspect $req)
     {
-        // $data = $req->all();
-        // print_r($data);
-        // $prospect = Client::create($request->except(''))
+
         $prospect = new Client();
         $prospect->client_type_id   = $req->tipeProspect;
         $prospect->name             = $req->nama;
@@ -130,33 +124,68 @@ class ClientController extends Controller
             $prospect->webAddress()->create(['web_addresses' => $web]);
         }
  
-        // return redirect('projectDetail', ['id' => $prospect->id])
+        return redirect()->route('newProspectInsider',['id'=>$prospect->id]);
         // ->with('message', 'Berhasil menambah prospect')
         // ->with('messageType', 'success');
     }
 
-    public function newProspectInsider()
+    public function newProspectInsider(Request $req)
     {
-        return view('prospect.new-prospect-insider');
+        $getId = $req->all();
+        // print_r($getId);
+        return view('prospect.new-prospect-insider',['idClient'=>$getId['id']]);
     }
 
     public function createProspectInsider(\App\Http\Requests\StoreInsider $req)
     {
-        // $input = $req->all();
-        // print_r($input);
-
-        // $old_telepon = $input['telepon'];
-        // $input['telepon'][$i] = [];
-        // $i=2 ;
-        // for($i=1;$i <=count())
-     
-        //     foreach($old_telepon[$i] as $key=>$telepon){
-        //     if(trim($telepon)) array_push($input['telepon'][$i],$telepon);
-          
-        //     }
-         
-        //     print_r($input['telepon'][$i]);
+        $client_id = $req->input('did');
+        // print_r($client_id);
+        $input = $req->all();
+        $amount = count($input['nama']);
+       
+        $array_baru = [];
+        for($i=1 ; $i <= $amount ; $i++)
+        {
+            $array_baru[]=[
+                'nama'          =>$input['nama'][$i],
+                'jabatan'       =>$input['jabatan'][$i],
+                'alamat'        =>$input['alamat'][$i],
+                'fotoProfile'   =>$input['fotoProfile'][$i],
+                'keterangan'    =>$input['keterangan'][$i],
+            ];
+        }
+        $client_insider = Client::find($client_id);
+       foreach($array_baru as $key=>$insider)
+       {
         
+           $client_insider->insider()->create([
+               'client_id'=>$client_id,
+               'name'=>$insider['nama'],
+               'position'=>$insider['jabatan'],
+               'address'=>$insider['alamat'],
+               'photo'=>$insider['fotoProfile'],
+               'note'=>$insider['keterangan'],
+           ]);
+       }
+        $insider_id = DB::table('client_orang_dalam')->where('client_id','=',$client_id)->select('id')->get();
+   
+        $count_telepon = count($input['telepon']);
+        for($i=1 ; $i <=$count_telepon ; $i++)
+        {
+             foreach ($req->telepon[$i] as $telepon) {
+            $telepon_insider = DB::table('client_orang_dalam_phones')->insert(['phone' => $telepon,'client_orang_dalam_id'=>$insider_id[$i-1]->id]);
+            }
+        }
+   
+        $count_email = count($input['email']);
+        for($i=1 ; $i <=$count_email ; $i++)
+        {
+             foreach ($req->email[$i] as $email) {
+            $email_insider = DB::table('client_orang_dalam_emails')->insert(['email' => $email,'client_orang_dalam_id'=>$insider_id[$i-1]->id]);
+            }
+        }
+        
+        return redirect()->route('prospectList');
      
     }
 }

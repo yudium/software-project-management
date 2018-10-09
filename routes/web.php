@@ -27,8 +27,8 @@ Route::post('/client/new/prospect-form','ClientController@createProspectForm')->
 Route::get('/client/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
 Route::post('/client/new/prospect-insider','ClientController@createProspectInsider')->name('createProspectInsider');
 
-Route::get('/client/client-list','CLientController@clientList')->name('clientList');
-Route::get('/getClient','ClientController@getClient')->name('getClient');
+// Route::get('/client/client-list','CLientController@clientList')->name('clientList');
+// Route::get('/getClient','ClientController@getClient')->name('getClient');
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');

@@ -139,6 +139,7 @@
     </div>
     <form method="post" action="{{ route('createProspectInsider') }}">
         @csrf
+        <input type="hidden" name="did" value="{{ $idClient}}">
     <div class="row row-cards">
         <div class="col-12">
             <div class="card">
@@ -214,7 +215,7 @@
                     <button class="btn btn-primary" style="width: 205.5px">Simpan</button>
                 </div>
                 <div class="right mr-3">
-                    <a href="#" class="btn btn-outline-primary" style="width: 205.5px">Lewati</a>
+                    <a href="{{ route('prospectList') }}" class="btn btn-outline-primary" style="width: 205.5px">Lewati</a>
                 </div>
             </div>
         </div>
