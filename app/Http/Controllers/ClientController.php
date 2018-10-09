@@ -216,7 +216,7 @@ class ClientController extends Controller
         return view('client.new-client-insider',['idClient'=>$getId['id']]);
     }
 
-    public function createProspectInsider(\App\Http\Requests\StoreInsider $req)
+    public function createClientInsider(\App\Http\Requests\StoreInsider $req)
     {
         $client_id = $req->input('did');
         // print_r($client_id);

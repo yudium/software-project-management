@@ -25,7 +25,7 @@ Route::get('/client/new/prospect','ClientController@getProspectType')->name('get
 Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
 Route::post('/client/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
 Route::get('/client/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
-Route::post('/client/new/prospect-insider','ClientController@createProspectInsider')->name('createProspectInsider');
+Route::post('/client/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
 
 Route::get('/client/client-list','CLientController@clientList')->name('clientList');
 Route::get('/getClient','ClientController@getClient')->name('getClient');
@@ -33,6 +33,8 @@ Route::get('/client/new/client-types','ClientController@newClientType')->name('n
 Route::get('/client/new/client','ClientController@getClientType')->name('getClientTypegit ');
 Route::get('/client/new/client-form','ClientController@newClientForm')->name('newClientForm');
 Route::post('/client/new/client-form','ClientController@createClientForm')->name('createClientForm');
+Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
+Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');

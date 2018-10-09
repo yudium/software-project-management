@@ -137,7 +137,7 @@
             Form Orang Dalam Client
         </h1>
     </div>
-    <form method="post" action="{{ route('createProspectInsider') }}">
+    <form method="post" action="{{ route('createClientInsider') }}">
         @csrf
         <input type="hidden" name="did" value="{{ $idClient}}">
     <div class="row row-cards">
