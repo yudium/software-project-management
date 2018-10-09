@@ -73,6 +73,11 @@ class ClientController extends Controller
         return view('prospect.new-prospect-form');
     }
 
+    public function newClientForm()
+    {
+        return view('client.new-client-form');
+    }
+
     public function getProspectType(Request $req)
     {
         //get parameter
@@ -90,6 +95,25 @@ class ClientController extends Controller
         }
 
         return view('prospect.new-prospect-form',['idType'=>$clientType]);
+    }
+
+    public function getClientType(Request $req)
+    {
+        //get parameter
+        $idType = $req->getQueryString();
+        //get value type id
+        $valueId  = $req->input('client_type_id');
+       
+        $clientType = CLientType::where('id','=',$valueId)->first();
+        if (!str_contains($idType,'client_type_id'))
+        {
+            Session::flash('message', 'Pilih type client dahulu !!!'); 
+            Session::flash('alert-class', 'alert-warning'); 
+
+            return redirect('/client/new/client-types');
+        }
+
+        return view('client.new-client-form',['idType'=>$clientType]);
     }
 
     public function createProspectForm(\App\Http\Requests\StoreProspect $req)
