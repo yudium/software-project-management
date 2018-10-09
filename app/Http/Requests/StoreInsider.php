@@ -37,7 +37,7 @@ class StoreInsider extends FormRequest
     public function sanitize()
     {
         $input = $this->all();
-        print_r($input);
+        // print_r($input);
         // $old_nama = $input['nama'];
         // $input['nama'] = [];
         // foreach($old_nama as $key=>$nama){
@@ -55,15 +55,24 @@ class StoreInsider extends FormRequest
         // foreach($old_alamat as $key=>$alamat){
         //     if(trim($alamat)) array_push($input['alamat'],$alamat);
         // }
-
-        // $old_telepon = $input['telepon'];
+        // $listTelepon =  $input['telepon'];
+        // $i=1;
+        // $counter = count($listTelepon[$i]);
+        // for($i=1 ; $i <= $counter ; $i++)
+        // {
+        //     print_r($input['telepon'][$i]);
+        //     // $old_telepon =  $input['telepon'][$i] = [];
+        //     // foreach($old_telepon as $key=>$telepon){
+        //     //     print_r($telepon);
+        //     //     if(trim($telepon)) array_push($input['telepon'][$i],$telepon);
+                
+        //     // }    
+        // }
+        
         // $input['telepon'][$i] = [][];
         
         // foreach($old_telepon as $key=>$telepon){
         //     if(trim($telepon)) array_push($input['telepon'],$telepon);
-        //     foreach($telepon as $key=>$tel){
-        //         print_r($tel[3]);
-        //     }
          
         // }
 

@@ -140,10 +140,11 @@ class ClientController extends Controller
         return view('prospect.new-prospect-insider');
     }
 
-    public function createProspectInsider(Request $req)
+    public function createProspectInsider(\App\Http\Requests\StoreInsider $req)
     {
-        $input = $req->all();
+        // $input = $req->all();
         // print_r($input);
+
         // $old_telepon = $input['telepon'];
         // $input['telepon'][$i] = [];
         // $i=2 ;
