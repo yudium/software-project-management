@@ -36,6 +36,8 @@ Route::post('/client/new/client-form','ClientController@createClientForm')->name
 Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
 Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
 
+Route::get('/agen/agen-list','AgenController@index')->name('agenList');
+
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');
 
