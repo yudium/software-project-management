@@ -18,14 +18,14 @@ Route::get('/test',function(){
     return view('template.master');
 });
 
-Route::get('/client/prospect-list/','ClientController@prospectList')->name('prospectList');
+Route::get('/prospect/prospect-list/','ClientController@prospectList')->name('prospectList');
 Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
-Route::get('/client/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
-Route::get('/client/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
-Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
-Route::post('/client/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
-Route::get('/client/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
-Route::post('/client/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
+Route::get('/prospect/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
+Route::get('/prospect/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
+Route::get('/prospect/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
+Route::post('/prospect/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
+Route::get('/prospect/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
+Route::post('/prospect/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
 
 Route::get('/client/client-list','CLientController@clientList')->name('clientList');
 Route::get('/getClient','ClientController@getClient')->name('getClient');
@@ -38,7 +38,7 @@ Route::post('/client/new/client-insider','ClientController@createClientInsider')
 
 Route::get('/agen/agen-list','AgenController@index')->name('agenList');
 
-Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
+Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onProgressList');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');
 
 Route::get('/project/new/step-1', 'ProjectController@createStep1')->name('newProjectStep1');

@@ -123,7 +123,7 @@
     </div>
     <div class="row row-cards">
         <div class="col col-3 mx-auto">
-            <a href="/client/new/prospect" class="btn btn-primary" id="btn-next">Berikutnya</a>
+            <a href="/prospect/new/prospect" class="btn btn-primary" id="btn-next">Berikutnya</a>
         </div>
     </div>
 </div>

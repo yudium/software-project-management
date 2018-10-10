@@ -12,7 +12,7 @@
 	<div class="container">
 		<div class="d-flex">
 			<a class="header-brand" href="../index.html">
-				<img src="../demo/logo.svg" class="header-brand-img" alt="tabler logo">
+				<img src="{{ asset('demo/logo.svg') }}" class="header-brand-img" alt="tabler logo">
 			</a>
 
 			<div class="d-flex order-lg-2 ml-auto">

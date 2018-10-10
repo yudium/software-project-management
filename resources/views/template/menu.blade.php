@@ -7,15 +7,15 @@
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link active"><i class="fe fe-home"></i> Home</a>
+                        <a href="../index.html" class="nav-link "><i class="fe fe-home"></i> Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-box"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'project') active @endif" data-toggle="dropdown"><i class="fe fe-box"></i>
                             Proyek</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../new-project_select-client.html" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('newProjectStep1') }}" class="dropdown-item  ">Tambah</a>
                             <a href="../" class="dropdown-item  dropdown-item-title">Daftar Proyek</a>
-                            <a href="../project-list_aktif.html" class="dropdown-item  ">Sedang Berjalan</a>
+                            <a href="{{ route('onProgressList') }}" class="dropdown-item  ">Sedang Berjalan</a>
                             <a href="../project-list_maintenance.html" class="dropdown-item  ">Sedang Maintenance</a>
                             <a href="../project-list_pending.html" class="dropdown-item  ">Draft</a>
                             <a href="../project-list_arsip-berhasil.html" class="dropdown-item  ">Arsip Berhasil</a>
@@ -30,19 +30,19 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-user-o"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'client') active @endif" data-toggle="dropdown"><i class="fa fa-user-o"></i>
                             Client</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../client-list.html" class="dropdown-item  ">Daftar Client</a>
-                            <a href="../new-client_select-jenis.html" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('clientList') }}" class="dropdown-item  ">Daftar Client</a>
+                            <a href="{{ route('newClientTypes') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-user-o"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'prospect') active @endif" data-toggle="dropdown"><i class="fa fa-user-o"></i>
                             Prospect</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../prospect-list.html" class="dropdown-item  ">Daftar Prospect</a>
-                            <a href="../new-prospect_select-jenis.html" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('prospectList') }}" class="dropdown-item  ">Daftar Prospect</a>
+                            <a href="{{ route('newProspectTypes') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
