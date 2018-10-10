@@ -1,5 +1,5 @@
-<link rel="icon" href="../favicon.ico" type="image/x-icon"/>
-<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+
+<link rel="shortcut icon" type="image/x-icon" href="{{ asset('demo/logo.png') }}" />
 
 <!-- Generated: 2018-09-17 20:18:07 +0700 -->
 
