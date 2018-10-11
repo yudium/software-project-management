@@ -11,7 +11,9 @@ class ClientBankAccount extends Model
      *
      * @var array
      */
+    public $timestamps = false;
     protected $fillable = [
         'bank_account',
     ];
+
 }

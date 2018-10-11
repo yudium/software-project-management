@@ -11,6 +11,7 @@ class ClientWebAddresses extends Model
      *
      * @var array
      */
+    public $timestamps = false;
     protected $fillable = [
         'web_addresses',
    ];

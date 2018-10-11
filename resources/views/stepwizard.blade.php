@@ -36,7 +36,7 @@
     <div class="stepwizard-row setup-panel">
         @foreach ($steps as $step)
         <div class="stepwizard-step">
-            <a href="{{ $step['url'] }}" type="button" class="btn btn-secondary btn-circle">1</a>
+            <a href="{{ $step['url'] }}" type="button" class="btn btn-secondary btn-circle">{{ $loop->iteration }}</a>
             <p>{{ $step['text'] }}</p>
         </div>
         @endforeach

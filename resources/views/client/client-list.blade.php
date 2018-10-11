@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Prospek')
+@section('title', 'Client')
 @section('css')
 <style>
         .clearfix .left, .clearfix .right {display: inline-block}
@@ -20,29 +20,41 @@
 @endsection
 @section('content')
 <div class="container">
+
     <div class="page-header">
 	<h1 class="page-title">
-		Daftar Prospect
-	</h1>
+		Daftar Client
+	</h1>	
 </div>
 
-
+    <div class="row row-cards">
+        <div class="col-6 col-sm-4 col-lg-4">
+            <div class="form-group">
+                <div class="input-icon mb-3">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-icon-addon">
+                        <i class="fe fe-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="card">
 	<div class="table-responsive">
-		<table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="prospectTable">
+		<table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="clientTable">
 			<thead>
-            <tr>
-                <th class="text-center w-1"><i class="icon-people"></i></th>
-                <th>Nama</th>
-                <th class="text-center">Jenis</th>
-                <th>Telepon</th>
-                <th>Email</th>
-                <th>Status Hub. Bisnis</th>
-                <th class="text-center"><i class="icon-settings"></i></th>
-            </tr>
+                <tr>
+                    <th class="text-center w-1"><i class="icon-people"></i></th>
+                    <th>Nama</th>
+                    <th class="text-center">Jenis</th>
+                    <th>Telepon</th>
+                    <th>Email</th>
+                    <th>Status Hub. Bisnis</th>
+                    <th class="text-center"><i class="icon-settings"></i></th>
+                </tr>
 			</thead>
-			<tbody>		
+			<tbody>
 			
 			</tbody>
 		</table>
@@ -56,19 +68,19 @@
 <script>
     require(['datatables', 'jquery'], function (c3, $) {
     $(document).ready(function(){
-       let table = $('#prospectTable').DataTable({
+       let table = $('#clientTable').DataTable({
             processing: true,
             serverSide: true,
             ordering: false,
-            ajax:"{{ route('getProspect') }}",
+            ajax:"{{ route('getClient') }}",
             columns: [
-                {data:'photo',name:'photo'},
-                {data: 'name', name: 'name'},
-                {data: 'type', name: 'type'},
-                {data: 'phone', name: 'phone'},
-                {data: 'email', name: 'email'},
-                {data:'status_hub',name:'status_hub'},
-                {data:'options',name:'options'},
+                {data:'photo'},
+                {data: 'name'},
+                {data: 'type.name'},
+                {data: 'phone'},
+                {data: 'email'},
+                {data:'business_relationship_status'},
+                {data:'options',},
                
             ],
             columnDefs:[{
@@ -98,7 +110,11 @@
                     data:'phone',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return data;
+                        let phone_html = '';
+                        data.forEach(function(value, index, array){
+                            phone_html += value.phone + '<br>';
+                        });
+                       return phone_html;
                     },
                 },
                 {
@@ -106,7 +122,11 @@
                     data:'email',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return data;
+                    let email_html = '';
+                    data.forEach(function(value,index,array){
+                    email_html +=value.email+'<br>';
+                    });
+                    return email_html;
                     },
                 },
                 {

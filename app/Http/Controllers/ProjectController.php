@@ -15,7 +15,7 @@ class ProjectController extends Controller
     public function getOnProgressAjax(Request $request)
     {
         $projects = Project::with(['client', 'project_type'])->get();
-
+        dd($projects);
         return DataTables::of($projects)->make(true);
     }
 

@@ -11,6 +11,7 @@ class ClientCity extends Model
      *
      * @var array
      */
+    public $timestamps = false;
     protected $fillable = [
         'city',
     ];

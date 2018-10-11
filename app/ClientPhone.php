@@ -11,6 +11,7 @@ class ClientPhone extends Model
      *
      * @var array
      */
+    public $timestamps = false;
     protected $fillable = [
         'phone',
     ];

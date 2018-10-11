@@ -23,12 +23,32 @@ class Client extends Model
 
     public function email()
     {
-        return $this->hasMany('App\ClientEmail');
+        return $this->hasMany('App\ClientEmail','client_id');
     }
 
     public function phone()
     {
-        return $this->hasMany('App\ClientPhone');
+        return $this->hasMany('App\ClientPhone','client_id');
+    }
+
+    public function city()
+    {
+        return $this->hasMany('App\ClientCity');
+    }
+
+    public function bankAccount()
+    {
+        return $this->hasMany('App\ClientBankAccount');
+    }
+
+    public function webAddress()
+    {
+        return $this->hasMany('App\ClientWebAddresses');
+    }
+
+    public function address()
+    {
+        return $this->hasOne('App\ClientAddresses');
     }
 
     public function type()
@@ -36,10 +56,16 @@ class Client extends Model
         return $this->belongsTo('App\ClientType', 'client_type_id');
     }
 
-
+    public function insider()
+    {
+        return $this->hasMany('App\Insider','client_id');
+    }
+    
     public function getStatusTextAttribute($value)
     {
         return ($value == self::IS_CLIENT) ? 'client' : 'prospect';
     }
+
+
 }
 

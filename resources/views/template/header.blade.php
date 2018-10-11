@@ -1,3 +1,13 @@
+<style>
+		.dropdown-item {
+			padding-left: 35px;
+		}
+		.dropdown-item-title {
+			padding-left: 24px;
+			font-weight: bold;
+			background: rgba(216, 216, 216, 0.2);
+		}
+		</style>
 <div class="header py-4">
 	<div class="container">
 		<div class="d-flex">

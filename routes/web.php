@@ -18,8 +18,25 @@ Route::get('/test',function(){
     return view('template.master');
 });
 
-Route::get('/client/client-list/','ClientController@index')->name('clientList');
+Route::get('/client/prospect-list/','ClientController@prospectList')->name('prospectList');
 Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
+Route::get('/client/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
+Route::get('/client/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
+Route::get('/client/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
+Route::post('/client/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
+Route::get('/client/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
+Route::post('/client/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
+
+Route::get('/client/client-list','CLientController@clientList')->name('clientList');
+Route::get('/getClient','ClientController@getClient')->name('getClient');
+Route::get('/client/new/client-types','ClientController@newClientType')->name('newClientTypes');
+Route::get('/client/new/client','ClientController@getClientType')->name('getClientTypegit ');
+Route::get('/client/new/client-form','ClientController@newClientForm')->name('newClientForm');
+Route::post('/client/new/client-form','ClientController@createClientForm')->name('createClientForm');
+Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
+Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
+
+Route::get('/agen/agen-list','AgenController@index')->name('agenList');
 
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');

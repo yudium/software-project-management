@@ -14,4 +14,6 @@ class ClientAddresses extends Model
     protected $fillable = [
         'address',
    ];
+
+   public $timestamps = false;
 }
