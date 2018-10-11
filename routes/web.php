@@ -52,3 +52,7 @@ Route::get('/project/new/step-3', 'ProjectController@createStep3')->name('newPro
 Route::post('/project/new/step-3', 'ProjectController@createStep3Post')->name('newProjectStep3Post');
 
 Route::get('/project/new/step-4', 'ProjectController@createStep4')->name('newProjectStep4');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
