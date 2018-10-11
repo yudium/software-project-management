@@ -112,18 +112,34 @@
                             @endforeach
                         @endif
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="price">Harga <span class="form-required">*</span></label>
-                        <div class="input-group">
-                            <span id="basic-addon1" class="input-group-prepend">
-                                <span class="input-group-text">Rp.</span>
-                            </span>
-                            <input class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" type="text" name="price" value="{{ old('price') }}">
-                            @if ($errors->has('price'))
-                                @foreach ($errors->get('price') as $message)
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label class="form-label" for="price">Harga <span class="form-required">*</span></label>
+                            <div class="input-group">
+                                <span id="basic-addon1" class="input-group-prepend">
+                                    <span class="input-group-text">Rp.</span>
+                                </span>
+                                <input class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" type="text" name="price" value="{{ old('price') }}">
+                                @if ($errors->has('price'))
+                                    @foreach ($errors->get('price') as $message)
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            @if ($errors->has('DP_time'))
+                                @component('includes.alert-danger')
+                                @foreach ($errors->get('DP_time') as $message)
+                                    {{ $message }}
                                 @endforeach
+                                @endcomponent
                             @endif
+                            @include('includes.form-element.datepicker', [
+                                'label' => 'Tanggal Pembayaran DP',
+                                'id' => 'DP-time',
+                                'name' => 'DP_time',
+                            ])
                         </div>
                     </div>
                     <div class="form-group">

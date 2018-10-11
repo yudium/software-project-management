@@ -47,4 +47,9 @@ class Project extends Model
     {
         return $this->hasMany('App\ProjectLink');
     }
+
+    public function termin()
+    {
+        return $this->belongsTo('App\Termin');
+    }
 }

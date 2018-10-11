@@ -8,6 +8,7 @@ use App\Client;
 use DataTables;
 use App\ProjectType;
 use App\PIC;
+use App\Termin;
 
 class ProjectController extends Controller
 {
@@ -47,21 +48,19 @@ class ProjectController extends Controller
 
     public function createStep2(Request $request)
     {
-        // TODO: use query() method
-        $queryString = $request->getQueryString();
+        $client_id = $request->query('client_id');
 
-        // client_id AND client_status is a must
-        if (! str_contains($queryString, 'client_id'))
+        if (! $client_id)
         {
             $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
             $request->session()->flash('messageType', 'warning');
 
-            return redirect()->route('newProjectStep2');
+            return redirect()->route('newProjectStep1');
         }
 
         $project_types = ProjectType::all();
 
-        return view('project.create-select_type', compact('project_types', 'queryString'));
+        return view('project.create-select_type', compact('project_types', 'client_id'));
     }
 
     public function createStep3(Request $request)
@@ -81,7 +80,23 @@ class ProjectController extends Controller
         $request->merge(['endtime' => date('Y-m-d', strtotime($request->endtime))]);
         $request->merge(['DP_time' => date('Y-m-d', strtotime($request->DP_time))]);
 
-        $project = Project::create($request->except(['PIC', 'backup_source_code_project_link', 'project_link']));
+        $client = Client::find($request->client_id);
+        $project_type = ProjectType::find($request->project_type_id);
+
+        $project = new Project;
+        $project->client()->associate($client);
+        $project->project_type()->associate($project_type);
+        $project->name = $request->name;
+        $project->price = $request->price;
+        $project->starttime = $request->starttime;
+        $project->endtime = $request->endtime;
+        $project->DP_time = $request->DP_time;
+        $project->additional_note = $request->additional_note;
+        // TODO dan NOTE: karena program KP ini tidak selesai maka statusnya
+        // belum saya bisa isi, asalnya ingin: IS_DRAFT, IS_ACTIVE_PROJECT, IS_IN_MAITENANCE
+        $project->status = '';
+        $project->trello_board_id = $request->trello_board_id;
+        $project->save();
 
         foreach ($request->PIC as $PIC_name) {
             $project->PICs()->create(['name' => $PIC_name]);
@@ -93,14 +108,52 @@ class ProjectController extends Controller
             $project->project_links()->create(['link_text' => $link]);
         }
 
-        return redirect('projectDetail', ['id' => $project->id])
+        return redirect()->route('newProjectStep4', ['project_id' => $project->id])
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
     }
 
-    public function createStep4()
+    public function createStep4(Request $request)
     {
-        return view('project.create-termin_pembayaran');
+        $project = Project::find($request->project_id);
+
+        return view('project.create-termin_pembayaran', compact('project'));
+    }
+
+    public function createStep4Post(Request $request)
+    {
+        // input <form> doesn't have desired format, I convert to desired format
+        // which is:
+        //      [
+        //          due_date,
+        //          amount,
+        //      ]
+        $termin_detail = [];                            // new format
+        $old_termin_detail = $request->termin_detail;   // old format
+        // debt_amount just representative number of element
+        for ($i = 0; $i < count($old_termin_detail['debt_amount']); $i++) {
+            $termin_detail[] = [
+                'due_date' => $old_termin_detail['due_date']['year'][$i].'-'.$old_termin_detail['due_date']['month'][$i].'-'.$old_termin_detail['due_date']['day'][$i],
+                'amount' => $old_termin_detail['debt_amount'][$i],
+            ];
+        }
+
+        $termin = new Termin;
+        $termin->periodic_type = $request->periodic_type;
+        $termin->save();
+
+        $termin->details()->createMany($termin_detail);
+
+        // TODO: buat migrasi termin
+        $project = Project::find($request->project_id);
+        $project->termin()->associate($termin);
+    }
+
+    public function detail($id)
+    {
+        $project = Project::find($id);
+
+        return view('project.detail', compact('project'));
     }
 }
 
