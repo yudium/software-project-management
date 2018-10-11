@@ -65,13 +65,21 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="Password" required>
+                                    <input type="password" name="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="Password" required>
+
                                     @if ($errors->has('password'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
                                 </div>
+
+                                <div class="form-group">
+                                        <label for="password-confirm" class="form-label ">{{ __('Confirm Password') }}</label>
+            
+                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required placeholder="Confirm Password">
+                               
+                                    </div>
 
                                 <div class="form-footer">
                                     <button type="submit" class="btn btn-primary btn-block">Create new account</button>

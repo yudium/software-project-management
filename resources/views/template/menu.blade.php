@@ -7,7 +7,7 @@
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                     <li class="nav-item">
-                        <a href="{{ route('home') }}" class="nav-link @if(request()->segment(1) == '') active @endif"><i class="fe fe-home"></i> Home</a>
+                        <a href="{{ route('home') }}" class="nav-link @if(request()->segment(1) == 'home') active @endif"><i class="fe fe-home"></i> Home</a>
                     </li>
                     <li class="nav-item">
                         <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'project') active @endif" data-toggle="dropdown"><i class="fe fe-box"></i>
