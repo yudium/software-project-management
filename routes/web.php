@@ -11,14 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/test',function(){
-    return view('template.master');
-});
-Route::middleware(['auth'])->group(function () {
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view('home');
+    });
     Route::get('/prospect/prospect-list/','ClientController@prospectList')->name('prospectList');
     Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
     Route::get('/prospect/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
