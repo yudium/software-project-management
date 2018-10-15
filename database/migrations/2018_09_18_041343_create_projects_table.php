@@ -17,16 +17,16 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('client_id');
             $table->unsignedInteger('project_type_id');
-            $table->unsignedInteger('termin_id');
+            $table->unsignedInteger('termin_id')->nullable();
             $table->string('name');
-            $table->unsignedInteger('prices');
-            $table->date('starttime');
-            $table->date('endtime');
-            $table->date('endtime_actual');
-            $table->date('DP_time');
-            $table->text('additional_note');
+            $table->unsignedInteger('price')->nullable();
+            $table->date('starttime')->nullable();
+            $table->date('endtime')->nullable();
+            $table->date('endtime_actual')->nullable();
+            $table->date('DP_time')->nullable();
+            $table->text('additional_note')->nullable();
             $table->string('status');
-            $table->string('trello_board_id');
+            $table->string('trello_board_id')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')

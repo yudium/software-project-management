@@ -148,7 +148,7 @@
                                 <input id="total-termin-amount" class="form-control" type="text" name="total_termin_amount" data-mask="000.000.000.000.000" data-mask-reverse="true">
                             </div>
                             <span class="col-auto">
-                                <button id="total-termin-amount-btn" data-price="100000" class="btn btn-secondary" type="button"><small>Gunakan Harga Proyek</small></button>
+                                <button id="total-termin-amount-btn" data-price="{{ $project->price }}" class="btn btn-secondary" type="button"><small>Gunakan Harga Proyek</small></button>
                             </span>
                         </div>
                     </div>
@@ -163,90 +163,96 @@
             </div>
         </div>
         <div class="col-8">
-            <div id="termin-dates" class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        Tanggal Termin
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="form-group col-1">
-                            No
-                        </div>
-                        <div class="form-group col-5">
-                            Tanggal Penagihan
-                        </div>
-                        <div class="form-group col-6">
-                            Nominal Tagih
-                        </div>
+            <form id="termin-form" method="POST" action="{{ route('newProjectStep4Post') }}">
+                @csrf
+                <input type="hidden" name="project_id" value="{{ $project->id }}">
+                <input type="hidden" name="periodic_type" id="periodic-type-hidden" value="">
+
+                <div id="termin-dates" class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Tanggal Termin
+                        </h3>
                     </div>
-                    @component('includes.form-element.multiple-input-custom', [
-                        'id' => 'termin-input-date',
-                        'name' => 'termin_date[]',
-                        'number' => 1,
-                    ])
-                        <div class="row row-termin-date">
+                    <div class="card-body">
+                        <div class="row">
                             <div class="form-group col-1">
-                                --iteration--
+                                No
                             </div>
                             <div class="form-group col-5">
-                                <div class="row gutters-xs">
-                                    <div class="col-4">
-                                        <select name="due_date[year][]" class="due-date-year form-control custom-select">
-                                            <option value="">Year</option>
-                                            @for ($year = date('Y'); $year <= date('Y') + 20; $year++)
-                                            <option value="{{ $year }}">{{ $year }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                    <div class="col-5">
-                                        <select name="due_date[month][]" class="due-date-month form-control custom-select">
-                                            <option value="">Month</option>
-                                            <option value="1">January</option>
-                                            <option value="2">February</option>
-                                            <option value="3">March</option>
-                                            <option value="4">April</option>
-                                            <option value="5">May</option>
-                                            <option value="6">June</option>
-                                            <option value="7">July</option>
-                                            <option value="8">August</option>
-                                            <option value="9">September</option>
-                                            <option value="10">October</option>
-                                            <option value="11">November</option>
-                                            <option value="12">December</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-3">
-                                        <select name="due_date[day][]" class="due-date-day form-control custom-select">
-                                            <option value="">Day</option>
-                                            @for ($day = 1; $day <= 32; $day++)
-                                            <option value="{{ $day }}">{{ $day }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
+                                Tanggal Penagihan
                             </div>
                             <div class="form-group col-6">
-                                <div class="input-group">
-                                    <span class="input-group-prepend" id="basic-addon1">
-                                        <span class="input-group-text">Rp.</span>
-                                    </span>
-                                    <input name="debt_amount[]" class="debt-amount form-control multi-input-focus-target" placeholder="nominal tagih" aria-label="Username" aria-describedby="basic-addon1" type="text">
-                                </div>
+                                Nominal Tagih
                             </div>
                         </div>
-                    @endcomponent
-                    <div class="alert alert-warning" role="alert">
-                        Tersisa Rp.80.000 belum teralokasikan
-                    </div>
-                    <div class="clearfix">
-                        <div class="right">
-                            <button class="btn btn-primary">Berikutnya</button>
+                        @component('includes.form-element.multiple-input-custom', [
+                            'id' => 'termin-input-date',
+                            'name' => 'termin_date[]',
+                            'number' => 1,
+                        ])
+                            <div class="row row-termin-date">
+                                <div class="form-group col-1">
+                                    --iteration--
+                                </div>
+                                <div class="form-group col-5">
+                                    <div class="row gutters-xs">
+                                        <div class="col-4">
+                                            <select name="termin_detail[due_date][year][]" class="due-date-year form-control custom-select">
+                                                <option value="">Year</option>
+                                                @for ($year = date('Y'); $year <= date('Y') + 20; $year++)
+                                                <option value="{{ $year }}">{{ $year }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
+                                            <select name="termin_detail[due_date][month][]" class="due-date-month form-control custom-select">
+                                                <option value="">Month</option>
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <select name="termin_detail[due_date][day][]" class="due-date-day form-control custom-select">
+                                                <option value="">Day</option>
+                                                @for ($day = 1; $day <= 32; $day++)
+                                                <option value="{{ $day }}">{{ $day }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <div class="input-group">
+                                        <span class="input-group-prepend" id="basic-addon1">
+                                            <span class="input-group-text">Rp.</span>
+                                        </span>
+                                        <input name="termin_detail[debt_amount][]" class="debt-amount form-control multi-input-focus-target" placeholder="nominal tagih" aria-label="Username" aria-describedby="basic-addon1" type="text" data-mask="000.000.000.000.000" data-mask-reverse="true">
+                                    </div>
+                                </div>
+                            </div>
+                        @endcomponent
+                        <div id="remaining-debt-amount" class="alert alert-warning" role="alert">
+                            <!-- message here -->
+                        </div>
+                        <div class="clearfix">
+                            <div class="right">
+                                <button class="btn btn-primary">Berikutnya</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -283,6 +289,8 @@
                 let periodic_type_field = $('.periodic-type:checked');
                 if (periodic_type_field.val() == 'bulanan') disableFirstRowTerminDateInput(['month', 'year'])
                 if (periodic_type_field.val() == 'tahunan') disableFirstRowTerminDateInput(['year'])
+
+                $('#periodic-type-hidden').val(periodic_type_field.val())
             });
 
             // selesai button will enabled if all termin settings have been fill in
@@ -309,6 +317,13 @@
 
                 if (periodic_type_field.val() == 'bulanan') updateTerminDate('month');
                 if (periodic_type_field.val() == 'tahunan') updateTerminDate('year');
+            });
+
+            $('#termin-form').submit(function() {
+                $('.debt-amount').each(function(){
+                    $(this).val(truncatMaskInMoney($(this).val()));
+                });
+                $('#termin-dates :input').prop('disabled', false);
             });
 
             /**
@@ -375,7 +390,36 @@
                     date_var.getDate(),
                 ];
             }
-            console.log('test = ', moment([2018, 11, 1]).add(1, 'months').year());
+
+            $('#termin-dates').on('change', '.debt-amount', function(){
+                let total_amount = 0;
+                $('.debt-amount').each(function() {
+                    let amount = $(this).val();
+                    amount = truncatMaskInMoney(amount);
+                    total_amount += amount;
+                });
+
+                let total_termin_amount = $('#total-termin-amount').val();
+                total_termin_amount = truncatMaskInMoney(total_termin_amount);
+
+                let remaining_amount = total_termin_amount - total_amount;
+
+                if (remaining_amount < 0) {
+                    $('#remaining-debt-amount').text('Nilai melebih total biaya termin');
+                }
+                if (remaining_amount > 0) {
+                    $('#remaining-debt-amount').text('Tersisa Rp.'+remaining_amount+' belum teralokasikan');
+                }
+                if (remaining_amount === 0) {
+                    $('#remaining-debt-amount').remove();
+                }
+            });
+
+            function truncatMaskInMoney(money)
+            {
+                // remove any non-digit character, then convert to number
+                return Number(money.replace(/\D/g,''));
+            }
         });
     });
 </script>
