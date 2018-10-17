@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Agen')
+@section('title', 'Agent')
 @section('css')
 <style>
     .clearfix .left, .clearfix .right {display: inline-block}
