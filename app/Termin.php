@@ -17,6 +17,11 @@ class Termin extends Model
 
     public $timestamps = false;
 
+    public function project()
+    {
+        return $this->belongsTo('App\Project');
+    }
+
     public function details()
     {
         return $this->hasMany('App\TerminDetail');

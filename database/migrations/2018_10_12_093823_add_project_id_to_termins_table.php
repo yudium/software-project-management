@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignInFollowUpDealHistoriesTable extends Migration
+class AddProjectIdToTerminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddForeignInFollowUpDealHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('follow_up_deal_histories', function (Blueprint $table) {
-            $table->foreign('follow_up_history_id')->references('id')->on('follow_up_histories')
+        Schema::table('termins', function (Blueprint $table) {
+            $table->unsignedInteger('project_id');
+
+            $table->foreign('project_id')->references('id')->on('projects')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -27,9 +29,9 @@ class AddForeignInFollowUpDealHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('follow_up_deal_histories', function (Blueprint $table) {
-            // TODO: fix wrong foreign name
-            $table->dropForeign('follow_up_history_id');
+        Schema::table('termins', function (Blueprint $table) {
+            $table->dropForeign('termins_project_id_foreign');
+            $table->dropColumn('project_id');
         });
     }
 }

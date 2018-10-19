@@ -73,3 +73,12 @@ Route::get('/project/follow-up/follow-up/{id}', 'PotentialProjectController@foll
 Route::post('/project/follow-up/follow-up/{id}', 'PotentialProjectController@followUpPost')->name('FollowUpPotentialProjectPost');
 
 Route::get('/project/follow-up/{potential_project_id}/history', 'PotentialProjectController@getFollowUpHistories')->name('listFollowUpPotentialProjectHistory');
+
+Route::get('/termin/list/{project_id}', 'TerminController@get')->name('listTermin');
+Route::get('/termin/payment-form/{termin_detail_id}', 'TerminController@paymentForm')->name('TerminPaymentForm');
+Route::post('/termin/payment-form/{termin_detail_id}', 'TerminController@paymentFormPost')->name('TerminPaymentFormPost');
+Route::get('/termin/payment/history/{termin_detail_id}', 'TerminController@paymentHistory')->name('TerminPaymentHistory');
+
+Route::get('/project/test', 'ProjectController@test')->name('test');
+Route::get('/project/invoice/form/{project_id}', 'ProjectController@invoiceForm')->name('ProjectInvoiceForm');
+Route::post('/project/invoice/print/{project_id}', 'ProjectController@invoicePrint')->name('ProjectInvoicePrint');

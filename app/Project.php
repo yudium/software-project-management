@@ -50,6 +50,6 @@ class Project extends Model
 
     public function termin()
     {
-        return $this->belongsTo('App\Termin');
+        return $this->hasOne('App\Termin');
     }
 }

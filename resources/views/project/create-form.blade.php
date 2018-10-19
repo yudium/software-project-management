@@ -73,7 +73,7 @@
                                 <option>{{ $PIC->name }}</option>
                                 @endforeach
                             </datalist>
-                            @component('includes.form-element.multiple-input', [
+                            @component('includes.form-element.multiple-input-custom', [
                                 'id' => 'multi-pic',
                                 'name' => 'PIC[]',
                                 'number' => 2,

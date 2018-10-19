@@ -9,13 +9,15 @@ use DataTables;
 use App\ProjectType;
 use App\PIC;
 use App\Termin;
+use Trello\Client as TrelloClient;
+use App\Bank;
 
 class ProjectController extends Controller
 {
     public function getOnProgressAjax(Request $request)
     {
         $projects = Project::with(['client', 'project_type'])->get();
-        dd($projects);
+
         return DataTables::of($projects)->make(true);
     }
 
@@ -122,6 +124,8 @@ class ProjectController extends Controller
 
     public function createStep4Post(Request $request)
     {
+        $project = Project::find($request->project_id);
+
         // input <form> doesn't have desired format, I convert to desired format
         // which is:
         //      [
@@ -140,13 +144,11 @@ class ProjectController extends Controller
 
         $termin = new Termin;
         $termin->periodic_type = $request->periodic_type;
+        $termin->project()->associate($project);
         $termin->save();
 
         $termin->details()->createMany($termin_detail);
 
-        // TODO: buat migrasi termin
-        $project = Project::find($request->project_id);
-        $project->termin()->associate($termin);
     }
 
     public function detail($id)
@@ -154,6 +156,34 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         return view('project.detail', compact('project'));
+    }
+
+    // TODO: remove include route/web
+    public function test()
+    {
+        $client = new TrelloClient;
+        $client->authenticate('29f5e1eb9c3864c214acec950356209d', '959cade0e3fdbc957d6ed6083d8371c747a453e937f42a5daa185d56aa7c6271', TrelloClient::AUTH_URL_CLIENT_ID);
+        $boards = $client->api('member')->boards()->all('yudisupriyadi');
+
+        dd($boards);
+    }
+
+    public function invoiceForm($project_id)
+    {
+        $project = Project::find($project_id);
+        $client = $project->client;
+
+        $banks = Bank::all();
+
+        return view('project.invoice-form', compact('project', 'client', 'banks'));
+    }
+
+    public function invoicePrint(Request $request, $project_id)
+    {
+        $project = Project::find($project_id);
+        $input = $request->all();
+
+        return view('project/invoice-print', compact('project', 'input'));
     }
 }
 
