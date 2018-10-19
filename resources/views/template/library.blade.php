@@ -48,6 +48,9 @@
 <!-- Moment Plugin -->
 <script src="{{ asset('assets/plugins/moment/plugin.js') }}"></script>
 
+{{-- <!--Toastr-->
+<link href="{{ asset('assets/plugins/toastr/build/toastr.min.css') }}" rel="stylesheet">
+<script src="{{ asset('assets/plugins/toastr/build/toastr.min.js') }}"></script> --}}
 
 <style>
     .dropdown-item {

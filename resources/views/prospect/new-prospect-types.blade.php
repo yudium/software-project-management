@@ -64,6 +64,19 @@
     .clearfix .left, .clearfix .right {display: inline-block}
     .clearfix .left {float: left}
     .clearfix .right {float:right}
+    .check-circle-container {
+        position: relative;
+    }
+    .check-circle {
+        display: hidden;
+        position: absolute;
+        top: -7px;
+        right: -3px;
+        font-size: 17px;
+        color: green;
+        font-weight: bold;
+        text-shadow: 0px 1px #fff;
+    }
     </style>
 @endsection
 @section('content')
@@ -106,7 +119,10 @@
                                 <td width="10%" class="text-center"><i class="{{ $type->icon }} text-muted"></i></td>
                                 <td width="80%" >{{ $type->name }}</td>
                                 <td width="10%" class="text-center">
+                                        <span class="check-circle-container">
                                     <a href="javascript:select({{ $type->id  }})"  class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
+                                    <i class="fe fe-check-circle check-circle"></i>
+                                        </span>
                                 </td>
                             </tr>
                             @endforeach
@@ -133,12 +149,16 @@
 require(['jquery'], function ($) {
     $(document).ready(function(){
 
- 
+        $(".check-circle").hide();
+        $(".check-circle-container a").click(function(e){
+            e.preventDefault();
+            $(".check-circle").hide();
+            $(this).closest(".check-circle-container").find(".check-circle").show();
     })
  
 })
 
-
+})
 function select(prospect_id_type)
 {
     //alert(prospect_id_type)

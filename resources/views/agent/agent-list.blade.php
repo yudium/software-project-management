@@ -42,7 +42,7 @@
 
     <div class="card">
         <div class="table-responsive">
-            <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+            <table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="agentTable">
                 <thead>
                     <tr>
                         <th class="text-center w-1"><i class="icon-people"></i></th>
@@ -57,18 +57,8 @@
                 </thead>
                 <tbody>
 
-                    <tr>
-                        <td class="text-center">
-                            <div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)">
-                                <span class="avatar-status bg-green"></span>
-                            </div>
-                        </td>
-                        <td>
-                            <div>Elizabeth Martin</div>
-                            <div class="small text-muted">
-                                Registered: Mar 19, 2018
-                            </div>
-                        </td>
+                    <tr
+                        
                         <td>
                             elizabeth123
                         </td>
@@ -106,7 +96,7 @@
 
 
 
-                   
+
 
                 </tbody>
             </table>
@@ -116,3 +106,33 @@
 
 </div>
 @endsection
+<script>
+    require(['datatables', 'jquery']),
+        function (datatable, $) {
+        $('#agentTable').Datatable({
+            serverSide:true,
+            ajax: "{{ url('agent/getAgent') }}",
+            order:[],
+            columnDefs:[
+                {
+                    render:function(data,type,row){
+                        return ' <div class="text-center"><div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)"><span class="avatar-status bg-green"></span></div></div>';
+                    },
+                    orderable:false,
+                    targets:0,
+                },
+                {
+                    render:function(data,type,row){
+                        return '<div>'+data+'</div><div class="small text-muted">Registered: Mar 19, 2018</div>';
+                    },
+                    targets:1,
+                },
+                {
+                    render:function(data,type,row){
+                        return data;
+                    }
+                }
+            ]
+        })
+        });
+</script>

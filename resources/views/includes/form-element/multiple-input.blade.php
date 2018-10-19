@@ -21,10 +21,7 @@ if (old($name_stripped)) $number = old($name_stripped);
         <div class="input-group mb-2 multi-input-copy-target">
             <input name="{{ $name }}" class="form-control" type="text" value="{{ old($name) }}">
             <span class="input-group-append">
-                <!-- I need CSS's height auto because this button behave weirdly.
-                    It is height is set to 100% and display normally when this code
-                    still in Tabler source code environment. Then goes weirdly
-                    after I put the code inside this laravel -->
+
                 <button style="height: auto" type="button" class="btn btn-secondary"><i class="fe fe-x"></i></button>
             </span>
         </div>

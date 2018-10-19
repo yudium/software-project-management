@@ -24,5 +24,10 @@ class Agent extends Model
         return $this->hasMany('App\AgentPhone');
     }
 
+    public function webAddress()
+    {
+        return $this->hasMany('App\AgentWebAddresses');
+    }
+
 
 }
