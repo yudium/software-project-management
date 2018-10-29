@@ -79,7 +79,7 @@ class ClientController extends Controller
             Session::flash('message', 'Pilih type prospect dahulu !!!'); 
             Session::flash('alert-class', 'alert-warning'); 
 
-            return redirect('/client/new/prospect-types');
+            return redirect('/prospect/new/prospect-types');
         }
 
         return view('prospect.new-prospect-form',['idType'=>$clientType]);

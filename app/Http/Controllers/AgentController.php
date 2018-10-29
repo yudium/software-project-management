@@ -18,19 +18,19 @@ class AgentController extends Controller
 
     public function getAgent()
     {
-        $agent = Agent::with(['email','phone',DB::raw("(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com")])->get();
-
+        $agent = Agent::with(['email','phone'])->get();
+        
         // $agent = DB::table('agents')
         // ->join('agent_phones','agents.id','=','agent_phones.agent_id')
         // ->join('agent_emails','agents.id','=','agent_emails.agent_id')
         // ->select([
-        //             'agents.id',
+        //             'agents.id as idAgent',
         //             'agents.name as name',
         //             'agents.username as username',
         //             'agents.city as city',
-        //             'agents.photo',
-        //             'agent_emails.email',
-        //             'agent_phones.phone',
+        //             'agents.photo as photo',
+        //             'agent_emails.email as email',
+        //             'agent_phones.phone as phone',
         //             DB::raw("(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "
         //             )])->get();
         
