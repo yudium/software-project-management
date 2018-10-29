@@ -26,4 +26,10 @@ class Termin extends Model
     {
         return $this->hasMany('App\TerminDetail');
     }
+
+    // access termin_payments record directly without through termin_detail table
+    public function payments()
+    {
+        return $this->hasManyThrough('App\TerminPayment', 'App\TerminDetail')->orderBy('pay_date');
+    }
 }

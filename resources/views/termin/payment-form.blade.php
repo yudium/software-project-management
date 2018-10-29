@@ -48,7 +48,7 @@ div.separator {
         </h1>
     </div>
 
-    <form action="{{ route('TerminPaymentFormPost', ['termin_detail_id' => $termin_detail->id]) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('store-termin-payment', ['termin_detail_id' => $termin_detail->id]) }}" method="post" enctype="multipart/form-data">
         @csrf
 
         <div class="row row-cards">
@@ -119,13 +119,13 @@ div.separator {
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">Total bayar</label>
-                                    <input class="form-control" name="example-disabled-input" value="Rp.1000.0000" disabled="" type="text">
+                                    <input class="form-control" name="example-disabled-input" value="Rp.@money($termin_detail->amount)" disabled="" type="text">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label">Yang sudah dibayar</label>
-                                    <input class="form-control" name="example-disabled-input" value="Rp.500.000" disabled="" type="text">
+                                    <input class="form-control" name="example-disabled-input" value="Rp.@money($total_paid_amount)" disabled="" type="text">
                                 </div>
                             </div>
                         </div>

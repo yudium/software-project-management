@@ -44,8 +44,15 @@
             ]
         ])
 
-        <form method="post" action="{{ route('newProjectStep3Post') }}">
+        <form method="post" action="{{ route('store-project-step3') }}">
         @csrf
+
+        {{-- if the new project is from Potential Project data then we have
+             to store the id below --}}
+        @isset($potential_project)
+        <input name="potential_project_id" type="hidden" value="{{ $potential_project->id }}">
+        @endisset
+
         <div class="row row-cards">
             <div class="col-4">
                 <div class="row row-cards">
@@ -58,6 +65,7 @@
                     </div>
                     <div class="col-12">
                         @component('card', ['title' => 'Person In Charge'])
+{{--
                         @if (count($errors->get('PIC.*')))
                             @component('includes.alert-danger')
                                 @foreach ($errors->get('PIC.*') as $messages)
@@ -67,7 +75,10 @@
                                 @endforeach
                             @endcomponent
                         @endif
-                        <fieldset class="form-fieldset">
+--}}
+                            @component('includes.alert-info')
+                                Fitur autocomplete menyediakan nama PIC yang terekam di DB
+                            @endcomponent
                             <datalist id="PIC_list">
                                 @foreach ($PICs as $PIC)
                                 <option>{{ $PIC->name }}</option>
@@ -86,7 +97,6 @@
                                 </span>
                             </div>
                             @endcomponent
-                        </fieldset>
                         @endcomponent
                     </div>
                 </div>
@@ -94,23 +104,36 @@
 
             <div class="col-4">
                 @component('card', ['title' => 'Data Proyek'])
-                    <div class="form-group">
-                        <label class="form-label" for="name">Platform</label>
-                        <div class="form-control-plaintext">
-                            <i class="{{ $project_type->icon }} mr-3"></i>
-                            {{ $project_type->name }}
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Platform</label>
+                            <div class="form-control-plaintext">
+                                <i class="{{ $project_type->icon }} mr-3"></i>
+                                {{ $project_type->name }}
+                            </div>
+                            {{-- dont worry, covered by $request->old() in controller in case of validation fails --}}
+                            <input name="project_type_id" type="hidden" value="{{ $project_type->id }}">
                         </div>
-                        {{-- dont worry, covered by $request->old() in controller in case of validation fails --}}
-                        <input name="project_type_id" type="hidden" value="{{ $project_type->id }}">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="name">Nama proyek <span class="form-required">*</span></label>
-                        <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" value="{{ old('name') }}">
-                        @if ($errors->has('name'))
-                            @foreach ($errors->get('name') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="form-group">
+                                <label class="form-label" for="name">Nama proyek <span class="form-required">*</span></label>
+                                {{-- potential project has project name so use this, if current new project is from potential project --}}
+                                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" value="{{ $potential_project->project_name ?? old('name') }}">
+                                @if ($errors->has('name'))
+                                    @foreach ($errors->get('name') as $message)
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="form-label" for="name">Kuantitas</label>
+                                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="quantity" value="{{ old('quantity') }}">
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6 form-group">

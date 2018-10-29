@@ -25,6 +25,14 @@ class StoreProject extends FormRequest
     {
         $this->sanitize();
 
+        /**
+         * 1. PIC,
+         * 2. backup_source_code_project_link,
+         * 3. project_link
+         *
+         * should use `nullable` validation rule, after `sanitize` method called
+         * because it can be empty array `[]` if those field not filled by user
+         */
         return [
             'client_id' => 'required|exists:clients,id',
             'project_type_id' => 'required|exists:project_types,id',
@@ -35,35 +43,42 @@ class StoreProject extends FormRequest
             'DP_time' => 'nullable|date_format:"j F, Y"',
             'additional_note' => '',
             'trello_board_id' => 'max:255|min:3',
-            'PIC.*' => 'required|string|distinct',
-            'backup_source_code_project_link.*' => 'nullable|distinct|url',
-            'project_link.*' => 'nullable|distinct|url',
+            'PIC.*' => 'nullable|string',
+            'backup_source_code_project_link.*' => 'nullable|url',
+            'project_link.*' => 'nullable|url',
         ];
     }
 
     protected function sanitize()
     {
+        /**
+         * NOTE: By default, Laravel change any empty field (including only whitespace content)
+         *       to be NULL value
+         */
         $input = $this->all();
 
-        // remove any empty input field
-        $old_PIC = $input['PIC'];
-        $input['PIC'] = [];
-        foreach ($old_PIC as $key => $pic) {
-            if (trim($pic)) array_push($input['PIC'], $pic);
+        /**
+         * remove any empty input field from:
+         *
+         *  1. PIC,
+         *  2. backup_source_code_project_link,
+         *  3. project_link
+         *
+         * NOTE: always make sure in UI that each of above array input
+         *       have at least 1 input field so error like
+         *
+         *       "Undefined index: PIC"
+         *
+         *       will not occurs.
+         */
+        if ($input['PIC']) {
+            array_filter_null_element($input['PIC']);
         }
-
-        // remove any empty input field
-        $old_backuplink = $input['backup_source_code_project_link'];
-        $input['backup_source_code_project_link'] = [];
-        foreach ($old_backuplink as $key => $link) {
-            if (trim($link)) array_push($input['backup_source_code_project_link'], $link);
+        if ($input['backup_source_code_project_link']) {
+            array_filter_null_element($input['backup_source_code_project_link']);
         }
-
-        // remove any empty input field
-        $old_projectlink = $input['project_link'];
-        $input['project_link'] = [];
-        foreach ($old_projectlink as $key => $link) {
-            if (trim($link)) array_push($input['project_link'], $link);
+        if ($input['project_link']) {
+            array_filter_null_element($input['project_link']);
         }
 
         $this->replace($input);

@@ -25,6 +25,7 @@ class CreateProjectsTable extends Migration
             $table->date('endtime_actual')->nullable();
             $table->date('DP_time')->nullable();
             $table->text('additional_note')->nullable();
+            // TODO: change to char(1)
             $table->string('status');
             $table->string('trello_board_id')->nullable();
             $table->timestamps();

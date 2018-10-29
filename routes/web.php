@@ -38,47 +38,65 @@ Route::post('/client/new/client-insider','ClientController@createClientInsider')
 
 Route::get('/agen/agen-list','AgenController@index')->name('agenList');
 
-Route::get('/project/list/onprogress', 'ProjectController@getOnProgress');
-Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax');
+Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
+Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');
 
-Route::get('/project/new/step-1', 'ProjectController@createStep1')->name('newProjectStep1');
-Route::get('/project/new/step-1/ajax/client', 'ProjectController@createStep1AjaxClient')->name('newProjectStep1AjaxClient');
-Route::get('/project/new/step-1/ajax/prospect', 'ProjectController@createStep1AjaxProspect')->name('newProjectStep1AjaxProspect');
+Route::get('/project/create/step-1', 'ProjectController@createStep1')->name('create-project-step1');
+Route::get('/project/create/step-1/ajax/client', 'ProjectController@createStep1AjaxClient')->name('create-project-step1-client-ajax');
+Route::get('/project/create/step-1/ajax/prospect', 'ProjectController@createStep1AjaxProspect')->name('create-project-step1-prospect-ajax');
 
-Route::get('/project/new/step-2', 'ProjectController@createStep2')->name('newProjectStep2');
+Route::get('/project/create/step-2', 'ProjectController@createStep2')->name('create-project-step2');
 
-Route::get('/project/new/step-3', 'ProjectController@createStep3')->name('newProjectStep3');
-Route::post('/project/new/step-3', 'ProjectController@createStep3Post')->name('newProjectStep3Post');
+Route::get('/project/create/step-3', 'ProjectController@createStep3')->name('create-project-step3');
+Route::post('/project/create/step-3', 'ProjectController@storeStep3')->name('store-project-step3');
 
-Route::get('/project/new/step-4', 'ProjectController@createStep4')->name('newProjectStep4');
-Route::post('/project/new/step-4', 'ProjectController@createStep4Post')->name('newProjectStep4Post');
+Route::get('/project/detail/{id}', 'ProjectController@detail')->name('project-detail');
 
-Route::get('/project/detail/{id}', 'ProjectController@detail')->name('projectDetail');
+Route::get('/project/payment-method/fullcash/{id}', 'ProjectController@setPaymentMethodFullCash')->name('set-payment-method-fullcash');
 
-Route::get('/project/follow-up/new/step-1', 'PotentialProjectController@createStep1')->name('newPotentialProjectStep1');
-Route::get('/project/follow-up/new/step-1/ajax/client', 'PotentialProjectController@createStep1AjaxClient')->name('newPotentialProjectStep1AjaxClient');
-Route::get('/project/follow-up/new/step-1/ajax/prospect', 'PotentialProjectController@createStep1AjaxProspect')->name('newPotentialProjectStep1AjaxProspect');
-Route::get('/project/follow-up/new/step-2', 'PotentialProjectController@createStep2')->name('newPotentialProjectStep2');
+Route::get('/project/activate/{id}', 'ProjectController@activate')->name('activate-project');
 
-Route::get('/project/follow-up/new/step-3', 'PotentialProjectController@createStep3')->name('newPotentialProjectStep3');
-Route::post('/project/follow-up/new/step-3', 'PotentialProjectController@createStep3Post')->name('newPotentialProjectStep3Post');
+Route::get('/project/potential/create/step-1', 'PotentialProjectController@createStep1')->name('create-potential-project-step1');
+// We don't need this route, instead I use existing route in create-project-step1-(client|prospect)-ajax
+// Route::get('/project/potential/create/step-1/ajax/client', 'PotentialProjectController@createStep1AjaxClient')->name('create-potential-project-step1-client-ajax');
+// Route::get('/project/potential/create/step-1/ajax/prospect', 'PotentialProjectController@createStep1AjaxProspect')->name('create-potential-project-step1-prospect-ajax');
 
-Route::get('/project/follow-up/list', 'PotentialProjectController@get')->name('listPotentialProject');
-Route::get('/project/follow-up/list/ajax', 'PotentialProjectController@getAjax')->name('listPotentialProjectAjax');
+Route::get('/project/potential/create/step-2', 'PotentialProjectController@createStep2')->name('create-potential-project-step2');
 
-Route::get('/project/follow-up/list/archive', 'PotentialProjectController@getArchive')->name('ArchiveListPotentialProject');
-Route::get('/project/follow-up/list/archive/ajax', 'PotentialProjectController@getArchiveAjax')->name('ArchiveListPotentialProjectAjax');
+Route::get('/project/potential/create/step-3', 'PotentialProjectController@createStep3')->name('create-potential-project-step3');
+Route::post('/project/potential/create/step-3', 'PotentialProjectController@storeStep3')->name('store-potential-project-step3');
 
-Route::get('/project/follow-up/follow-up/{id}', 'PotentialProjectController@followUp')->name('FollowUpPotentialProject');
-Route::post('/project/follow-up/follow-up/{id}', 'PotentialProjectController@followUpPost')->name('FollowUpPotentialProjectPost');
+Route::get('/project/potential/list', 'PotentialProjectController@get')->name('potential-project-list');
+Route::get('/project/potential/list/ajax', 'PotentialProjectController@getAjax')->name('potential-project-list-ajax');
 
-Route::get('/project/follow-up/{potential_project_id}/history', 'PotentialProjectController@getFollowUpHistories')->name('listFollowUpPotentialProjectHistory');
+Route::get('/project/potential/list/archive', 'PotentialProjectController@getArchive')->name('potential-project-list-archive');
+Route::get('/project/potential/list/archive/ajax', 'PotentialProjectController@getArchiveAjax')->name('potential-project-list-archive-ajax');
 
-Route::get('/termin/list/{project_id}', 'TerminController@get')->name('listTermin');
-Route::get('/termin/payment-form/{termin_detail_id}', 'TerminController@paymentForm')->name('TerminPaymentForm');
-Route::post('/termin/payment-form/{termin_detail_id}', 'TerminController@paymentFormPost')->name('TerminPaymentFormPost');
-Route::get('/termin/payment/history/{termin_detail_id}', 'TerminController@paymentHistory')->name('TerminPaymentHistory');
+Route::get('/project/potential/follow-up/{id}', 'PotentialProjectController@followUp')->name('follow-up-potential-project');
+Route::post('/project/potential/follow-up/{id}', 'PotentialProjectController@storeFollowUp')->name('store-follow-up-potential-project');
 
-Route::get('/project/test', 'ProjectController@test')->name('test');
-Route::get('/project/invoice/form/{project_id}', 'ProjectController@invoiceForm')->name('ProjectInvoiceForm');
-Route::post('/project/invoice/print/{project_id}', 'ProjectController@invoicePrint')->name('ProjectInvoicePrint');
+Route::get('/project/potential/history/{potential_project_id}', 'PotentialProjectController@getFollowUpHistories')->name('follow-up-potential-project-history-list');
+
+Route::get('/project/create/potential/{potential_project_id}', 'ProjectController@createFromPotentialProject')->name('create-project-from-potential-project');
+
+Route::get('/termin/create/{project_id}', 'TerminController@create')->name('create-termin');
+Route::post('/termin/create/{project_id}', 'TerminController@store')->name('store-termin');
+
+Route::get('/termin/list/{project_id}', 'TerminController@get')->name('termin-list');
+
+Route::get('/termin/payment/form/{termin_detail_id}', 'TerminController@paymentForm')->name('termin-payment-form');
+Route::post('/termin/payment/form/{termin_detail_id}', 'TerminController@storePayment')->name('store-termin-payment');
+
+Route::get('/termin/payment/history/{termin_detail_id}', 'TerminController@paymentHistory')->name('termin-payment-history');
+
+Route::get('/invoice/form/{project_id}', 'InvoiceController@form')->name('invoice-form');
+Route::post('/invoice/print/{project_id}', 'InvoiceController@generate')->name('invoice-generate');
+
+Route::get('/progress/test', 'ProgressController@test')->name('progress-test');
+
+Route::get('/dashboard', 'DashboardController@main')->name('dashboard');
+
+Route::get('/array-validation-test', function(){
+    return view('array-validation-test');
+});
+Route::post('/array-validation-test', 'ArrayValidationController@test')->name('array-validation-test');

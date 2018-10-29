@@ -97,7 +97,7 @@ div.remaining-amount .badge {
                                 @endif
                             </td>
                             <td class="text-center">
-                                <a href='termin-pembayaran_bayar.html' class="btn btn-outline-primary btn-sm mr-2">Bayar</a>
+                                <a href='{{ route('termin-payment-form', ['termin_detail_id' => $termin_detail->id]) }}' class="btn btn-outline-primary btn-sm mr-2">Bayar</a>
                                 <a href='termin-pembayaran_histori.html' class="btn btn-outline-secondary btn-sm mr-2">Riwayat Bayar</a>
                             </td>
                         </tr>

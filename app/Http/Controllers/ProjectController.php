@@ -4,16 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Project;
+use App\PotentialProject;
 use App\Client;
 use DataTables;
 use App\ProjectType;
 use App\PIC;
 use App\Termin;
-use Trello\Client as TrelloClient;
+use App\TerminDetail;
 use App\Bank;
 
 class ProjectController extends Controller
 {
+    /**
+     * Get active running project page
+     */
+    public function getOnProgress()
+    {
+        return view('project.list-onprogress');
+    }
+
+    /**
+     * Data for DataTable plugin, in onprogress project page
+     */
     public function getOnProgressAjax(Request $request)
     {
         $projects = Project::with(['client', 'project_type'])->get();
@@ -21,61 +33,106 @@ class ProjectController extends Controller
         return DataTables::of($projects)->make(true);
     }
 
-    public function getOnProgress()
-    {
-        return view('project.list-onprogress');
-    }
-
     /**
      * Select client or prospect
+     * 
+     * This step doesn't have store function since only send query parameter to
+     * step2 directly in UI
      */
     public function createStep1()
     {
         return view('project.create-select_client');
     }
 
+    /**
+     * Data for DataTable JS plugin, in step 1
+     */
     public function createStep1AjaxClient()
     {
+        // get clients data
         $clients = Client::with('type')->where('status', '=', Client::IS_CLIENT)->get();
 
         return DataTables::of($clients)->make(true);
     }
 
+    /**
+     * Data for DataTable JS plugin, in step 1
+     */
     public function createStep1AjaxProspect()
     {
+        // get prospects data
         $prospects = Client::with('type')->where('status', '=', Client::IS_PROSPECT)->get();
 
         return DataTables::of($prospects)->make(true);
     }
 
+    /**
+     * User selects project type
+     * 
+     * This step doesn't have store function since only send query parameter to
+     * step3 directly in UI
+     */
     public function createStep2(Request $request)
     {
+        // get client id that sent using url's query parameter
         $client_id = $request->query('client_id');
 
+        // ensure user already selects client in step 1
         if (! $client_id)
         {
+            // TODO: implementasi alert di setiap laman
             $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
             $request->session()->flash('messageType', 'warning');
 
-            return redirect()->route('newProjectStep1');
+            // user should selects client
+            return redirect()->route('create-project-step1');
         }
 
+        // get all project type
         $project_types = ProjectType::all();
 
         return view('project.create-select_type', compact('project_types', 'client_id'));
     }
 
+    /**
+     * Main form of all create step
+     */
     public function createStep3(Request $request)
     {
         $client = Client::find($request->input('client_id'));
-        $project_type = ProjectType::find($request->input('project_type_id', $request->old('project_type_id')));
-        // alternative to distinct sql
+
+        // ensure user already selects client in step 1
+        if (! $client)
+        {
+            // TODO: implementasi alert di setiap laman
+            $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
+            $request->session()->flash('messageType', 'warning');
+
+            // user should selects client
+            return redirect()->route('create-project-step1');
+        }
+
+        // get project type
+        // in case of validation fails, I take value from $request->old
+        // remember, I put validation rule before calling method `storeStep3`
+        $project_type_id = $request->input('project_type_id') ?? $request->old('project_type_id');
+        $project_type = ProjectType::find($project_type_id);
+
+        // get all PIC name uniquely, for autocomplete in the form
+        // below sql is alternative for distinct sql
         $PICs = PIC::orderBy('name','asc')->groupBy('name')->get();
 
         return view('project.create-form', compact('client', 'project_type', 'PICs'));
     }
 
-    public function createStep3Post(\App\Http\Requests\StoreProject $request)
+    /**
+     * Store data in main form of project to database
+     *
+     * NOTE: request data already validated and sanitized
+     *
+     * TODO: implementasi untuk kolom tabel: `bank_id` dan `payment_method`
+     */
+    public function storeStep3(\App\Http\Requests\StoreProject $request)
     {
         // we need to convert date to mysql format
         $request->merge(['starttime' => date('Y-m-d', strtotime($request->starttime))]);
@@ -90,13 +147,12 @@ class ProjectController extends Controller
         $project->project_type()->associate($project_type);
         $project->name = $request->name;
         $project->price = $request->price;
+        $project->quantity = $request->quantity;
         $project->starttime = $request->starttime;
         $project->endtime = $request->endtime;
         $project->DP_time = $request->DP_time;
         $project->additional_note = $request->additional_note;
-        // TODO dan NOTE: karena program KP ini tidak selesai maka statusnya
-        // belum saya bisa isi, asalnya ingin: IS_DRAFT, IS_ACTIVE_PROJECT, IS_IN_MAITENANCE
-        $project->status = '';
+        $project->status = Project::IS_DRAFT;
         $project->trello_board_id = $request->trello_board_id;
         $project->save();
 
@@ -108,49 +164,67 @@ class ProjectController extends Controller
         }
         foreach ($request->project_link as $link) {
             $project->project_links()->create(['link_text' => $link]);
+         }
+
+        /**
+         * The logic below is executed only when the new project is from
+         * Potential Project data that are converted to real project data
+         */
+        if ($request->potential_project_id) {
+            // we need to keep relation
+            $potential_project = PotentialProject::find($request->potential_project_id);
+            $potential_project->project()->associate($project);
+            $potential_project->save();
         }
 
-        return redirect()->route('newProjectStep4', ['project_id' => $project->id])
+        /**
+         * Prospect is a person (pseudo-client) that doesn't have projects,
+         * except potential projects. So, after prospect has project he become
+         * client.
+         */
+        if ($client->status == Client::IS_PROSPECT) {
+            // change prospect status to client
+            $client->status = Client::IS_CLIENT;
+            $client->save();
+
+            // record 'when' the transformation happens to database
+            $prospect_transformation = new ProspectToClientTransformation;
+            $prospect_transformation->client()->associate($client);
+            $prospect_transformation->created_at = date('Y-m-d');
+            $prospect_transformation->save();
+        }
+
+        return redirect()->route('project-detail', ['project_id' => $project->id])
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
     }
 
-    public function createStep4(Request $request)
+    /**
+     * The logic is same as method `createStep3` except this purpose project
+     * creation is for potential project conversion.
+     */
+    public function createFromPotentialProject(Request $request)
     {
-        $project = Project::find($request->project_id);
+        $potential_project = PotentialProject::find($request->potential_project_id);
 
-        return view('project.create-termin_pembayaran', compact('project'));
+        // get the client
+        $client = $potential_project->client;
+
+        // get project type
+        $project_type = $potential_project->project_type;
+
+        // get all PIC name uniquely, for autocomplete in the form
+        // below sql is alternative for distinct sql
+        $PICs = PIC::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.create-form', compact('potential_project', 'client', 'project_type', 'PICs'));
     }
 
-    public function createStep4Post(Request $request)
-    {
-        $project = Project::find($request->project_id);
-
-        // input <form> doesn't have desired format, I convert to desired format
-        // which is:
-        //      [
-        //          due_date,
-        //          amount,
-        //      ]
-        $termin_detail = [];                            // new format
-        $old_termin_detail = $request->termin_detail;   // old format
-        // debt_amount just representative number of element
-        for ($i = 0; $i < count($old_termin_detail['debt_amount']); $i++) {
-            $termin_detail[] = [
-                'due_date' => $old_termin_detail['due_date']['year'][$i].'-'.$old_termin_detail['due_date']['month'][$i].'-'.$old_termin_detail['due_date']['day'][$i],
-                'amount' => $old_termin_detail['debt_amount'][$i],
-            ];
-        }
-
-        $termin = new Termin;
-        $termin->periodic_type = $request->periodic_type;
-        $termin->project()->associate($project);
-        $termin->save();
-
-        $termin->details()->createMany($termin_detail);
-
-    }
-
+    /**
+     * Get the detail of project
+     *
+     * @param $id   project's id
+     */
     public function detail($id)
     {
         $project = Project::find($id);
@@ -158,32 +232,41 @@ class ProjectController extends Controller
         return view('project.detail', compact('project'));
     }
 
-    // TODO: remove include route/web
-    public function test()
-    {
-        $client = new TrelloClient;
-        $client->authenticate('29f5e1eb9c3864c214acec950356209d', '959cade0e3fdbc957d6ed6083d8371c747a453e937f42a5daa185d56aa7c6271', TrelloClient::AUTH_URL_CLIENT_ID);
-        $boards = $client->api('member')->boards()->all('yudisupriyadi');
 
-        dd($boards);
+    /**
+     * Mark current project as on progress
+     *
+     * @param $id   project's id
+     */
+    public function activate($id)
+    {
+        $project = Project::find($id);
+        $project->status = Project::IS_ONPROGRESS;
+        $project->save();
+
+        return redirect()->route('project-detail', ['project_id' => $id])
+            ->with('message', 'Proyek telah aktif')
+            ->with('messageType', 'success');
     }
 
-    public function invoiceForm($project_id)
+    /**
+     * Set current project's payment method as full cash
+     *
+     * @param $id   project's id
+     */
+    public function setPaymentMethodFullCash(Request $request, $id)
     {
-        $project = Project::find($project_id);
-        $client = $project->client;
+        if ($request->isMethod('post')) {
+            $project = Project::find($id);
+            $project->payment_method = Project::PAYMENT_BY_FULLCASH;
+            $project->save();
 
-        $banks = Bank::all();
+            return redirect()->route('project-detail')
+                ->with('message', 'Pembayaran diatur sebagai Full Cash')
+                ->with('messageType', 'success');
+        }
 
-        return view('project.invoice-form', compact('project', 'client', 'banks'));
-    }
-
-    public function invoicePrint(Request $request, $project_id)
-    {
-        $project = Project::find($project_id);
-        $input = $request->all();
-
-        return view('project/invoice-print', compact('project', 'input'));
+        return view('project.set-payment-method-fullcash', compact('id'));
     }
 }
 

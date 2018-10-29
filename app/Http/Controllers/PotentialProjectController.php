@@ -16,10 +16,10 @@ class PotentialProjectController extends Controller
     {
         $potential_project = PotentialProject::find($id);
 
-        return view('project.follow_up.follow_up', compact('potential_project'));
+        return view('project.potential.follow_up', compact('potential_project'));
     }
 
-    public function followUpPost(Request $request, $id)
+    public function storeFollowUp(Request $request, $id)
     {
         $potential_project = PotentialProject::find($id);
 
@@ -37,7 +37,7 @@ class PotentialProjectController extends Controller
             $deal_history->save();
         }
 
-        return redirect()->route('listPotentialProject');
+        return redirect()->route('potential-project-list');
     }
 
     public function getAjax(Request $request)
@@ -54,7 +54,7 @@ class PotentialProjectController extends Controller
          */
         $potential_projects = PotentialProject::with(['client', 'project_type', 'project'])
             ->doesntHave('project')
-            ->whereRaw('not exists (SELECT 1 FROM follow_up_histories WHERE follow_up_histories.potential_project_id = potential_projects.id AND exists (SELECT 1 FROM follow_up_deal_histories WHERE follow_up_deal_histories.follow_up_history_id = follow_up_histories.id AND status = "Y" OR status = "N"))')
+            ->whereRaw('not exists (SELECT 1 FROM follow_up_histories WHERE follow_up_histories.potential_project_id = potential_projects.id AND exists (SELECT 1 FROM follow_up_deal_histories WHERE follow_up_deal_histories.follow_up_history_id = follow_up_histories.id AND (status = "Y" OR status = "N")))')
             ->get();
 
         // TODO: hapus kode di bawah
@@ -72,7 +72,7 @@ class PotentialProjectController extends Controller
 
     public function get()
     {
-        return view('project.follow_up.list');
+        return view('project.potential.list');
     }
 
     public function getArchiveAjax(Request $request)
@@ -95,7 +95,7 @@ class PotentialProjectController extends Controller
 
     public function getArchive()
     {
-        return view('project.follow_up.list-archive');
+        return view('project.potential.list-archive');
     }
 
     /**
@@ -103,7 +103,7 @@ class PotentialProjectController extends Controller
      */
     public function createStep1()
     {
-        return view('project.follow_up.create-select_client');
+        return view('project.potential.create-select_client');
     }
 
     public function createStep1AjaxClient()
@@ -129,12 +129,12 @@ class PotentialProjectController extends Controller
             $request->session()->flash('message', 'Anda harus memilih client/prospect terlebih dahulu');
             $request->session()->flash('messageType', 'warning');
 
-            return redirect()->route('newPotentialProjectStep1');
+            return redirect()->route('create-potential-project-step1');
         }
 
         $project_types = ProjectType::all();
 
-        return view('project.follow_up.create-select_type', compact('project_types', 'client_id'));
+        return view('project.potential.create-select_type', compact('project_types', 'client_id'));
     }
 
     public function createStep3(Request $request)
@@ -142,10 +142,10 @@ class PotentialProjectController extends Controller
         $client = Client::find($request->input('client_id'));
         $project_type = ProjectType::find($request->input('project_type_id', $request->old('project_type_id')));
 
-        return view('project.follow_up.create-form', compact('client', 'project_type'));
+        return view('project.potential.create-form', compact('client', 'project_type'));
     }
 
-    public function createStep3Post(Request $request)
+    public function storeStep3(Request $request)
     {
         $client = Client::find($request->client_id);
         $project_type = ProjectType::find($request->project_type_id);
@@ -156,7 +156,7 @@ class PotentialProjectController extends Controller
         $potential_project->project_name = $request->project_name;
         $potential_project->save();
 
-        return redirect()->route('listPotentialProject')
+        return redirect()->route('potential-project-list')
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
     }
@@ -165,6 +165,6 @@ class PotentialProjectController extends Controller
     {
         $potential_project = PotentialProject::find($potential_project_id);
 
-        return view('project.follow_up.history', compact('potential_project'));
+        return view('project.potential.history', compact('potential_project'));
     }
 }

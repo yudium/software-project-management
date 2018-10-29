@@ -1,16 +1,4 @@
-@php
-/**
- * we encourage user to include `[]` in <input> name attribute. But it
- * prevent us from using old() function, so we stripped for that purpose
- */
-$name_stripped = str_replace(array('[', ']'), array('', ''), $name);
-/**
- * for initial state, the number of field is given by $number.
- * but in case of validation fails, we must keep the number of field
- * correspond to previous input
- */
-if (old($name_stripped)) $number = old($name_stripped);
-@endphp
+{{-- TODO: in case validation fails, keep last input --}}
 
 <div id="{{ $id }}" class="form-group">
     @isset($label)

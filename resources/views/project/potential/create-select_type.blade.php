@@ -141,7 +141,7 @@ display: table;
     </div>
     <div class="row row-cards">
         <div class="col col-3 mx-auto">
-            <a id="next_button" href="{{ route('newPotentialProjectStep3') . "?client_id=$client_id" }}" class="btn btn-primary">Berikutnya</a>
+            <a id="next_button" href="{{ route('create-potential-project-step3') . "?client_id=$client_id" }}" class="btn btn-primary">Berikutnya</a>
         </div>
     </div>
 </div>

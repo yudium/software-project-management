@@ -12,6 +12,7 @@ class TerminPayment extends Model
      * @var array
      */
     protected $fillable = [
+        'serial_number',
         'pay_date',
         'amount',
         'photo_evidance',
@@ -27,5 +28,5 @@ class TerminPayment extends Model
     public function termin_detail()
     {
         return $this->belongsTo('App\TerminDetail');
-    }
+    } 
 }

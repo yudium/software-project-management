@@ -3,7 +3,7 @@
         <h3 class="card-title">Data Client</h3>
         @if ($ganti_button)
         <div class="card-options">
-            <a href="{{ route('newProjectStep1') }}" class="btn btn-primary btn-sm">Ganti</a>
+            <a href="{{ route('create-project-step1') }}" class="btn btn-primary btn-sm">Ganti</a>
         </div>
         @endif
     </div>
