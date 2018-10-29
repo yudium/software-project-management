@@ -209,7 +209,7 @@
 require(['datatables', 'jquery'], function(datatable, $) {
     $('.datatable-client').DataTable({
         serverSide: true,
-        ajax: '{{ route('newProjectStep1AjaxClient') }}',
+        ajax: '{{ route('create-project-step1-client-ajax') }}',
         // because I want to remove sort icon for col 0
         order: [],
         columnDefs: [
@@ -240,7 +240,7 @@ require(['datatables', 'jquery'], function(datatable, $) {
             {
                 render: function(data, type, row) {
                     return `
-                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
+                        <a href="{{ route('create-project-step2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
                     `;
                 },
                 orderable: false,
@@ -257,7 +257,7 @@ require(['datatables', 'jquery'], function(datatable, $) {
 
     $('.datatable-prospect').DataTable({
         serverSide: true,
-        ajax: '{{ route('newProjectStep1AjaxProspect') }}',
+        ajax: '{{ route('create-project-step1-prospect-ajax') }}',
         // because I want to remove sort icon for col 0
         order: [],
         columnDefs: [
@@ -288,7 +288,7 @@ require(['datatables', 'jquery'], function(datatable, $) {
             {
                 render: function(data, type, row) {
                     return `
-                        <a href="{{ route('newProjectStep2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
+                        <a href="{{ route('create-project-step2') }}?client_id=${row['id']}" class="btn btn-outline-info btn-sm">Pilih</a>
                     `;
                 },
                 orderable: false,

@@ -20,6 +20,7 @@
 
 .note {
     position: relative;
+    width: 100%;
     height: 37px;
 }
 .note > textarea {
@@ -67,31 +68,31 @@ color: #555;
     </div>
 
     <div class="card">
-    <div class="table-responsive">
         <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
             <thead>
             <tr>
-                <th>Tanggal Input</th>
-                <th class="text-center">Status Follow Up</th>
-                <th>Catatan Follow Up</th>
-                <th class="text-center">Status Deal</th>
-                <th>Catatan Deal</th>
+                <th width="10%">Tanggal Input</th>
+                <th width="10%" class="text-center">Status Follow Up</th>
+                <th width="35%">Catatan Follow Up</th>
+                <th width="10%" class="text-center">Status Deal</th>
+                <th width="35%">Catatan Deal</th>
             </tr>
             </thead>
             <tbody>
+            @echoIf('<td class="text-center" colspan="5">Tidak ada data di tabel</td>', count($potential_project->follow_up_histories) === 0)
             @foreach ($potential_project->follow_up_histories as $follow_up_history)
             <tr>
-                <td>{{ $follow_up_history->created_at }}</td>
-                <td class="text-center">{{ $follow_up_history->status_text }}</td>
-                <td>
+                <td style="width: 10%">{{ $follow_up_history->created_at }}</td>
+                <td style="width: 10%" class="text-center">{{ $follow_up_history->status_text }}</td>
+                <td style="width: 35%">
                     @if ($follow_up_history->note)
                     <div class="note">
                         <textarea readonly="">{{ $follow_up_history->note }}</textarea>
                     </div>
                     @endif
                 </td>
-                <td class="text-center">{{ optional($follow_up_history->deal_history)->status_text }}</td>
-                <td>
+                <td style="width: 10%" class="text-center">{{ optional($follow_up_history->deal_history)->status_text }}</td>
+                <td style="width: 35%">
                     @if (optional($follow_up_history->deal_history)->note)
                     <div class="note">
                         <textarea readonly="">{{ optional($follow_up_history->deal_history)->note }}</textarea>
@@ -103,8 +104,6 @@ color: #555;
             </tbody>
         </table>
     </div>
-
-</div>
 
 </div>
 @endsection

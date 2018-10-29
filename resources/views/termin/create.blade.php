@@ -109,64 +109,66 @@
 
     <div class="row row-cards">
         <div class="col-4">
-            <div id="termin-setting" class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        Pengaturan Termin
-                    </h3>
-                    <div class="card-options">
-                        <a href="#" class="btn btn-primary btn-sm">Lewati</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="form-label">Dibayar secara</div>
-                        <div class="custom-controls-stacked">
-                            <label class="custom-control custom-radio">
-                                <input class="periodic-type custom-control-input" name="periodic_type" value="bulanan" type="radio">
-                                <div class="custom-control-label">Bulanan</div>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input class="periodic-type custom-control-input" name="periodic_type" value="tahunan" type="radio">
-                                <div class="custom-control-label">Tahunan</div>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input class="periodic-type custom-control-input" name="periodic_type" value="custom" type="radio">
-                                <div class="custom-control-label">Custom</div>
-                            </label>
+            <form id="termin-setting" onsubmit="return false">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Pengaturan Termin
+                        </h3>
+                        <div class="card-options">
+                            <a href="#" class="btn btn-primary btn-sm">Lewati</a>
                         </div>
                     </div>
-                    @include('includes.form-element.datepicker', [
-                        'label' => 'Tanggal pertama bayar',
-                        'id' => 'first-due-date',
-                        'name' => 'first_due_date',
-                    ])
-                    <div class="form-group">
-                        <label class="form-label">Total biaya termin</label>
-                        <div class="row gutters-xs">
-                            <div class="col">
-                                <input id="total-termin-amount" class="form-control" type="text" name="total_termin_amount" data-mask="000.000.000.000.000" data-mask-reverse="true">
+                    <div class="card-body">
+                        <!-- this form only for reset by jQUery -->
+                        <div class="form-group">
+                            <div class="form-label">Dibayar secara</div>
+                            <div class="custom-controls-stacked">
+                                <label class="custom-control custom-radio">
+                                    <input class="periodic-type custom-control-input" name="periodic_type" value="bulanan" type="radio">
+                                    <div class="custom-control-label">Bulanan</div>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input class="periodic-type custom-control-input" name="periodic_type" value="tahunan" type="radio">
+                                    <div class="custom-control-label">Tahunan</div>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input class="periodic-type custom-control-input" name="periodic_type" value="custom" type="radio">
+                                    <div class="custom-control-label">Custom</div>
+                                </label>
                             </div>
-                            <span class="col-auto">
-                                <button id="total-termin-amount-btn" data-price="{{ $project->price }}" class="btn btn-secondary" type="button"><small>Gunakan Harga Proyek</small></button>
-                            </span>
                         </div>
+                        @include('includes.form-element.datepicker', [
+                            'label' => 'Tanggal pertama bayar',
+                            'id' => 'first-due-date',
+                            'name' => 'first_due_date',
+                        ])
+                        <div class="form-group">
+                            <label class="form-label">Total biaya termin</label>
+                            <div class="row gutters-xs">
+                                <div class="col">
+                                    @include('includes.form-element.input-money', [
+                                        'id' => 'total-termin-amount',
+                                        'name' => 'total_termin_amount',
+                                        'class' => 'form-control',
+                                        'placeholder' => '',
+                                    ])
+                                </div>
+                                <span class="col-auto">
+                                    <button id="total-termin-amount-btn" data-price="{{ $project->price }}" class="btn btn-secondary" type="button"><small>Gunakan Harga Proyek</small></button>
+                                </span>
+                            </div>
+                        </div>
+                        <button id="selesai-btn" class="btn btn-primary" disabled>Selesai</button>
                     </div>
-
-                    <button id="selesai-btn" class="btn btn-primary" disabled>Selesai</button>
                 </div>
-                <!--
-                    <div class="card-footer">
-                        This is standard card footer
-                    </div>
-                -->
-            </div>
+            </form>
         </div>
         <div class="col-8">
-            <form id="termin-form" method="POST" action="{{ route('newProjectStep4Post') }}">
+            <form id="termin-form" method="POST" action="{{ route('store-termin', ['project_id' => $project->id]) }}">
                 @csrf
                 <input type="hidden" name="project_id" value="{{ $project->id }}">
-                <input type="hidden" name="periodic_type" id="periodic-type-hidden" value="">
+                <input type="hidden" name="periodic_type" id="periodic-type-hidden" value=""> 
 
                 <div id="termin-dates" class="card">
                     <div class="card-header">
@@ -232,13 +234,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group col-6">
-                                    <div class="input-group">
-                                        <span class="input-group-prepend" id="basic-addon1">
-                                            <span class="input-group-text">Rp.</span>
-                                        </span>
-                                        <input name="termin_detail[debt_amount][]" class="debt-amount form-control multi-input-focus-target" placeholder="nominal tagih" aria-label="Username" aria-describedby="basic-addon1" type="text" data-mask="000.000.000.000.000" data-mask-reverse="true">
-                                    </div>
+                                <div class="col-6">
+                                    @include('includes.form-element.input-money', [
+                                        'name' => 'termin_detail[debt_amount][]',
+                                        'class' => 'debt-amount form-control multi-input-focus-target',
+                                        'placeholder' => 'nominal tagih',
+                                    ])
                                 </div>
                             </div>
                         @endcomponent
@@ -265,12 +266,21 @@
 
     require(['input-mask']);
 
-    require(['jquery', 'moment'], function($, moment) {
+    require(['jquery', 'moment', 'global_functions'], ($, moment, g) => {
+
         $(document).ready(function(){
+            // prevent Firefox to keep user input even after reloaded
+            $('form').trigger('reset');
+
+            // disable until all termin setting adjusted
+            $('#selesai-btn').attr('disabled', true);
+
             // disable all until user fill in all termin setting
-            $('#termin-dates :input').prop('disabled', true);
+            $('#termin-dates :input').attr('disabled', true);
 
             $('#selesai-btn').click(function(){
+                $('#termin-setting :input').attr('disabled', true);
+
                 // now user can interact with form
                 $('#termin-dates :input').attr('disabled', false);
 
@@ -299,6 +309,8 @@
                 let first_due_date_field = $('#termin-setting #first-due-date').val();
                 let total_termin_amount_field = $('#termin-setting #total-termin-amount').val();
 
+                $('#periodic-type-hidden').val(periodic_type_field);
+
                 if (periodic_type_field && first_due_date_field && total_termin_amount_field.trim()) {
                     $('#selesai-btn').attr('disabled', false);
                 }
@@ -321,22 +333,10 @@
 
             $('#termin-form').submit(function() {
                 $('.debt-amount').each(function(){
-                    $(this).val(truncatMaskInMoney($(this).val()));
+                    $(this).val($(this).cleanVal());
                 });
-                $('#termin-dates :input').prop('disabled', false);
+                $('#termin-form :input').prop('disabled', false);
             });
-
-            /**
-             * Disable first row of termin date input.
-             * Triggered only when selesai button clicked.
-             *
-             * @param which_field = day|month|year
-             */
-            function disableFirstRowTerminDateInput(which_field) {
-                which_field.map(function(field){
-                    $($('.due-date-'+field)[0]).attr('disabled', true);
-                });
-            }
 
             /**
              * update all termin date
@@ -347,7 +347,6 @@
                 let first_due_date_field = $('#termin-setting #first-due-date');
                 let first_due_date = new Date(first_due_date_field.val());
 
-                console.log('first_due_date = ', dateToArray(first_due_date));
                 let previous_due_date = first_due_date;
 
                 // we don't want to increment first row
@@ -374,7 +373,6 @@
                 $(row).find('select.due-date-year').val(due_date.getFullYear());
                 $(row).find('select.due-date-month').val(due_date.getMonth() + 1);
                 $(row).find('select.due-date-day').val(due_date.getDate());
-                console.log(dateToArray(due_date));
             }
 
             /**
@@ -391,35 +389,37 @@
                 ];
             }
 
-            $('#termin-dates').on('change', '.debt-amount', function(){
+            $('#termin-dates').on('keyup', '.debt-amount', function(){
                 let total_amount = 0;
                 $('.debt-amount').each(function() {
-                    let amount = $(this).val();
-                    amount = truncatMaskInMoney(amount);
+                    let amount = g.cleanValMask( $(this).val() );
                     total_amount += amount;
                 });
 
-                let total_termin_amount = $('#total-termin-amount').val();
-                total_termin_amount = truncatMaskInMoney(total_termin_amount);
+                let total_termin_amount = g.cleanValMask( $('#total-termin-amount').val() );
+                // TODO: check why I wrote this?
+                total_termin_amount = total_termin_amount;
+
+                console.log(total_termin_amount);
 
                 let remaining_amount = total_termin_amount - total_amount;
 
                 if (remaining_amount < 0) {
-                    $('#remaining-debt-amount').text('Nilai melebih total biaya termin');
+                    $('#remaining-debt-amount').text('Nilai melebihi total biaya termin');
                 }
                 if (remaining_amount > 0) {
                     $('#remaining-debt-amount').text('Tersisa Rp.'+remaining_amount+' belum teralokasikan');
                 }
                 if (remaining_amount === 0) {
-                    $('#remaining-debt-amount').remove();
+                    $('#remaining-debt-amount').text('OK...');
                 }
             });
+        });
 
-            function truncatMaskInMoney(money)
-            {
-                // remove any non-digit character, then convert to number
-                return Number(money.replace(/\D/g,''));
-            }
+        // Dynamic element this code for input mask
+        // I still don't know why I keed jQuery on() because without it, fails
+        $('#termin-dates').on('click', '.multi-input-control', function(){
+            $('#termin-dates .debt-amount').mask('000.000.000.000.000', {'reverse': true});
         });
     });
 </script>

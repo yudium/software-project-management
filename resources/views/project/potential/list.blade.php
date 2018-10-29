@@ -83,7 +83,7 @@
     require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ route('listPotentialProjectAjax') }}',
+            ajax: '{{ route('potential-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -124,8 +124,8 @@
                     render: function(data, type, row) {
                         {{-- TODO: cari pengganti cara ini. Kurang sreg --}}
                         return `
-                            <a href="{{ url('/project/follow-up/follow-up/') }}/${row['id']}" class="btn btn-primary btn-sm mr-2">Follow Up</a>
-                            <a href="{{ url('/project/follow-up/') }}/${row['id']}/history"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
+                            <a href="{{ url('/project/potential/follow-up/') }}/${row['id']}" class="btn btn-primary btn-sm mr-2">Follow Up</a>
+                            <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
                             <a class="icon ml-5" href="javascript:void(0)">
                                 <i class="fe fe-edit"></i>
                             </a>

@@ -28,7 +28,8 @@ class AddForeignInFollowUpDealHistoriesTable extends Migration
     public function down()
     {
         Schema::table('follow_up_deal_histories', function (Blueprint $table) {
-            $table->dropForeign('follow_up_history_id');
+            // TODO: fix wrong foreign name
+            $table->dropForeign('follow_up_deal_histories_follow_up_history_id_foreign');
         });
     }
 }

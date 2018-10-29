@@ -3,8 +3,6 @@
 
 <!-- Generated: 2018-09-17 20:18:07 +0700 -->
 
-
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
 
@@ -48,9 +46,13 @@
 <!-- Moment Plugin -->
 <script src="{{ asset('assets/plugins/moment/plugin.js') }}"></script>
 
+<!-- Global functions  -->
+<script src="{{ asset('assets/js/utilities.js') }}"></script>
 {{-- <!--Toastr-->
 <link href="{{ asset('assets/plugins/toastr/build/toastr.min.css') }}" rel="stylesheet">
 <script src="{{ asset('assets/plugins/toastr/build/toastr.min.js') }}"></script> --}}
+
+
 
 <style>
     .dropdown-item {
@@ -60,5 +62,9 @@
         padding-left: 24px;
         font-weight: bold;
         background: rgba(216, 216, 216, 0.2);
+    }
+
+    .dataTables_empty {
+        text-align: center;
     }
  </style>

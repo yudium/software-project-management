@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     /**
+     * correspond to `status` column in table
+     */
+    const IS_DRAFT          = '0';
+    const IS_ONPROGRESS     = '1';
+
+    /**
+     * correspond to `payment_method` column in table
+     *
+     * client pays in full                   then PAYMENT_BY_FULLCASH
+     * client pays in installments (cicilan) then PAYMENT_BY_TERMIN
+     *
+     * can contains NULL value that means admin hasn't set the payment method
+     * for current project. Also, that means the project still in IS_DRAFT
+     * status.
+     */
+    const PAYMENT_BY_FULLCASH = '0';
+    const PAYMENT_BY_TERMIN   = '1';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -50,6 +69,13 @@ class Project extends Model
 
     public function termin()
     {
-        return $this->belongsTo('App\Termin');
+        return $this->hasOne('App\Termin');
+    }
+
+    public function getPaymentMethodTextAttribute()
+    {
+        if ($this->payment_method == self::PAYMENT_BY_FULLCASH) return 'Full cash';
+        if ($this->payment_method == self::PAYMENT_BY_TERMIN) return 'Menyicil';
+        return 'Belum ditentukan';
     }
 }

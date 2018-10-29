@@ -1,3 +1,5 @@
+{{-- TODO: in case validation fails, keep last input --}}
+
 <div id="{{ $id }}">
     @for ($i = 1; $i <= $number; $i++)
         <div class="multi-input-copy-target">

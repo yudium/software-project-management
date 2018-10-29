@@ -101,7 +101,7 @@
     require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ url('project/list/onprogress/ajax') }}',
+            ajax: '{{ route('onprogress-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -176,7 +176,7 @@
                             <div class="item-action dropdown">
                             <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="project-detail.html"" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
+                                <a href="{{ url('/project/detail') }}/${data['id']}" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
                                 <a href="termin-pembayaran_daftar.html" class="dropdown-item"><i class="dropdown-icon fe fe-dollar-sign"></i> Termin Pembayaran </a>
                                 <a href="project-detail_progress-tracker.html" target="_blank" class="dropdown-item"><i class="dropdown-icon fa fa-trello"></i> Progress Tracker</a>
                                 <div class="dropdown-divider"></div>

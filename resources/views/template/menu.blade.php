@@ -7,25 +7,25 @@
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                     <li class="nav-item">
-                        <a href="{{ route('home') }}" class="nav-link @if(request()->segment(1) == 'home') active @endif"><i class="fe fe-home"></i> Home</a>
+                        <a href="{{ route('dashboard') }}" class="nav-link active"><i class="fe fe-home"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'project') active @endif" data-toggle="dropdown"><i class="fe fe-box"></i>
                             Proyek</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="{{ route('newProjectStep1') }}" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('create-project-step1') }}" class="dropdown-item  ">Tambah</a>
                             <a href="../" class="dropdown-item  dropdown-item-title">Daftar Proyek</a>
-                            <a href="{{ route('onProgressList') }}" class="dropdown-item  ">Sedang Berjalan</a>
-                            <a href="../project-list_maintenance.html" class="dropdown-item  ">Sedang Maintenance</a>
-                            <a href="../project-list_pending.html" class="dropdown-item  ">Draft</a>
-                            <a href="../project-list_arsip-berhasil.html" class="dropdown-item  ">Arsip Berhasil</a>
-                            <a href="../project-list_arsip-gagal.html" class="dropdown-item  ">Arsip Gagal</a>
-                            <a href="../" class="dropdown-item  dropdown-item-title">Daftar Follow Up</a>
-                            <a href="../project-list_followup.html" class="dropdown-item  ">Follow Up</a>
-                            <a href="../project-list_followup-arsip.html" class="dropdown-item  ">Arsip</a>
+                            <a href="{{ route('onprogress-project-list') }}" class="dropdown-item  ">Proyek Berjalan</a>
+                            <a href="" class="dropdown-item  ">Draft **</a>
+                            <a href="" class="dropdown-item  ">Arsip Berhasil **</a>
+                            <a href="" class="dropdown-item  ">Arsip Gagal **</a>
+                            <a href="../" class="dropdown-item  dropdown-item-title">Proyek Potensial</a>
+                            <a href="{{ route('create-potential-project-step1') }}" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('potential-project-list') }}" class="dropdown-item  ">Daftar</a>
+                            <a href="{{ route('potential-project-list-archive') }}" class="dropdown-item  ">Arsip</a>
                             <a href="../" class="dropdown-item  dropdown-item-title">Antrian Proyek dari Agen</a>
-                            <a href="../agen_project-pending.html" class="dropdown-item  ">Antrian <span class="status-icon bg-danger"></span></a>
-                            <a href="../agen_project-pending_arsip.html" class="dropdown-item  ">Arsip Antrian <span
+                            <a href="../agen_project-pending.html" class="dropdown-item  ">Antrian ** <span class="status-icon bg-danger"></span></a>
+                            <a href="../agen_project-pending_arsip.html" class="dropdown-item  ">Arsip Antrian **<span
                                     class="status-icon bg-danger"></span></a>
                         </div>
                     </li>

@@ -28,7 +28,7 @@
         </h1>
     </div>
 
-    <form id="main-form" method="POST" action="{{ route('FollowUpPotentialProjectPost', ['id' => $potential_project->id ]) }}">
+    <form id="main-form" method="POST" action="{{ route('store-follow-up-potential-project', ['id' => $potential_project->id ]) }}">
         @csrf
 
         <div class="col-12 col-form">

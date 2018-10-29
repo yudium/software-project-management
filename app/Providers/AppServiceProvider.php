@@ -15,6 +15,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        \Blade::directive('money', function ($number) {
+            return "<?php echo number_format($number, 0, ',', '.'); ?>";
+        });
+        \Blade::directive('echoIf', function ($params) {
+            list($echo, $expression) = explode(',', $params);
+            return "<?php echo ($expression ? $echo : '');  ?>";
+        });
     }
 
     /**
