@@ -89,9 +89,9 @@ class ClientController extends Controller
     {
         //get parameter
         $idType = $req->getQueryString();
+        // dd($idType);
         //get value type id
         $valueId  = $req->input('client_type_id');
-       
         $clientType = CLientType::where('id','=',$valueId)->first();
         if (!str_contains($idType,'client_type_id'))
         {
@@ -154,12 +154,13 @@ class ClientController extends Controller
         $client->client_type_id   = $req->tipeClient;
         $client->name             = $req->nama;
         $client->business_relationship_status = $req->statusHub;
+
         if($req->has('photo'))
         {
             $clientImage = $req->file('photo');
             dd($prospectImage);
         }
-        // $prospect->photo = 'test';
+    
         $client->status   = $client->getStatusTextAttribute(Client::IS_CLIENT);
         $client->save();
 

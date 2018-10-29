@@ -121,16 +121,13 @@
                                 <td width="80%" >{{ $type->name }}</td>
                                 <td width="10%" class="text-center">
                                         <span class="check-circle-container">
-                                    <a href="javascript:select({{ $type->id  }})"  class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
+                                    <a href="#" data-client-type-id="{{ $type->id  }}"  class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
                                     <i class="fe fe-check-circle check-circle"></i>
                                         </span>
                                 </td>
                             </tr>
                             @endforeach
 
-                                <td class="text-center" colspan="3">
-                                    <a href="#" class="btn btn-outline-success"><i class="fe fe-plus mr-2"></i>Buat Baru</a>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -140,7 +137,7 @@
     </div>
     <div class="row row-cards">
         <div class="col col-3 mx-auto">
-            <a href="/client/new/client" class="btn btn-primary" id="btn-next">Berikutnya</a>
+            <a href="{{url('client/new/client')}}" class="btn btn-primary" id="btn-next">Berikutnya</a>
         </div>
     </div>
 </div>
@@ -154,23 +151,14 @@ require(['jquery'], function ($) {
             e.preventDefault();
             $(".check-circle").hide();
             $(this).closest(".check-circle-container").find(".check-circle").show();
- 
-    })
- 
-})
-})
+            
+            let client_type_id = $(this).data('client-type-id');
+            $("#btn-next").attr('href',$("#btn-next").attr('href').replace(/\?client_type_id=\d+/, ''));
+            $("#btn-next").attr('href',$("#btn-next").attr('href')+'?client_type_id='+client_type_id);
+    });
+  });
+});
 
-function select(client_id_type)
-{
-    //alert(prospect_id_type)
-    next_btn = document.getElementById("btn-next")
-    //reset parameters
-    next_btn.href = next_btn.href.replace(/\?client_type_id=\d/, '')
-    //add parameters in url
-    next_btn.href = next_btn.href+'?client_type_id='+client_id_type
-
-
-}
 
 
 </script>
