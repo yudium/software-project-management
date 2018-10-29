@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agent extends Model
 {
-    public $timestamps = false;
+    // public $timestamps = false;
     protected $fillable = ['name','username','address','city','photo'];
 
     public function email()
@@ -27,6 +27,11 @@ class Agent extends Model
     public function webAddress()
     {
         return $this->hasMany('App\AgentWebAddresses');
+    }
+
+    public function agentProject()
+    {
+        return $this->hasMany('App\AgentProject','agent_id');
     }
 
 

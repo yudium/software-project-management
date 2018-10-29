@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
+    Route::get('/getAgent','AgentController@getAgent')->name('getAgent');
     Route::get('/agent/new/agent-form','AgentController@newAgentForm')->name('newAgentForm');
     Route::post('/agent/new/agent-form','AgentController@createAgentForm')->name('createAgentForm');
 
