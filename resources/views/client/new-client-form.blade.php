@@ -89,7 +89,7 @@
             Form Tambah Client
         </h1>
     </div>
-    <form method="post" action="{{ route('createClientForm') }}">
+    <form method="post" action="{{ route('createClientForm') }}" enctype="multipart/form-data">
             @csrf
         <div class="row row-cards">
             <div class="col-4">
@@ -98,9 +98,15 @@
 
                         <div class="form-group">
                             <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
-                            <input class="form-control" type="text" name="nama">
+                            <input class="form-control {{ $errors->has('nama') ? 'is-invalid' : '' }}" type="text" name="nama" value="{{ old('name') }}">
+                            @if ($errors->has('nama'))
+                            @foreach ($errors->get('nama') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
                             
                         </div>
+                        
                         <div class="form-group">
                             <label class="form-label">Jenis</label>
                             <input name="tipeClient" type="hidden" value="{{ $idType->id }}">
@@ -127,8 +133,14 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat" type="text"></textarea>
+                            <textarea class="form-control {{ $errors->has('alamat') ? 'is-invalid' : '' }}" name="alamat" type="text"></textarea>
+                            @if ($errors->has('alamat'))
+                            @foreach ($errors->get('alamat') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
                         </div>
+                 
                         <div class="form-group">
                             <label class="form-label">Kota</label>
                             @include('includes.form-element.multiple-input', [
@@ -136,7 +148,14 @@
                             'name' => 'kota[]',
                             'number' => 1,
                             ])
+                          
+                        {{-- @if ($errors->has('kota[]'))
+                        @foreach ($errors->get('kota[]') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif --}}
                         </div>
+               
                     </div>
                 </div>
             </div>
@@ -190,7 +209,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-file">
-                                        <input class="custom-file-input" name="foto" type="file" id="fotoProfile">
+                                        <input class="custom-file-input" name="photo" type="file" id="fotoProfile">
                                         <label class="custom-file-label">Choose file</label>
                                     </div>
                                 </div>
@@ -231,9 +250,6 @@
                 alert("Please select image file (jpg, jpeg, png).")
         });
 
-        $('#btn-kota').on('click',function(){
-            $('.btn-kota').parent.parent.remove()
-        })
 
        
     })

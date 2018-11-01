@@ -11,6 +11,9 @@ use App\Client;
 use App\ClientEmail;
 use App\ClientPhone;
 use App\ClientType;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+
 
 class ClientController extends Controller
 {
@@ -30,7 +33,7 @@ class ClientController extends Controller
         
         return Datatables::of($prospect)
         ->addColumn('options',function($prospect){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
         })->rawColumns(['options'])->make(true);
     }
 
@@ -40,8 +43,13 @@ class ClientController extends Controller
 
         return Datatables::of($client)
         ->addColumn('options',function($client){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
         })->rawColumns(['options'])->make(true);
+    }
+
+    public function deleteClient(Request $req,$id)
+    {
+        dd($id);
     }
 
     public function newProspectType()
@@ -107,16 +115,18 @@ class ClientController extends Controller
     public function createProspectForm(\App\Http\Requests\StoreCLient $req)
     {
 
+        
         $prospect = new Client();
+        if($req->hasFile('photo'))
+        {
+            $prospectImage      = $req->file('photo');
+            $fileName   =  $prospectImage->getClientOriginalName();
+            Storage::putFileAs('public/prospectImage', $prospectImage, $fileName);
+            $prospect->photo            = $fileName;
+        }
         $prospect->client_type_id   = $req->tipeProspect;
         $prospect->name             = $req->nama;
         $prospect->business_relationship_status = $req->statusHub;
-        if($req->has('photo'))
-        {
-            $prospectImage = $req->file('photo');
-            dd($prospectImage);
-        }
-        // $prospect->photo = 'test';
         $prospect->status   = $prospect->getStatusTextAttribute(Client::IS_PROSPECT);
         $prospect->save();
 
@@ -142,25 +152,28 @@ class ClientController extends Controller
             $prospect->webAddress()->create(['web_addresses' => $web]);
         }
  
-        return redirect()->route('newProspectInsider',['id'=>$prospect->id]);
-        // ->with('message', 'Berhasil menambah prospect')
-        // ->with('messageType', 'success');
+        return redirect()->route('newProspectInsider',['id'=>$prospect->id])
+        ->with('message', 'Berhasil menambah Prospect')
+        ->with('alert-class', 'alert-success');
     }
 
     public function createClientForm(\App\Http\Requests\StoreCLient $req)
     {
-
+       
         $client = new Client();
+        
+        if($req->hasFile('photo'))
+        {
+            $clientImage      = $req->file('photo');
+            // dd($clientImage);
+            $fileName   =  $clientImage->getClientOriginalName();
+            Storage::putFileAs('public/clientImage', $clientImage, $fileName);
+            $client->photo            = $fileName;
+        }
         $client->client_type_id   = $req->tipeClient;
         $client->name             = $req->nama;
-        $client->business_relationship_status = $req->statusHub;
-
-        if($req->has('photo'))
-        {
-            $clientImage = $req->file('photo');
-            dd($prospectImage);
-        }
-    
+        
+        $client->business_relationship_status = $req->statusHub;    
         $client->status   = $client->getStatusTextAttribute(Client::IS_CLIENT);
         $client->save();
 
@@ -186,9 +199,10 @@ class ClientController extends Controller
             $client->webAddress()->create(['web_addresses' => $web]);
         }
  
-        return redirect()->route('newClientInsider',['id'=>$client->id]);
-        // ->with('message', 'Berhasil menambah prospect')
-        // ->with('messageType', 'success');
+        return redirect()->route('newClientInsider',['id'=>$client->id])
+        ->with('message', 'Berhasil menambah Client')
+        ->with('alert-class', 'alert-success');
+
     }
 
     public function newProspectInsider(Request $req)
@@ -207,22 +221,42 @@ class ClientController extends Controller
 
     public function createClientInsider(\App\Http\Requests\StoreInsider $req)
     {
+     
         $client_id = $req->input('did');
         // print_r($client_id);
         $input = $req->all();
+        // dd($input);
         $amount = count($input['nama']);
-       
+    
         $array_baru = [];
         for($i=1 ; $i <= $amount ; $i++)
         {
+            if( $req->has('fotoProfile'))
+            {
+                echo 'tes dalam';
+                $clientImage = $req->file('fotoProfile')[$i];
+                $fileName    =  $clientImage->getClientOriginalName();
+                Storage::putFileAs('public/insiderClient', $clientImage, $fileName);
+            
+            
             $array_baru[]=[
                 'nama'          =>$input['nama'][$i],
                 'jabatan'       =>$input['jabatan'][$i],
                 'alamat'        =>$input['alamat'][$i],
-                'fotoProfile'   =>$input['fotoProfile'][$i],
+                'fotoProfile'   =>$fileName,
+                'keterangan'    =>$input['keterangan'][$i],
+            ];
+        }else{
+            $array_baru[]=[
+                'nama'          =>$input['nama'][$i],
+                'jabatan'       =>$input['jabatan'][$i],
+                'alamat'        =>$input['alamat'][$i],
+                'fotoProfile'   =>'no photo',
                 'keterangan'    =>$input['keterangan'][$i],
             ];
         }
+        }
+
         $client_insider = Client::find($client_id);
        foreach($array_baru as $key=>$insider)
        {
@@ -254,7 +288,9 @@ class ClientController extends Controller
             }
         }
         
-        return redirect()->route('prospectList');
+        return redirect()->route('clientList')
+        ->with('message', 'Berhasil menambah Insider Client')
+        ->with('alert-class', 'alert-success');
      
     }
 }

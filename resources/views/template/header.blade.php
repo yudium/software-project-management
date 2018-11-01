@@ -12,7 +12,7 @@
 <div class="header py-4">
     <div class="container">
         <div class="d-flex">
-            <a class="header-brand" href="{{ route('home') }}">
+            <a class="header-brand" href="{{ route('dashboard') }}">
                 <img src="{{ asset('demo/logo.svg') }}" class="header-brand-img" alt="tabler logo">
             </a>
 

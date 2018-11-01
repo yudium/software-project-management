@@ -20,7 +20,10 @@
 @endsection
 @section('content')
 <div class="container">
-
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span></p>
+    @endif
     <div class="page-header">
 	<h1 class="page-title">
 		Daftar Client
@@ -135,7 +138,34 @@
             ]
 
         })
+
+    function deleteClient(id)
+        {
+            alert('tes')
+            // if(confirm('Apakah anda ingin menghapus data ini?'))
+            // {
+            //  alert('tes')
+            //     $.ajax({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         },
+            //         url : "/client/deleteClient/"+id,
+            //         type: "POST",
+            //         dataType: "JSON",
+            //     }).done(function(res){
+              
+            //             window.location.reload();
+            //             toastr.success('Berhasil menghapus data', {timeOut: 5000});
+            //     })
+
+            
+            // }
+        }
     })
+
+  
 })
+
+       
 </script>
 @endsection
