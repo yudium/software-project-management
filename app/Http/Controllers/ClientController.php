@@ -33,7 +33,7 @@ class ClientController extends Controller
         
         return Datatables::of($prospect)
         ->addColumn('options',function($prospect){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteProspect('."'".$prospect->id."'".')" id="deleteProspect" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
         })->rawColumns(['options'])->make(true);
     }
 
@@ -43,13 +43,35 @@ class ClientController extends Controller
 
         return Datatables::of($client)
         ->addColumn('options',function($client){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a></div></div></div>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" id="deleteClient" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
         })->rawColumns(['options'])->make(true);
     }
 
     public function deleteClient(Request $req,$id)
-    {
-        dd($id);
+    {   
+      $client = Client::findorFail($id);
+        if($client->photo  === null )
+        {
+            $client->delete();
+        }
+         $tes = Storage::delete('public/clientImage/'.$client->photo);
+         $client->delete();
+         return response()->json(['status'=>true]);
+      
+    }
+
+    
+    public function deleteProspect(Request $req,$id)
+    {   
+      $prospect = Prospect::findorFail($id);
+        if($prospect->photo  === null )
+        {
+            $prospect->delete();
+        }
+         $tes = Storage::delete('public/prospectImage/'.$prospect->photo);
+         $client->delete();
+         return response()->json(['status'=>true]);
+      
     }
 
     public function newProspectType()

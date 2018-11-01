@@ -9,7 +9,7 @@
 
 <meta name="msapplication-TileColor" content="#2d89ef">
 <meta name="theme-color" content="#4188c9">
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">

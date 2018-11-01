@@ -23,16 +23,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prospect/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
     Route::get('/prospect/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
     Route::post('/prospect/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
+    Route::post('/prospect/deleteProspect/{id}','ClientController@deleteProspect')->name('deleteProspect');
 
     Route::get('/client/client-list','CLientController@clientList')->name('clientList');
     Route::get('/getClient','ClientController@getClient')->name('getClient');
-    Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
     Route::get('/client/new/client-types','ClientController@newClientType')->name('newClientTypes');
     Route::get('/client/new/client','ClientController@getClientType')->name('getClientTypegit ');
     Route::get('/client/new/client-form','ClientController@newClientForm')->name('newClientForm');
     Route::post('/client/new/client-form','ClientController@createClientForm')->name('createClientForm');
     Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
     Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
+    Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');
