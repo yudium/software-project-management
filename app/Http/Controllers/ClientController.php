@@ -69,7 +69,7 @@ class ClientController extends Controller
             $prospect->delete();
         }
          $tes = Storage::delete('public/prospectImage/'.$prospect->photo);
-         $client->delete();
+         $prospect->delete();
          return response()->json(['status'=>true]);
       
     }

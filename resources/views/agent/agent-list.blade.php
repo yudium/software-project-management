@@ -58,7 +58,7 @@
 @endsection
 @section('js')
 <script>
-    require(['datatables', 'jquery'],function (datatable, $) {
+    require(['datatables', 'jquery','toastr'],function (datatable, $,toastr) {
         $('#agentTable').DataTable({
             serverSide:true,
             ajax: "{{ route('getAgent') }}",
@@ -73,7 +73,8 @@
                 },
                 {
                     render:function(data,type,row){
-                        return '<div>'+data+'</div><div class="small text-muted">Registered: Mar 19, 2018</div>';
+                        console.log(row)
+                        return '<div>'+data+'</div><div class="small text-muted">Registered: '+row['created_at']+'</div>';
                     },
                     orderable:false,
                     targets:1,
@@ -134,14 +135,55 @@
                 { data: 'options' },
             ]
         });
+    $(document).ready(function(){
+
+     $('#agentTable').on('click', '.deleteAgent',function(e){
+         e.preventDefault()
+         idAgent = $(this).data('id-agent')
+         if(confirm('Apakah anda ingin menghapus data ini?'))
+                {
+                    
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url : "{{url('agent/deleteAgent')}}"+"/"+idAgent,
+                        type: "POST",
+                        dataType: "JSON",
+                    }).done(function(res){
+                            console.log(res)
+                            window.location.reload();
+                            toastr.success('Berhasil menghapus data', {timeOut: 5000});
+                    })
+
+
+                }
+     });
+    })
     });
 
-    /*Fungsi untuk mengenerate username agent*/
-    // function aktivateAgent(id)
-    // {
-    //     alert(id)
-    // }
+//    function deleteAgent(id) {
+//                 if(confirm('Apakah anda ingin menghapus data ini?'))
+//                 {
+                    
+//                 $.ajax({
+//                     headers: {
+//                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                         },
+//                         url : "{{url('agent/deleteAgent')}}"+"/"+id,
+//                         type: "POST",
+//                         dataType: "JSON",
+//                     }).done(function(res){
+//                             console.log(res)
+//                             window.location.reload();
+//                             toastr.success('Berhasil menghapus data', {timeOut: 5000});
+//                     })
 
+
+//                 }
+//             }
+ 
+ 
     /* Fungsi formatRupiah */
     function formatRupiah(angka, prefix) {
     var number_string = angka.replace(/[^,\d]/g, "").toString(),

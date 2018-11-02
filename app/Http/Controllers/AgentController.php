@@ -20,13 +20,13 @@ class AgentController extends Controller
     public function getAgent()
     {
 
-        $listAgent = Agent::with(['email','phone'])->select(DB::raw("id, name, username,city,photo,(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "))->get();  
+        $listAgent = Agent::with(['email','phone'])->select(DB::raw("id, name, username,city,photo,created_at,(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "))->get();  
         return Datatables::of($listAgent)
         ->addColumn('options',function($listAgent){
             if($listAgent->username === 'Nonaktif'){
-                return '<div class="text-center"><a href="'.route('activateAgent', $listAgent->id).'" class="btn btn-primary btn-sm mr-3">Aktifkan akun</a><a href="javascript:deleteAgent('."'".$listAgent->id."'".')"  class="btn btn-primary btn-sm mr-3"> Delete </a></div>';
+                return '<div class="text-center"><a href="'.route('activateAgent', $listAgent->id).'" class="btn btn-primary btn-sm mr-3">Aktifkan akun</a><a href="javascript:void(0);"  data-id-agent="'.$listAgent->id.'" class="btn btn-primary btn-sm mr-3 deleteAgent"> Delete </a></div>';
             }else{
-                return '<div class="text-center"><a href="javascript:deleteAgent('."'".$listAgent->id."'".')"  class="btn btn-primary btn-sm mr-3"> Delete </a></div>';
+                return '<div class="text-center"><a href="javascript:void(0);"  data-id-agent="'.$listAgent->id.'" class="btn btn-primary btn-sm mr-3 deleteAgent"> Delete </a></div>';
             }
           
         })->rawColumns(['options'])->make(true);
@@ -36,6 +36,19 @@ class AgentController extends Controller
     public function newAgentForm()
     {
         return view('agent.new-agent-form');
+    }
+
+    public function deleteAgent(Request $req,$id)
+    {   
+      $agent = Agent::findorFail($id);
+        if($agent->photo  === null )
+        {
+            $agent->delete();
+        }
+         $tes = Storage::delete('public/agentImage/'.$agent->photo);
+         $agent->delete();
+         return response()->json(['status'=>true]);
+      
     }
 
     public function createAgentForm(\App\Http\Requests\StoreAgent $req)

@@ -106,7 +106,7 @@
                         data: 'name',
                         render: function (data, type, row) {
                             return '<div>' + data +
-                                '</div><div class="small text-muted">Registered: Mar 19, 2018</div>';
+                                '</div><div class="small text-muted">Registered:'+row['created_at']+'</div>';
                         },
                     },
                     {
