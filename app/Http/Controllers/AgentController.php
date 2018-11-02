@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use DataTables;
 use DB;
 use App\Agent;
-use App\Http\Requests\StoreAgent;
+use File;
+use Storage;
 use Redirect;
 use Illuminate\Support\Facades\Log;
 class AgentController extends Controller
@@ -18,25 +19,16 @@ class AgentController extends Controller
 
     public function getAgent()
     {
-        $agent = Agent::with(['email','phone'])->get();
-        
-        // $agent = DB::table('agents')
-        // ->join('agent_phones','agents.id','=','agent_phones.agent_id')
-        // ->join('agent_emails','agents.id','=','agent_emails.agent_id')
-        // ->select([
-        //             'agents.id as idAgent',
-        //             'agents.name as name',
-        //             'agents.username as username',
-        //             'agents.city as city',
-        //             'agents.photo as photo',
-        //             'agent_emails.email as email',
-        //             'agent_phones.phone as phone',
-        //             DB::raw("(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "
-        //             )])->get();
-        
-        return Datatables::of($agent)
-        ->addColumn('options',function($agent){
-            return '<div class="text-center"><a href="agen-aktifkan-akun.html" class="btn btn-primary btn-sm mr-3">Aktifkan akun</a><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i>Detail </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i>Termin Pembayaran </a><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i>Progress Tracker</a><div class="dropdown-divider"></div><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i>Separated link</a></div></div></div>';
+
+        $listAgent = Agent::with(['email','phone'])->select(DB::raw("id, name, username,city,photo,(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "))->get();  
+        return Datatables::of($listAgent)
+        ->addColumn('options',function($listAgent){
+            if($listAgent->username === 'Nonaktif'){
+                return '<div class="text-center"><a href="'.route('activateAgent', $listAgent->id).'" class="btn btn-primary btn-sm mr-3">Aktifkan akun</a><a href="javascript:deleteAgent('."'".$listAgent->id."'".')"  class="btn btn-primary btn-sm mr-3"> Delete </a></div>';
+            }else{
+                return '<div class="text-center"><a href="javascript:deleteAgent('."'".$listAgent->id."'".')"  class="btn btn-primary btn-sm mr-3"> Delete </a></div>';
+            }
+          
         })->rawColumns(['options'])->make(true);
 
     }
@@ -46,50 +38,59 @@ class AgentController extends Controller
         return view('agent.new-agent-form');
     }
 
-    public function createAgentForm(StoreAgent $req)
+    public function createAgentForm(\App\Http\Requests\StoreAgent $req)
     {
-        Log::error($req);
-        // echo "berhasil request";
-        // $agent = new Agent();
-        // $agent->name        = $req->nama;
-        // $agent->address     = $req->alamat;
-        // $agent->city        = $req->kota;
-        // if($req->hasFile('foto'))
-        // {
-        //     $agentImage = $req->file('foto');
-        //     $fileName = $agentImage->getClientOriginalExtension();
-        //     Image::make($agentImage)->resize(300, 300)->save( storage_path('/agentImage/' . $filename ));
-        //     $agent->photo =  $fileName ;
-        // }
-     
+        // dd($req->telepon);
+        $agent = new Agent();
+        if($req->hasFile('photoAgent'))
+        {
+            $agentImage      = $req->file('photoAgent');
+            // dd($clientImage);
+            $fileName   =  $agentImage->getClientOriginalName();
+            Storage::putFileAs('public/agentImage', $agentImage, $fileName);
+            $agent->photo            = $fileName;
+        }else{
+            $agent->photo            = '';
+        }
+        $agent->name        = $req->nama;
+        $agent->address     = $req->alamat;
+        $agent->city        = $req->kota;
+        $agent->save();
 
-        // $agent->save();
+        foreach($req->telepon as $listTelepon)
+        {
+            $agent->phone()->create(['phone'=>$listTelepon]);
+        }
 
-        // foreach($req->telepon as $listTelepon)
-        // {
-        //     $agent->phone()->create(['phone'=>$listTelepon]);
-        // }
+        foreach($req->email as $listNorek)
+        {
+            $agent->bankAccount()->create(['bank_account'=>$listNorek]);
+        }
 
-        // foreach($req->email as $listNorek)
-        // {
-        //     $agent->bankAccount()->create(['bank_account'=>$listNorek]);
-        // }
+        foreach($req->email as $listEmail)
+        {
+            $agent->email()->create(['email'=>$listEmail]);
+        }
 
-        // foreach($req->email as $listEmail)
-        // {
-        //     $agent->email()->create(['email'=>$listEmail]);
-        // }
+        foreach($req->web as $listWeb)
+        {
+            $agent->webAddress()->create(['web_address'=>$listWeb]);
+        }
 
-        // foreach($req->web as $listWeb)
-        // {
-        //     $agent->webAddress()->create(['web_address'=>$listWeb]);
-        // }
-
-        // $notification = array(
-        //     'message' => 'success in storing data!!', 
-        //     'alert-type' => 'success'
-        // );
+        $notification = array(
+            'message' => 'success in storing data!!', 
+            'alert-type' => 'success'
+        );
         
-        // return Redirect::to('/agent/agent-list')->with($notification);
+        return Redirect::to('/agent/agent-list')->with($notification);
     }
+
+    public function activateAgent($id)
+    {
+        $random = str_random(7);
+        $agent = Agent::findorFail($id);
+        $agent->username = $random;
+        $agent->save();
+        return view('agent.agent-activation',['usernameKode'=>$random]);
+    } 
 }

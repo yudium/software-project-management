@@ -26,48 +26,47 @@ class StoreAgent extends FormRequest
         $this->sanitize();
 
         return [
-            'nama'=>'required',
+            'nama'=>'required|min:2',
             'alamat'=>'required',
             'kota'=>'required',
-            'telepon'=>'required|numeric',
-            'email'=>'required|email',
-            'norek'=>'required|numeric',
-            'web'=>'required|url',
-            'foto'=>'',
+            'photoAgent'=>'',
+            // 'telepon'=>'required',
+            // 'email'=>'required',
+            // 'norek'=>'required',
         ];
     }
 
     public function sanitize()
     {
         $input = $this->all();
-
-        dd($input);
-        $old_telepon = $input['agent-telepon'];
-        $input['agent-telepon'] = [];
+    //   dd($input);
+        $old_telepon = $input['telepon'];
+        $input['telepon'] = [];
         foreach($old_telepon as $key => $telepon){
-            if(trim($telepon)) array_push($input['agent-telepon'],$telepon);
+            if(trim($telepon)) array_push($input['telepon'],$telepon);
         }
 
-        $old_email = $input['agent-email'];
-        $input['agent-email'] = [];
+        $old_email = $input['email'];
+        $input['email'] = [];
         foreach($old_email as $key =>$email){
-            if(trim($email)) array_push($input['agent-email'],$email);
+            if(trim($email)) array_push($input['email'],$email);
 
         }
         
-        $old_norek = $input['agent-norek'];
-        $input['agent-norek'] = [];
+        $old_norek = $input['norek'];
+        $input['norek'] = [];
         foreach($old_norek as $key =>$norek){
-            if(trim($norek)) array_push($input['agent-norek'],$norek);
+            if(trim($norek)) array_push($input['norek'],$norek);
     
          }
 
-        $old_web = $input['agent-web'];
-        $input['agent-web'] = [];
+        $old_web = $input['web'];
+        $input['web'] = [];
         foreach($old_web as $key =>$web){
-            if(trim($web)) array_push($input['agent-web'],$web);
+            if(trim($web)) array_push($input['web'],$web);
 
         }
+        // dd($input);
         $this->replace($input);
     }
 }

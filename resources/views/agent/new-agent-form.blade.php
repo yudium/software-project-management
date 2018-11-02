@@ -74,7 +74,7 @@
             Form Tambah Agen
         </h1>
     </div>
-    <form method="post" action="{{ route('createAgentForm') }}">
+    <form method="post" action="{{ route('createAgentForm') }}" enctype="multipart/form-data">
         @csrf
     <div class="row row-cards">
         <div class="col-4">
@@ -84,22 +84,28 @@
                         <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
                         <input class="form-control" type="text" name="nama" placeholder="Masukan Nama">
                         @if ($errors->has('nama'))
-                        <div class="alert alert-danger">{{ $errors->first('nama') }}</div>
-                        @endif
+                        @foreach ($errors->get('nama') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
+                    @endif
                       
                     </div>
                     <div class="form-group">
                         <label class="form-label">Alamat</label>
                         <input class="form-control" name="alamat" type="text" placeholder="Masukan alamat">
                         @if ($errors->has('alamat'))
-                        <div class="alert alert-danger">  {{ $errors->first('alamat') }}</div>
+                        @foreach ($errors->get('alamat') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
                     @endif
                     </div>
                     <div class="form-group">
                         <label class="form-label">Kota</label>
                         <input class="form-control" type="text" name="kota" placeholder="Masukan nama kota">
                         @if ($errors->has('kota'))
-                        <div class="alert alert-danger">  {{ $errors->first('kota') }}</div>
+                        @foreach ($errors->get('kota') as $message)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @endforeach
                     @endif
                     </div>
                 </div>
@@ -112,9 +118,16 @@
             <div class="card-body">
                 <div class="form-group">
                     <label class="form-label">Telepon</label>
+                    {{-- <div class="alert alert-danger">
+                            @if ($errors->has('telepon'))
+                            @foreach ($errors->get('telepon') as $message)
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @endforeach
+                        @endif
+                    </div> --}}
                     @include('includes.form-element.multiple-input', [
                     'id' => 'multi-telepon',
-                    'name' => 'agent-telepon[]',
+                    'name' => 'telepon[]',
                     'number' => 1,
                     ])
                 </div>
@@ -122,14 +135,14 @@
                     <label class="form-label">Email</label>
                     @include('includes.form-element.multiple-input', [
                     'id' => 'multi-email',
-                    'name' => 'agent-email[]',
+                    'name' => 'email[]',
                     'number' => 1,])
                 </div>
                 <div class="form-group">
                     <label class="form-label">No. Rekening</label>
                     @include('includes.form-element.multiple-input', [
                     'id' => 'multi-norek',
-                    'name' => 'agent-norek[]',
+                    'name' => 'norek[]',
                     'number' => 1,
                     ])
                 </div>
@@ -137,7 +150,7 @@
                     <label class="form-label">Alamat web</label>
                      @include('includes.form-element.multiple-input', [
                     'id' => 'multi-web',
-                    'name' => 'agent-web[]',
+                    'name' => 'web[]',
                     'number' => 1,
                     ]) 
                 </div>
@@ -155,7 +168,7 @@
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
-                                <input class="custom-file-input" name="foto" id="fotoAgent" type="file">
+                                <input class="custom-file-input" name="photoAgent" id="fotoAgent" type="file">
                                 <label class="custom-file-label">Choose file</label>
                             </div>
                         </div>
@@ -165,7 +178,7 @@
             <div class="col-12">
                 <button class="btn btn-primary btn-block">Simpan</button>
             </div>
-            {{-- {{ dd($errors->first('nama'))}} --}}
+            {{-- {{ dd($errors->has('telepon'))}} --}}
         </div>
     </div>
 </div>

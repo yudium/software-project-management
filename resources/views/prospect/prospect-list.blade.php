@@ -20,14 +20,15 @@
 @endsection
 @section('content')
 <div class="container">
+        @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<span aria-hidden="true"></span><button type="button"
+            class="close" data-dismiss="alert" aria-label="Close"></button></p>
+        @endif
     <div class="page-header">
 	<h1 class="page-title">
 		Daftar Prospect
 	</h1>
 </div>
-
-
-
     <div class="card">
 	<div class="table-responsive">
 		<table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="prospectTable">

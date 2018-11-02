@@ -16,7 +16,7 @@ class Agent extends Model
 
     public function bankAccount()
     {
-        return $this->hasManyy('App\AgentBankAccount');
+        return $this->hasMany('App\AgentBankAccount');
     }
 
     public function phone()

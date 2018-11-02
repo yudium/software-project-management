@@ -20,24 +20,15 @@
 @endsection
 @section('content')
 <div class="container">
-
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}
+            <span aria-hidden="true"></span><button type="button"
+            class="close" data-dismiss="alert" aria-label="Close"></button></p>
+    @endif
     <div class="page-header">
         <h1 class="page-title">
             Daftar Agen
         </h1>
-    </div>
-
-    <div class="row row-cards">
-        <div class="col-6 col-sm-4 col-lg-4">
-            <div class="form-group">
-                <div class="input-icon mb-3">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-icon-addon">
-                        <i class="fe fe-search"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="card">
@@ -52,7 +43,7 @@
                         <th>Kota</th>
                         <th>Telepon</th>
                         <th>Email</th>
-                        <th class="text-center"><i class="icon-settings"></i></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,7 +87,7 @@
                 },
                 {
                     render:function(data,type,row){
-                       return data  ;
+                       return  data ? formatRupiah(data, "Rp. ") : "Belum Ada";   
                     },
                     orderable:false,
                     targets:3,
@@ -144,5 +135,30 @@
             ]
         });
     });
+
+    /*Fungsi untuk mengenerate username agent*/
+    // function aktivateAgent(id)
+    // {
+    //     alert(id)
+    // }
+
+    /* Fungsi formatRupiah */
+    function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, "").toString(),
+        split = number_string.split(","),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+        separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+    }
+
+    rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+    return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+    }
+
 </script>
 @endsection

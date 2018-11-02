@@ -49,9 +49,9 @@
 
 <!-- Global functions  -->
 <script src="{{ asset('assets/js/utilities.js') }}"></script>
-{{-- <!--Toastr-->
+<!--Toastr-->
 <link href="{{ asset('assets/plugins/toastr/build/toastr.min.css') }}" rel="stylesheet">
-<script src="{{ asset('assets/plugins/toastr/build/toastr.min.js') }}"></script> --}}
+<script src="{{ asset('assets/plugins/toastr/plugin.js') }}"></script>
 
 
 
