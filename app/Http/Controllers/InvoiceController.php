@@ -24,7 +24,7 @@ class InvoiceController extends Controller
 
     /**
      * Generate invoice
-     * 
+     *
      */
     public function generate(Request $request, $project_id)
     {
@@ -34,20 +34,26 @@ class InvoiceController extends Controller
         // get bank data
         $bank = Bank::find($request->bank);
 
-        // NOTE: if you reload the invoice print web page, the invoice number
-        //       will be incremented.
-
-        // the invoice table only contains one record with one column
-        $invoice_table = \DB::table('invoice')->first();
-        // increment invoice_number
-        $invoice_number = 1 + $invoice_table->invoice_number;
+        /**
+         | Get invoice number to display in invoice; by increment last
+         | invoice number in setting table.
+         |
+         | NOTE: if you just reload the invoice print web page, the invoice number
+         |       will be incremented.
+         | -----------------------------------------------------------*/
+        $invoice_number = (int) \Setting::value('last_invoice_number');
+        $invoice_number = 1 + $invoice_number;
         // save incremented invoice_number column value
-        \DB::table('invoice')->update(['invoice_number' => $invoice_number]);
+        \Setting::change('last_invoice_number', $invoice_number);
 
-        // get all termin_details that selected by user in the form
+        /**
+         | Get termin details that are selected by user in invoice form.
+         | -----------------------------------------------------------*/
         $termin_details = TerminDetail::whereIn('id', $request->termin_detail_id)->get();
 
-        // sum *all* amount that already paid by client
+        /**
+         | Sum all amount that already paid by client
+         | -----------------------------------------------------------*/
         $total_paid_amount = 0;
         foreach ($project->termin->payments as $termin_payment) {
             $total_paid_amount += $termin_payment->amount;

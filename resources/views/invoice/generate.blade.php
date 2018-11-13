@@ -145,7 +145,7 @@ body {
     <TD class="tr0 td1">
         <P class="p7 ft5">
             <SPAN class="ft3">:
-                {{ str_replace_last_occurrence(',', ' dan', implode(', ', array_pluck($termin_details->toArray(), 'serial_number'))) }}
+                {{ str_replace_last(',', ' dan', implode(', ', array_pluck($termin_details->toArray(), 'serial_number'))) }}
             </SPAN>
         </P>
     </TD>

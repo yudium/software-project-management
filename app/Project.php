@@ -11,6 +11,8 @@ class Project extends Model
      */
     const IS_DRAFT          = '0';
     const IS_ONPROGRESS     = '1';
+    const IS_DONE_SUCCESS   = '2';
+    const IS_DONE_FAIL      = '3';
 
     /**
      * correspond to `payment_method` column in table
@@ -77,5 +79,57 @@ class Project extends Model
         if ($this->payment_method == self::PAYMENT_BY_FULLCASH) return 'Full cash';
         if ($this->payment_method == self::PAYMENT_BY_TERMIN) return 'Menyicil';
         return 'Belum ditentukan';
+    }
+
+    public function getIsPaymentMethodTerminAttribute()
+    {
+        return $this->payment_method == self::PAYMENT_BY_TERMIN;
+    }
+
+    public function getIsPaymentMethodFullcashAttribute()
+    {
+        return $this->payment_method == self::PAYMENT_BY_FULLCASH;
+    }
+
+    public function getIsDraftAttribute()
+    {
+        return $this->status == self::IS_DRAFT;
+    }
+
+    public function getIsOnprogressAttribute()
+    {
+        return $this->status == self::IS_ONPROGRESS;
+    }
+
+    public function getIsDoneAttribute()
+    {
+        return $this->is_done_fail OR $this->is_done_success;
+    }
+
+    public function getIsDoneFailAttribute()
+    {
+        return $this->status == self::IS_DONE_FAIL;
+    }
+
+    public function getIsDoneSuccessAttribute()
+    {
+        return $this->status == self::IS_DONE_SUCCESS;
+    }
+
+    /**
+     * For using with DataTable plugin as Ajax response
+     *
+     * @param $array    contains
+     *                      (1) progress percent (number in tens),
+     *                      (2) number of task (number),
+     *                      (3) number of task complete (number)
+     *                      (4) last progress activity (array or json from trello api)
+     *
+     *                  NOTE: can be null.
+     */
+    public function setProgressAttribute($array)
+    {
+        // add new attribute with name 'progress'
+        $this->attributes['progress'] = $array;
     }
 }

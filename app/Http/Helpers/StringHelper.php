@@ -9,27 +9,6 @@
  */
 
 /**
- * Replace last occurrence
- * 
- * source: https://stackoverflow.com/questions/3835636/php-replace-last-occurrence-of-a-string-in-a-string
- *
- * TODO: remove, use str_replace_last() laravel's helper instead.
- * 
- * @return string
- */
-function str_replace_last_occurrence($search, $replace, $subject)
-{
-    $pos = strrpos($subject, $search);
-
-    if($pos !== false)
-    {
-        $subject = substr_replace($subject, $replace, $pos, strlen($search));
-    }
-
-    return $subject;
-}
-
-/**
  * @param int $number
  * @return string
  */

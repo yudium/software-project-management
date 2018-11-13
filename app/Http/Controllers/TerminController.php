@@ -23,7 +23,7 @@ class TerminController extends Controller
 
     /**
      * Store termin data to database
-     * 
+     *
      */
     public function store(Request $request)
     {

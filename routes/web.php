@@ -41,6 +41,15 @@ Route::get('/agen/agen-list','AgenController@index')->name('agenList');
 Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
 Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');
 
+Route::get('/project/list/draft', 'ProjectController@getDraft')->name('draft-project-list');
+Route::get('/project/list/draft/ajax', 'ProjectController@getDraftAjax')->name('draft-project-list-ajax');
+
+Route::get('/project/list/success', 'ProjectController@getSuccess')->name('success-project-list');
+Route::get('/project/list/success/ajax', 'ProjectController@getSuccessAjax')->name('success-project-list-ajax');
+
+Route::get('/project/list/fail', 'ProjectController@getFail')->name('fail-project-list');
+Route::get('/project/list/fail/ajax', 'ProjectController@getFailAjax')->name('fail-project-list-ajax');
+
 Route::get('/project/create/step-1', 'ProjectController@createStep1')->name('create-project-step1');
 Route::get('/project/create/step-1/ajax/client', 'ProjectController@createStep1AjaxClient')->name('create-project-step1-client-ajax');
 Route::get('/project/create/step-1/ajax/prospect', 'ProjectController@createStep1AjaxProspect')->name('create-project-step1-prospect-ajax');
@@ -52,7 +61,11 @@ Route::post('/project/create/step-3', 'ProjectController@storeStep3')->name('sto
 
 Route::get('/project/detail/{id}', 'ProjectController@detail')->name('project-detail');
 
-Route::get('/project/payment-method/fullcash/{id}', 'ProjectController@setPaymentMethodFullCash')->name('set-payment-method-fullcash');
+Route::get('/project/{id}/set-payment-method-as-fullcash', 'ProjectController@setPaymentMethodFullCash')->name('set-payment-method-fullcash');
+
+Route::get('/project/{id}/mark-as-done', 'ProjectController@markProjectDone')->name('mark-project-done');
+Route::get('/project/{id}/mark-as-done/{choice}/confirm', 'ProjectController@confirmMarkProjectDone')->name('confirm-mark-project-done');
+Route::get('/project/{id}/mark-as-done/{choice}/confirmed', 'ProjectController@confirmedMarkProjectDone')->name('confirmed-mark-project-done');
 
 Route::get('/project/activate/{id}', 'ProjectController@activate')->name('activate-project');
 
@@ -92,7 +105,7 @@ Route::get('/termin/payment/history/{termin_detail_id}', 'TerminController@payme
 Route::get('/invoice/form/{project_id}', 'InvoiceController@form')->name('invoice-form');
 Route::post('/invoice/print/{project_id}', 'InvoiceController@generate')->name('invoice-generate');
 
-Route::get('/progress/test', 'ProgressController@test')->name('progress-test');
+Route::get('/progress/{project_id}', 'ProgressController@get')->name('project-progress');
 
 Route::get('/dashboard', 'DashboardController@main')->name('dashboard');
 
@@ -100,3 +113,14 @@ Route::get('/array-validation-test', function(){
     return view('array-validation-test');
 });
 Route::post('/array-validation-test', 'ArrayValidationController@test')->name('array-validation-test');
+
+Route::get('/setting/list', 'SettingController@get')->name('setting-list');
+Route::get('/setting/list/ajax', 'SettingController@getAjax')->name('setting-list-ajax');
+
+Route::get('/setting/create', 'SettingController@create')->name('create-setting');
+Route::post('/setting/store', 'SettingController@store')->name('store-setting');
+
+Route::get('/setting/edit/{name}', 'SettingController@edit')->name('edit-setting');
+Route::post('/setting/update/{name}', 'SettingController@update')->name('update-setting');
+
+Route::get('/setting/delete/{name}', 'SettingController@delete')->name('delete-setting');

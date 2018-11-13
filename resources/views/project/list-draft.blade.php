@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Proyek Potensial: Daftar')
+@section('title', 'Proyek Draft: Daftar')
 
 @section('css')
 <style>
@@ -24,7 +24,7 @@
 @section('content')
     <div class="container">
         @component('pagetitle')
-            Daftar Proyek Potensial
+            Daftar Proyek Draft
         @endcomponent
 
         @component('cardtable', ['class' => 'datatable'])
@@ -34,27 +34,24 @@
                 <th>Client</th>
                 <th class="text-center w-1">Jenis</th>
                 <th>Proyek</th>
-                <th>Tanggal Input</th>
-                <th class="text-center"></th>
+                <th class="text-center"><i class="fe fe-settings"></i></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="text-center" colspan="6">
+                <td class="text-center" colspan="5">
                     <div class="loader mx-auto"></div>
                 </td>
             </tr>
             </tbody>
         @endcomponent
     </div>
-@endsection
 
-@section('js')
     <script>
     require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ route('potential-project-list-ajax') }}',
+            ajax: '{{ route('draft-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -95,26 +92,29 @@
                 },
                 {
                     render: function(data, type, row) {
-                        {{-- TODO: cari pengganti cara ini. Kurang sreg --}}
-                        return `
-                            <a href="{{ url('/project/potential/follow-up/') }}/${row['id']}" class="btn btn-primary btn-sm mr-2">Follow Up</a>
-                            <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
-                            <a class="icon ml-5" href="javascript:void(0)">
-                                <i class="fe fe-edit"></i>
-                            </a>
+                        let html = `
+                            <div class="item-action dropdown">
+                            <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
+                            </div>
+                            </div>
                         `;
+
+                        return html;
                     },
                     className: 'text-center',
                     orderable: false,
-                    targets: 5,
+                    targets: 4,
                 },
             ],
             columns: [
                 { data: 'client.photo' },
                 { data: 'client.name' },
+
                 { data: 'project_type.icon' },
-                { data: 'project_name' },
-                { data: 'created_at' },
+
+                { data: 'name' },
 
                 { data: null },
             ]

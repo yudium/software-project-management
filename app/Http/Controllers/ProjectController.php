@@ -12,9 +12,20 @@ use App\PIC;
 use App\Termin;
 use App\TerminDetail;
 use App\Bank;
+use Carbon;
 
 class ProjectController extends Controller
 {
+    private $trello_auth;
+
+    public function __construct()
+    {
+        $this->trello_auth = [
+            'key' => \Setting::value('trello_api_key'),
+            'token' => \Setting::value('trello_token'),
+        ];
+    }
+
     /**
      * Get active running project page
      */
@@ -28,7 +39,145 @@ class ProjectController extends Controller
      */
     public function getOnProgressAjax(Request $request)
     {
-        $projects = Project::with(['client', 'project_type'])->get();
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_ONPROGRESS)->get();
+
+        /**
+         | I do 2 thing:
+         |      (1) Calculate progress percent for each project,
+         |          but also take the number of task complete and total number of task
+         |
+         |      (2) Take the last progress activity relative time (completed task) in hours
+         | --------------------------------------------------------------- */
+        $progress_percent = 0;
+        $number_of_task = 0;
+        $number_of_task_complete = 0;
+
+        $last_complete_task = null;
+        foreach ($projects as $project) {
+
+            // we inform to ajax client that current project doesn't have
+            // trello
+            if (! $project->trello_board_id) {
+                $project->progress = null;
+                continue;
+            }
+
+            // (1)
+            // calculate progress percent
+            $progress_percent = getTrelloProgressByBoardId(
+                $project->trello_board_id,
+                $this->trello_auth,
+                $number_of_task,            // pass by reference
+                $number_of_task_complete    // pass by reference
+            );
+
+            // (2)
+            // get last progress activity
+            $last_complete_task = getTrelloLastProgress(
+                $project->trello_board_id,
+                $this->trello_auth
+            );
+            // in hours
+            $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
+
+            // now save to the current model as array
+            $project->progress = compact(
+                'progress_percent',
+                'number_of_task',
+                'number_of_task_complete',
+                'last_progress_relative_time'
+            );
+        }
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
+     * Get draft project
+     */
+    public function getDraft()
+    {
+        return view('project.list-draft');
+    }
+
+    /**
+     * Data for DataTable plugin, in draft project page
+     */
+    public function getDraftAjax(Request $request)
+    {
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DRAFT)->get();
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
+     * Get success project
+     */
+    public function getSuccess()
+    {
+        return view('project.list-success');
+    }
+
+    /**
+     * Data for DataTable plugin, in success project page
+     */
+    public function getSuccessAjax(Request $request)
+    {
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DONE_SUCCESS)->get();
+
+        /**
+         | Calculate progress percent for each project,
+         | but also take the number of task complete and total number of task
+         | --------------------------------------------------------------- */
+        $progress_percent = 0;
+        $number_of_task = 0;
+        $number_of_task_complete = 0;
+        foreach ($projects as $project) {
+
+            // we inform to ajax client that current project doesn't have
+            // trello
+            if (! $project->trello_board_id) {
+                $project->progress = null;
+                continue;
+            }
+
+            // calculate progress percent
+            $progress_percent = getTrelloProgressByBoardId(
+                $project->trello_board_id,
+                $this->trello_auth,
+                $number_of_task,            // pass by reference
+                $number_of_task_complete    // pass by reference
+            );
+
+            // now save to the current model as array
+            $project->progress = compact(
+                'progress_percent',
+                'number_of_task',
+                'number_of_task_complete'
+            );
+        }
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
+     * Get fail project
+     */
+    public function getFail()
+    {
+        return view('project.list-fail');
+    }
+
+    /**
+     * Data for DataTable plugin, in fail project page
+     */
+    public function getFailAjax(Request $request)
+    {
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DONE_FAIL)->get();
 
         return DataTables::of($projects)->make(true);
     }
@@ -268,5 +417,42 @@ class ProjectController extends Controller
 
         return view('project.set-payment-method-fullcash', compact('id'));
     }
-}
 
+    /**
+     * User choice between mark as fail or success for status of completed
+     * project
+     */
+    public function markProjectDone($id)
+    {
+        return view('project.mark-project-done', compact('id'));
+    }
+
+    /**
+     * Show dialog confirm to user about mark project as done
+     *
+     * @param $id        project's id
+     * @param $choice    possible value: Project::IS_DONE_FAIL or Project::IS_DONE_SUCCESS
+     */
+    public function confirmMarkProjectDone($id, $choice)
+    {
+        $project = Project::find($id);
+
+        return view('project.mark-project-done_confirm', compact('project', 'choice'));
+    }
+
+    /**
+     * User confirmed 100% sure will mark project as done
+     *
+     * @param $id        project's id
+     * @param $choice    possible value: Project::IS_DONE_FAIL or Project::IS_DONE_SUCCESS
+     */
+    public function confirmedMarkProjectDone($id, $choice)
+    {
+        // TODO: add validation to make sure $choice is valid value
+        $project = Project::find($id);
+        $project->status = $choice;
+        $project->save();
+
+        return redirect()->route('project-detail', ['id' => $project->id]);
+    }
+}
