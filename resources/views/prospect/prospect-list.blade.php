@@ -67,7 +67,7 @@
                 {data: 'type', name: 'type'},
                 {data: 'phone', name: 'phone'},
                 {data: 'email', name: 'email'},
-                {data:'status_hub',name:'status_hub'},
+                {data:'business_relationship_status',name:'business_relationship_status'},
                 {data:'options',name:'options'},
                
             ],
@@ -90,7 +90,7 @@
                     data:'type',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="fe fe-user"></i></i><div class="small text-muted">'+data+'</div></div>';
+                       return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="fe fe-user"></i></i><div class="small text-muted">'+data.name+'</div></div>';
                     },
                 },
                 {
@@ -98,7 +98,11 @@
                     data:'phone',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return data;
+                       let phone_html = ''
+                       data.forEach(function(value,index,array){
+                           phone_html +=value.phone + '<br>';
+                       })
+                       return phone_html;
                     },
                 },
                 {
@@ -106,12 +110,16 @@
                     data:'email',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return data;
+                       let email_html = ''
+                       data.forEach(function(value,index,array){
+                           email_html += value.email + '<br>';
+                       })
+                       return email_html;
                     },
                 },
                 {
                     targets: 5,
-                    data:'status_hub',
+                    data:'business_relationship_status',
                     orderable:false,
                     render: function ( data, type, row ) {
                        return '<span class="status-icon bg-success"></span>'+data+'';

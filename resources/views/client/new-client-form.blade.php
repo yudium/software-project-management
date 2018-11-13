@@ -138,12 +138,6 @@
                             ])
                         </div>
                     </div>
-
-                    <!--
-                    <div class="card-footer">
-                        This is standard card footer
-                    </div>
-                -->
                 </div>
             </div>
             <div class="col-4">

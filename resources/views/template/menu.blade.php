@@ -2,12 +2,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-3 ml-auto">
-                <form class="input-icon my-3 my-lg-0">
-                    <input type="search" class="form-control header-search" placeholder="Search&hellip;" tabindex="1">
-                    <div class="input-icon-addon">
-                        <i class="fe fe-search"></i>
-                    </div>
-                </form>
+      
             </div>
             <div class="col-lg order-lg-first">
                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
@@ -15,7 +10,7 @@
                         <a href="{{ route('dashboard') }}" class="nav-link active"><i class="fe fe-home"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-box"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'project') active @endif" data-toggle="dropdown"><i class="fe fe-box"></i>
                             Proyek</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
                             <a href="{{ route('create-project-step1') }}" class="dropdown-item  ">Tambah</a>
@@ -35,19 +30,19 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-user-o"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'client') active @endif" data-toggle="dropdown"><i class="fa fa-user-o"></i>
                             Client</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../client-list.html" class="dropdown-item  ">Daftar Client</a>
-                            <a href="../new-client_select-jenis.html" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('clientList') }}" class="dropdown-item  ">Daftar Client</a>
+                            <a href="{{ route('newClientTypes') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-user-o"></i>
+                        <a href="javascript:void(0)" class="nav-link @if(request()->segment(1) == 'prospect') active @endif" data-toggle="dropdown"><i class="fa fa-user-o"></i>
                             Prospect</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../prospect-list.html" class="dropdown-item  ">Daftar Prospect</a>
-                            <a href="../new-prospect_select-jenis.html" class="dropdown-item  ">Tambah</a>
+                            <a href="{{ route('prospectList') }}" class="dropdown-item  ">Daftar Prospect</a>
+                            <a href="{{ route('newProspectTypes') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
