@@ -119,14 +119,8 @@ Route::get('/progress/{project_id}', 'ProgressController@get')->name('project-pr
 
     Route::get('/dashboard', 'DashboardController@main')->name('dashboard');
     Route::redirect('/', '/dashboard', 301);
-    // Route::get('/array-validation-test', function(){
-    //     return view('array-validation-test');
-    // });
-    // Route::post('/array-validation-test', 'ArrayValidationController@test')->name('array-validation-test');
-    });
-Route::Auth();
 
-Route::get('/setting/list', 'SettingController@get')->name('setting-list');
+    Route::get('/setting/list', 'SettingController@get')->name('setting-list');
 Route::get('/setting/list/ajax', 'SettingController@getAjax')->name('setting-list-ajax');
 
 Route::get('/setting/create', 'SettingController@create')->name('create-setting');
@@ -136,3 +130,11 @@ Route::get('/setting/edit/{name}', 'SettingController@edit')->name('edit-setting
 Route::post('/setting/update/{name}', 'SettingController@update')->name('update-setting');
 
 Route::get('/setting/delete/{name}', 'SettingController@delete')->name('delete-setting');
+
+    // Route::get('/array-validation-test', function(){
+    //     return view('array-validation-test');
+    // });
+    // Route::post('/array-validation-test', 'ArrayValidationController@test')->name('array-validation-test');
+    });
+Route::Auth();
+
