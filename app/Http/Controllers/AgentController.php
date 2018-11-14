@@ -33,6 +33,11 @@ class AgentController extends Controller
 
     }
 
+    public function getAgentCommission()
+    {
+        // $agentCommission = Agent::
+    }
+
     public function newAgentForm()
     {
         return view('agent.new-agent-form');
