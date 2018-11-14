@@ -30,47 +30,18 @@
         @component('cardtable', ['class' => 'datatable'])
             <thead>
             <tr>
-                <th class="text-center w-1"><i class="icon-people"></i></th>
+                <th class="text-center w-1"></th>
                 <th>Client</th>
                 <th class="text-center w-1">Jenis</th>
                 <th>Proyek</th>
                 <th>Status Deal</th>
-                <th class="text-center"><i class="icon-settings"></i></th>
+                <th class="text-center"></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="text-center">
-                    <div class="avatar d-block" style="background-image: url({{ asset('demo/faces/female/26.jpg') }})">
-                    <span class="avatar-status bg-green"></span>
-                    </div>
-                </td>
-                <td>
-                    <div>Elizabeth Martin</div>
-                    <div class="small text-muted">
-                    Registered: Mar 19, 2018
-                    </div>
-                </td>
-                <td class="text-center">
-                    <i class="icon-box"><i class="fa fa-android"></i></i>
-                </td>
-                <td>
-                    Pembangunan Aplikasi Parkir
-                </td>
-                <td>
-                    16/08/2019
-                </td>
-                <td class="text-right">
-                    <div class="item-action dropdown">
-                    <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="project-detail.html"" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
-                        <a href="termin-pembayaran_daftar.html" class="dropdown-item"><i class="dropdown-icon fe fe-dollar-sign"></i> Termin Pembayaran </a>
-                        <a href="project-detail_progress-tracker.html" target="_blank" class="dropdown-item"><i class="dropdown-icon fa fa-trello"></i> Progress Tracker</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="https://trello.com" target="_blank" class="dropdown-item"><i class="dropdown-icon fa fa-trello"></i> Buka Trello</a>
-                    </div>
-                    </div>
+                <td class="text-center" colspan="6">
+                    <div class="loader mx-auto"></div>
                 </td>
             </tr>
             </tbody>
@@ -89,12 +60,14 @@
             columnDefs: [
                 {
                     render: function(data, type, row) {
-                        // TODO: ubah path asset pake row['client.photo']
-                        // reference: https://www.datatables.net/examples/advanced_init/column_render.html
+                        if (row['photo']) {
+                            return `
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['client.photo']) } )"></div>
+                            `;
+                        }
+
                         return `
-                            <div class="avatar d-block" style="background-image: url({{ asset('demo/faces/female/26.jpg') }})">
-                            <span class="avatar-status bg-green"></span>
-                            </div>
+                            <div class="avatar avatar-placeholder d-block"></div>
                         `;
                     },
                     orderable: false,
@@ -175,11 +148,8 @@
             columns: [
                 { data: 'client.photo' },
                 { data: 'client.name' },
-
                 { data: 'project_type.icon' },
-
                 { data: 'project_name' },
-
                 { data: 'deal_histories' },
 
                 { data: null },

@@ -16,9 +16,9 @@
                             <a href="{{ route('create-project-step1') }}" class="dropdown-item  ">Tambah</a>
                             <a href="../" class="dropdown-item  dropdown-item-title">Daftar Proyek</a>
                             <a href="{{ route('onprogress-project-list') }}" class="dropdown-item  ">Proyek Berjalan</a>
-                            <a href="" class="dropdown-item  ">Draft **</a>
-                            <a href="" class="dropdown-item  ">Arsip Berhasil **</a>
-                            <a href="" class="dropdown-item  ">Arsip Gagal **</a>
+                            <a href="{{ route('draft-project-list') }}" class="dropdown-item  ">Draft</a>
+                            <a href="{{ route('success-project-list') }}" class="dropdown-item  ">Arsip Berhasil</a>
+                            <a href="{{ route('fail-project-list') }}" class="dropdown-item  ">Arsip Gagal</a>
                             <a href="../" class="dropdown-item  dropdown-item-title">Proyek Potensial</a>
                             <a href="{{ route('create-potential-project-step1') }}" class="dropdown-item  ">Tambah</a>
                             <a href="{{ route('potential-project-list') }}" class="dropdown-item  ">Daftar</a>
@@ -62,6 +62,14 @@
                             <a href="../charts.html" class="dropdown-item  ">Client</a>
                             <a href="../pricing-cards.html" class="dropdown-item  ">Prospect</a>
                             <a href="../pricing-cards.html" class="dropdown-item  ">Agen</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-settings"></i>
+                            Setting</a>
+                        <div class="dropdown-menu dropdown-menu-arrow">
+                            <a href="{{ route('setting-list') }}" class="dropdown-item  ">Daftar Setting</a>
+                            <a href="{{ route('create-setting') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                 </ul>

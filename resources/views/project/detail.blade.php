@@ -124,8 +124,15 @@
                                     <div class="form-control-plaintext">
                                         @if ($project->status == \App\Project::IS_DRAFT)
                                             <span class="badge badge-secondary">Draft</span>
-                                        @elseif ($project->status == \App\Project::IS_ONPROGRESS)
+                                        @endif
+                                        @if ($project->status == \App\Project::IS_ONPROGRESS)
                                             <span class="badge badge-primary">Berjalan</span>
+                                        @endif
+                                        @if ($project->status == \App\Project::IS_DONE_FAIL)
+                                            <span class="badge badge-danger">Selesai [gagal]</span>
+                                        @endif
+                                        @if ($project->status == \App\Project::IS_DONE_SUCCESS)
+                                            <span class="badge badge-success">Selesai [sukses]</span>
                                         @endif
                                     </div>
                                 </div>
@@ -157,7 +164,12 @@
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">ID Board Trello</label>
-                                    <div class="form-control-plaintext">{{ $project->trello_board_id }}</div>
+                                    <div class="form-control-plaintext">
+                                        <a href="http://trello.com/b/{{ $project->trello_board_id }}">
+                                            {{ $project->trello_board_id }}
+                                            <i class="fa fa-external-link"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4"></div>
@@ -190,37 +202,63 @@
                                 <h4 class="card-title">Aksi</h4>
                             </div>
                             <div class="card-body">
-                                <a href="project-detail_progress-tracker.html" class="btn btn-secondary btn-block btn-sm">Progress Tracker</a>
-                                <a href="{{ route('termin-list', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->termin)">Termin Pembayaran</a>
-                                <a href="{{ route('invoice-form', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->status == \App\Project::IS_ONPROGRESS)">Cetak Invoice</a>
-                                <hr>
-                                @if (! $project->termin)
-                                    <div class="alert alert-warning">
-                                    <p>
-                                        <small>
-                                            <b>Pembayaran belum diatur</b>
-                                            <br><br>
-                                            <i>Sehingga tombol di bawah menjadi disabled.</i>
-                                            <br><br>
-                                            Jika proyek dibayar secara cicilan, klik <code>Buat Termin</code>.
-                                            Jika dibayar cash, <code>Pembayaran secara Cash</code>
-                                        </small>
-                                    </p>
-                                    <div class="btn-list">
-                                        <a href="{{ route('set-payment-method-fullcash', ['id' => $project->id]) }}" class="btn btn-secondary btn-sm">1. Pembayaran secara Cash</a>
-                                        <a href="{{ route('create-termin', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-sm">2. [atau] Buat Termin</a>
-                                    </div>
-                                    </div>
-                                    <a href="#" class="btn btn-primary btn-block btn-sm @echoIf('disabled', ! $project->payment_method)">Tandai Proyek Aktif</a>
-                                @elseif ($project->termin AND $project->status == \App\Project::IS_DRAFT)
-                                    <a href="{{ route('activate-project', ['id' => $project->id]) }}" class="btn btn-primary btn-block btn-sm">Tandai Proyek Aktif</a>
+
+                                {{-- Draft project doesn't have progress --}}
+                                @if (! $project->is_draft AND $project->trello_board_id)
+                                <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">
+                                    {{-- show different text for different project's status --}}
+                                    @if ($project->is_onprogress)
+                                        Progress Tracker
+                                    @endif
+                                    @if ($project->is_done)
+                                        Riwayat Progress
+                                    @endif
+                                </a>
                                 @endif
 
-                                @if ($project->status == \App\Project::IS_ONPROGRESS)
+                                {{-- show button 'Termin Pembayaran' only if project has termin data --}}
+                                @if ($project->termin)
+                                <a href="{{ route('termin-list', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->termin)">Termin Pembayaran</a>
+                                @endif
+
+                                {{-- print invoice only for onprogress project --}}
+                                @if ($project->is_onprogress)
+                                <a href="{{ route('invoice-form', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->status == \App\Project::IS_ONPROGRESS)">Cetak Invoice</a>
+                                @endif
+
+
+                                {{-- user only can change project state to active
+                                     only if the project's payment method already set up --}}
+                                @if ($project->is_draft)
+                                    <hr>
+                                    @if ($project->is_payment_method_termin OR $project->is_payment_method_fullcash)
+                                        <a href="{{ route('activate-project', ['id' => $project->id]) }}" class="btn btn-primary btn-block btn-sm">Tandai Proyek Aktif</a>
+                                    @else
+                                        <div class="alert alert-warning">
+                                            <p>
+                                                <small>
+                                                    <b>Pembayaran belum diatur</b> <br><br>
+                                                    <i>Sehingga tombol di bawah menjadi disabled.</i> <br><br>
+                                                    Jika proyek dibayar secara cicilan, klik <code>Buat Termin</code>.
+                                                    Jika dibayar cash, <code>Pembayaran secara Cash</code>
+                                                </small>
+                                            </p>
+                                            <div class="btn-list">
+                                                <a href="{{ route('set-payment-method-fullcash', ['id' => $project->id]) }}" class="btn btn-secondary btn-sm">1. Pembayaran secara Cash</a>
+                                                <a href="{{ route('create-termin', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-sm">2. [atau] Buat Termin</a>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="btn btn-primary btn-block btn-sm @echoIf('disabled', ! $project->payment_method)">Tandai Proyek Aktif</a>
+                                    @endif
+                                @endif
+
+                                {{-- show button 'Tandai Proyek Selesai' --}}
+                                @if ($project->is_onprogress)
+                                    <hr>
                                     <div class="alert alert-warning" role="alert">
                                         <small>Anda tidak bisa membatalkan setelah aksi ini dilakukan</small>
                                     </div>
-                                    <a href="#" class="btn btn-danger btn-block btn-sm">Tandai Proyek Selesai</a>
+                                    <a href="{{ route('mark-project-done', ['id' => $project->id]) }}" class="btn btn-danger btn-block btn-sm">Tandai Proyek Selesai</a>
                                 @endif
                             </div>
                         </div>

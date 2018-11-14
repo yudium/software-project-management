@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Proyek Aktif: Daftar')
+@section('title', 'Proyek Gagal: Daftar')
 
 @section('css')
 <style>
@@ -24,7 +24,7 @@
 @section('content')
     <div class="container">
         @component('pagetitle')
-            Daftar Proyek Aktif
+            Daftar Proyek Gagal
         @endcomponent
 
         @component('cardtable', ['class' => 'datatable'])
@@ -36,13 +36,12 @@
                 <th>Proyek</th>
                 <th>Progress</th>
                 <th></th>
-                <th>Deadline</th>
-                <th class="text-center"><i class="fe fe-settings"></i></th>
+                <th class="text-center"><i class="icon-settings"></i></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="text-center" colspan="8">
+                <td class="text-center" colspan="7">
                     <div class="loader mx-auto"></div>
                 </td>
             </tr>
@@ -51,10 +50,10 @@
     </div>
 
     <script>
-    require(['datatables', 'jquery', 'moment'], function(datatable, $, moment) {
+    require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ route('onprogress-project-list-ajax') }}',
+            ajax: '{{ route('fail-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -95,6 +94,11 @@
                 },
                 {
                     render: function(data, type, row) {
+                        // handle project that doesn't have trello (data = null)
+                        if (! data) {
+                            return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
+                        }
+
                         let progress_color = null;
 
                         if ( Math.floor(data['progress_percent']) <= 100) {
@@ -131,17 +135,6 @@
                 },
                 {
                     render: function(data, type, row) {
-                        return `
-                            <div class="small text-muted">Progress Terbaru</div>
-                            <div>${ data['last_progress_relative_time'] } jam yang lalu</div>
-                        `;
-                    },
-                    className: 'text-center',
-                    orderable: false,
-                    targets: 5,
-                },
-                {
-                    render: function(data, type, row) {
                         let html = `
                             <div class="item-action dropdown">
                             <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
@@ -175,7 +168,7 @@
                     },
                     className: 'text-center',
                     orderable: false,
-                    targets: 7,
+                    targets: 6,
                 },
             ],
             columns: [
@@ -184,8 +177,6 @@
                 { data: 'project_type.icon' },
                 { data: 'name' },
                 { data: 'progress' },
-                { data: 'progress' },
-                { data: 'endtime' },
 
                 { data: null },
             ]

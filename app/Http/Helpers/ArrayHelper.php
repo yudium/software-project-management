@@ -65,3 +65,17 @@ function array_filter_null_element(&$array) {
         return $value !== null;
     });
 }
+
+/**
+ * Array to query parameter
+ *
+ * Used in TrelloHelper.php
+ */
+function array_to_query_params($array) {
+    $query_params = [];
+    foreach ($array as $key => $val) {
+        array_push($query_params, "$key=$val");
+    }
+
+    return join('&', $query_params);
+}
