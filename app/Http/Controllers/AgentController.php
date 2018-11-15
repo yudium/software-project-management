@@ -111,4 +111,9 @@ class AgentController extends Controller
         $agent->save();
         return view('agent.agent-activation',['usernameKode'=>$random]);
     } 
+
+    public function paymentAgent()
+    {
+        return view('agent.agent-payment');
+    }
 }

@@ -65,7 +65,7 @@
                     </div>
                     <div class="col-12">
                         @component('card', ['title' => 'Person In Charge'])
-{{--
+
                         @if (count($errors->get('PIC.*')))
                             @component('includes.alert-danger')
                                 @foreach ($errors->get('PIC.*') as $messages)
@@ -75,7 +75,7 @@
                                 @endforeach
                             @endcomponent
                         @endif
---}}
+
                             @component('includes.alert-info')
                                 Fitur autocomplete menyediakan nama PIC yang terekam di DB
                             @endcomponent

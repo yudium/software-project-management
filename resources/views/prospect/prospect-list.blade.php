@@ -44,7 +44,11 @@
             </tr>
 			</thead>
 			<tbody>		
-			
+                    <tr>
+                            <td class="text-center" colspan="8">
+                                <div class="loader mx-auto"></div>
+                            </td>
+                        </tr>
 			</tbody>
 		</table>
 	</div>

@@ -29,7 +29,7 @@ class ClientController extends Controller
 
     public function getProspect()
     {
-        $prospect = Client::with(['type','phone','email'])->where('clients.status','=','prospect')->get();
+        $prospect = Client::with(['type','phone','email'])->where('clients.status','=',Client::IS_PROSPECT)->get();
         
         return Datatables::of($prospect)
         ->addColumn('options',function($prospect){
@@ -39,7 +39,7 @@ class ClientController extends Controller
 
     public function getClient()
     {
-        $client = Client::with(['type','phone','email'])->where('clients.status','=','client')->get();
+        $client = Client::with(['type','phone','email'])->where('clients.status','=',Client::IS_CLIENT)->get();
 
         return Datatables::of($client)
         ->addColumn('options',function($client){

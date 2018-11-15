@@ -31,11 +31,11 @@ class StoreClient extends FormRequest
             'nama'=>'required|min:2',
             'statusHub'=>'',
             'alamat'=>'required',
-            // 'kota[]'=>'required',
-            // 'telepon[]'=>'required|numeric',
-            // 'email[]'=>'required|email',
-            // 'norek[]'=>'required',
-            // 'web[]'=>'required|url',
+            'kota.*'=>'nullable|string|required',
+             'telepon.*'=>'nullable|numeric|required',
+             'email.*'=>'nullable|email|required',
+            'norek.*'=>'nullable|numeric|required',
+            'web.*'=>'nullable|url|required',
         
 
         ];
@@ -57,37 +57,20 @@ class StoreClient extends FormRequest
     {
         $input = $this->all();
 
-        $old_kota =  $input['kota'];
-        $input['kota'] = [];
-        foreach($old_kota as $key => $kota){
-            if(trim($kota)) array_push($input['kota'],$kota);
+        if ($input['kota']) {
+            array_filter_null_element($input['kota']);
         }
-
-        $old_telepon = $input['telepon'];
-        $input['telepon'] = [];
-        foreach($old_telepon as $key => $telepon){
-            if(trim($telepon)) array_push($input['telepon'],$telepon);
+        if ($input['telepon']) {
+            array_filter_null_element($input['telepon']);
         }
-
-        $old_email = $input['email'];
-        $input['email'] = [];
-        foreach($old_email as $key =>$email){
-            if(trim($email)) array_push($input['email'],$email);
-
+        if ($input['email']) {
+            array_filter_null_element($input['email']);
         }
-        
-        $old_norek = $input['norek'];
-        $input['norek'] = [];
-        foreach($old_norek as $key =>$norek){
-            if(trim($norek)) array_push($input['norek'],$norek);
-    
-         }
-
-        $old_web = $input['web'];
-        $input['web'] = [];
-        foreach($old_web as $key =>$web){
-            if(trim($web)) array_push($input['web'],$web);
-
+        if ($input['norek']) {
+            array_filter_null_element($input['norek']);
+        }
+        if ($input['web']) {
+            array_filter_null_element($input['web']);
         }
         $this->replace($input);   
 

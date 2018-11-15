@@ -39,7 +39,7 @@
     </div>
 
     <div class="card">
-        <div class="table-responsive">
+      
             <table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="clientTable">
                 <thead>
                     <tr>
@@ -53,10 +53,14 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                        <tr>
+                                <td class="text-center" colspan="8">
+                                    <div class="loader mx-auto"></div>
+                                </td>
+                            </tr>
                 </tbody>
             </table>
-        </div>
+
 
     </div>
 

@@ -16,8 +16,8 @@ class ProgressController extends Controller
     public function __construct()
     {
         $this->auth = [
-            'key' => \Setting::value('trello_api_key');
-            'token' => \Setting::value('trello_token');
+            'key' => \Setting::value('trello_api_key'),
+            'token' => \Setting::value('trello_token'),
         ];
     }
 

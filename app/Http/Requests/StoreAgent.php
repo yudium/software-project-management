@@ -30,41 +30,27 @@ class StoreAgent extends FormRequest
             'alamat'=>'required',
             'kota'=>'required',
             'photoAgent'=>'',
-            // 'telepon'=>'required',
-            // 'email'=>'required',
-            // 'norek'=>'required',
+            'telepon.*'=>'nullable|numeric|required',
+            'email.*'=>'nullable|email|required',
+            'norek.*'=>'nullable|numeric|required',
         ];
     }
 
     public function sanitize()
     {
         $input = $this->all();
-    //   dd($input);
-        $old_telepon = $input['telepon'];
-        $input['telepon'] = [];
-        foreach($old_telepon as $key => $telepon){
-            if(trim($telepon)) array_push($input['telepon'],$telepon);
-        }
-
-        $old_email = $input['email'];
-        $input['email'] = [];
-        foreach($old_email as $key =>$email){
-            if(trim($email)) array_push($input['email'],$email);
-
-        }
         
-        $old_norek = $input['norek'];
-        $input['norek'] = [];
-        foreach($old_norek as $key =>$norek){
-            if(trim($norek)) array_push($input['norek'],$norek);
-    
-         }
-
-        $old_web = $input['web'];
-        $input['web'] = [];
-        foreach($old_web as $key =>$web){
-            if(trim($web)) array_push($input['web'],$web);
-
+        if ($input['telepon']) {
+            array_filter_null_element($input['telepon']);
+        }
+        if ($input['email']) {
+            array_filter_null_element($input['email']);
+        }
+        if ($input['norek']) {
+            array_filter_null_element($input['norek']);
+        }
+        if ($input['web']) {
+            array_filter_null_element($input['web']);
         }
         // dd($input);
         $this->replace($input);

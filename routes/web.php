@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/agent/new/agent-form','AgentController@createAgentForm')->name('createAgentForm');
     Route::get('/agent/agent-activation/{id}','AgentController@activateAgent')->name('activateAgent');
     Route::post('/agent/deleteAgent/{id}','AgentController@deleteAgent')->name('deleteAgent');
+    Route::get('/agent/agent-payment','AgentController@paymentAgent');
 
     Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
     Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');

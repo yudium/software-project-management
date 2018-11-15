@@ -140,8 +140,19 @@
                             @endforeach
                         @endif
                         </div>
-                 
+
+                   
                         <div class="form-group">
+                                @if (count($errors->get('kota.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('kota.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
+                                    @endforeach
+                                @endcomponent
+                            @endif
+    
                             <label class="form-label">Kota</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-kota',
@@ -149,11 +160,6 @@
                             'number' => 1,
                             ])
                           
-                        {{-- @if ($errors->has('kota[]'))
-                        @foreach ($errors->get('kota[]') as $message)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @endforeach
-                    @endif --}}
                         </div>
                
                     </div>
@@ -162,7 +168,19 @@
             <div class="col-4">
                 <div class="card">
                     <div class="card-body">
+
+
                         <div class="form-group">
+                            
+                                @if (count($errors->get('telepon.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('telepon.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
+                                    @endforeach
+                                @endcomponent
+                            @endif
                             <label class="form-label">Telepon</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-telepon',
@@ -170,7 +188,19 @@
                             'number' => 1,
                             ])
                         </div>
+
+              
                         <div class="form-group">
+                                @if (count($errors->get('email.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('email.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
+                                    @endforeach
+                                @endcomponent
+                            @endif
+        
                             <label class="form-label">Email</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-email',
@@ -178,7 +208,18 @@
                             'number' => 1,
                             ])
                         </div>
+                 
+
                         <div class="form-group">
+                                @if (count($errors->get('norek.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('norek.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
+                                    @endforeach
+                                @endcomponent
+                            @endif
                             <label class="form-label">No. Rekening</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-norek',
@@ -186,7 +227,18 @@
                             'number' => 1,
                             ])
                         </div>
+            
+
                         <div class="form-group">
+                                @if (count($errors->get('web.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('web.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
+                                    @endforeach
+                                @endcomponent
+                            @endif
                             <label class="form-label">Alamat web</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-web',
