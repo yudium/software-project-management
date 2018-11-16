@@ -20,7 +20,7 @@ class AgentController extends Controller
     public function getAgent()
     {
 
-        $listAgent = Agent::with(['email','phone'])->select(DB::raw("id, name, username,city,photo,created_at,(SELECT SUM(commissions.amount) FROM commissions,agent_projects WHERE agent_projects.id=commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "))->get();  
+        $listAgent = Agent::with(['email','phone'])->select(DB::raw("id, name, username,city,photo,created_at,(SELECT SUM(agent_commissions.amount) FROM agent_commissions,agent_projects WHERE agent_projects.id=agent_commissions.agent_project_id and agent_projects.agent_id=agents.id GROUP BY agents.id) as total_com "))->get();  
         return Datatables::of($listAgent)
         ->addColumn('options',function($listAgent){
             if($listAgent->username === 'Nonaktif'){
@@ -36,6 +36,27 @@ class AgentController extends Controller
     public function getAgentCommission()
     {
         // $agentCommission = Agent::
+    }
+
+    public function listCommission()
+    {
+        return view('agent.agent-listCommission');
+    }
+
+    public function getListCommission()
+    {
+        $listCommission = DB::table('agents')
+                        ->join('agent_projects','agents.id','=','agent_projects.agent_id')
+                        ->join('agent_commissions','agent_projects.id','=','agent_commissions.agent_project_id')
+                        ->get();
+        return Datatables::of($listCommission)
+        ->addColumn('options',function($listCommission){
+                return '<div class="text-center"><a href="komisi-agen_form-bayar.html" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="komisi-agen_history.html" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
+        })
+        ->addColumn('status_bayar',function($listCommission){
+            return '<span class="badge badge-danger">Belum dibayar</span>';
+        })
+        ->rawColumns(['options','status_bayar'])->make(true);
     }
 
     public function newAgentForm()

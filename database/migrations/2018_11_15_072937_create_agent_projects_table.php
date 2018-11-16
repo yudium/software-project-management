@@ -16,16 +16,12 @@ class CreateAgentProjectsTable extends Migration
         Schema::create('agent_projects', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('agent_id');
-            $table->unsignedInteger('agent_commission_id');
             $table->string('project_name');
 
             $table->foreign('agent_id')->references('id')->on('agents')
             ->onDelete('cascade')
             ->onUpdate('cascade');
 
-            $table->foreign('agent_commission_id')->references('id')->on('agent_commissions')
-            ->onDelete('cascade')
-            ->onUpdate('cascade');
         });
     }
 

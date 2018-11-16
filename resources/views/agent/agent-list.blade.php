@@ -165,28 +165,6 @@
      });
     })
     });
-
-//    function deleteAgent(id) {
-//                 if(confirm('Apakah anda ingin menghapus data ini?'))
-//                 {
-                    
-//                 $.ajax({
-//                     headers: {
-//                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//                         },
-//                         url : "{{url('agent/deleteAgent')}}"+"/"+id,
-//                         type: "POST",
-//                         dataType: "JSON",
-//                     }).done(function(res){
-//                             console.log(res)
-//                             window.location.reload();
-//                             toastr.success('Berhasil menghapus data', {timeOut: 5000});
-//                     })
-
-
-//                 }
-//             }
- 
  
     /* Fungsi formatRupiah */
     function formatRupiah(angka, prefix) {

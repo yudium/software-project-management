@@ -16,7 +16,7 @@ class CreateAgentWebAddressesTable extends Migration
         Schema::create('agent_web_addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('agent_id');
-            $table->string('web_addresses');
+            $table->string('web_address');
 
             $table->foreign('agent_id')->references('id')->on('agents')
                 ->onDelete('cascade')

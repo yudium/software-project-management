@@ -15,7 +15,7 @@ class CreateAgentCommissionTable extends Migration
     {
         Schema::create('agent_commissions', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('agent_commission_detail_id');
+            $table->unsignedInteger('agent_project_id');
             $table->unsignedInteger('bank_id');
             $table->tinyInteger('serial_number');
             $table->date('pay_date');
@@ -25,8 +25,8 @@ class CreateAgentCommissionTable extends Migration
             $table->foreign('bank_id')->references('id')->on('banks')
             ->onDelete('no action')
             ->onUpdate('cascade');
-
-            $table->foreign('agent_commission_detail_id')->references('id')->on('agent_commission_details')
+            
+            $table->foreign('agent_project_id')->references('id')->on('agent_projects')
             ->onDelete('cascade')
             ->onUpdate('cascade');
         });
