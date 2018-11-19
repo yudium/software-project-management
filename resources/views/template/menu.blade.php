@@ -38,7 +38,6 @@
                             Prospect</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
                             <a href="{{ route('prospectList') }}" class="dropdown-item  ">Daftar Prospect</a>
-                            <a href="{{ route('newProspectTypes') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">

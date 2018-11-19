@@ -35,12 +35,6 @@ Route::auth();
 
     Route::get('/prospect/prospect-list/','ClientController@prospectList')->name('prospectList');
     Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
-    Route::get('/prospect/new/prospect-types','ClientController@newProspectType')->name('newProspectTypes');
-    Route::get('/prospect/new/prospect','ClientController@getProspectType')->name('getProspectTypegit ');
-    Route::get('/prospect/new/prospect-form','ClientController@newProspectForm')->name('newProspectForm');
-    Route::post('/prospect/new/prospect-form','ClientController@createProspectForm')->name('createProspectForm');
-    Route::get('/prospect/new/prospect-insider','ClientController@newProspectInsider')->name('newProspectInsider');
-    Route::post('/prospect/new/prospect-insider','ClientController@createClientInsider')->name('createProspectInsider');
 
     Route::get('/client/client-list','ClientController@clientList')->name('clientList');
     Route::get('/getClient','ClientController@getClient')->name('getClient');
@@ -97,6 +91,9 @@ Route::auth();
 
     Route::get('/project/detail/{id}', 'ProjectController@detail')->name('project-detail');
 
+    Route::get('/project/{id}/delete/confirmation', 'ProjectController@deleteConfirmation')->name('project-delete-confirmation');
+    Route::get('/project/{id}/delete', 'ProjectController@delete')->name('project-delete');
+
     Route::get('/project/{id}/activation/step-1', 'ProjectController@activationStep1')->name('project-activation-step1');
     Route::get('/project/{id}/activation/step-2', 'ProjectController@activationStep2')->name('project-activation-step2');
     Route::get('/project/{id}/activation/step-3/{choice}', 'ProjectController@activationStep3')->name('project-activation-step3');
@@ -125,6 +122,10 @@ Route::auth();
     Route::post('/project/potential/follow-up/{id}', 'PotentialProjectController@storeFollowUp')->name('store-follow-up-potential-project');
 
     Route::get('/project/potential/history/{potential_project_id}', 'PotentialProjectController@getFollowUpHistories')->name('follow-up-potential-project-history-list');
+
+    // used by DataTable so I put {id} in right
+    Route::get('/project/potential/delete/confirmation/{id}', 'PotentialProjectController@deleteConfirmation')->name('potential-project-delete-confirmation');
+    Route::get('/project/potential/delete/{id}', 'PotentialProjectController@delete')->name('potential-project-delete');
 
     Route::get('/project/create/potential/{potential_project_id}', 'ProjectController@createFromPotentialProject')->name('create-project-from-potential-project');
 

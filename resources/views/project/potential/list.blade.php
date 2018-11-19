@@ -99,8 +99,8 @@
                         return `
                             <a href="{{ url('/project/potential/follow-up/') }}/${row['id']}" class="btn btn-primary btn-sm mr-2">Follow Up</a>
                             <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
-                            <a class="icon ml-5" href="javascript:void(0)">
-                                <i class="fe fe-edit"></i>
+                            <a class="icon ml-5" href="{{ url('/project/potential/delete/confirmation/') }}/${row['id']}">
+                                <i class="fe fe-trash-2"></i>
                             </a>
                         `;
                     },

@@ -294,6 +294,10 @@ ol.link-list span.anticipate-long-text {
                                     <a href="{{ route('edit-restricted-project', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah</a>
                                 @endif
 
+                                @if ($project->is_draft)
+                                    <a href="{{ route('project-delete-confirmation', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Hapus</a>
+                                @endif
+
                                 <!-- this action only allowed for project draft -->
                                 <a href="{{ route('change-project-client', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->is_draft)">Ubah Client</a>
                                 <!-- this action only allowed for project draft -->

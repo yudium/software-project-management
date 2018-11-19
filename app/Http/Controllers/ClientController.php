@@ -44,45 +44,15 @@ class ClientController extends Controller
         })->rawColumns(['options'])->make(true);
     }
 
-    public function newProspectType()
-    {
-        $listProspectTypes = ClientType::get();
-        return view('prospect.new-prospect-types',['listProspectTypes'=>$listProspectTypes]);
-    }
-
     public function newClientType()
     {
         $listClientTypes = ClientType::get();
         return view('client.new-client-types',['listClientTypes'=>$listClientTypes]);
     }
 
-    public function newProspectForm()
-    {
-        return view('prospect.new-prospect-form');
-    }
-
     public function newClientForm()
     {
         return view('client.new-client-form');
-    }
-
-    public function getProspectType(Request $req)
-    {
-        //get parameter
-        $idType = $req->getQueryString();
-        //get value type id
-        $valueId  = $req->input('prospect_type_id');
-       
-        $clientType = CLientType::where('id','=',$valueId)->first();
-        if (!str_contains($idType,'prospect_type_id'))
-        {
-            Session::flash('message', 'Pilih type prospect dahulu !!!'); 
-            Session::flash('alert-class', 'alert-warning'); 
-
-            return redirect('/prospect/new/prospect-types');
-        }
-
-        return view('prospect.new-prospect-form',['idType'=>$clientType]);
     }
 
     public function getClientType(Request $req)
@@ -104,49 +74,6 @@ class ClientController extends Controller
         return view('client.new-client-form',['idType'=>$clientType]);
     }
 
-    public function createProspectForm(\App\Http\Requests\StoreClient $req)
-    {
-
-        $prospect = new Client();
-        $prospect->client_type_id   = $req->tipeProspect;
-        $prospect->name             = $req->nama;
-        $prospect->business_relationship_status = $req->statusHub;
-        if($req->has('photo'))
-        {
-            $prospectImage = $req->file('photo');
-            dd($prospectImage);
-        }
-        // $prospect->photo = 'test';
-        $prospect->status   = $prospect->getStatusTextAttribute(Client::IS_PROSPECT);
-        $prospect->save();
-
-        $prospect->address()->create(['address'=>$req->alamat]);
-
-        foreach ($req->kota as $kota) {
-            $prospect->city()->create(['city' => $kota]);
-        }
-
-        foreach ($req->telepon as $telepon) {
-            $prospect->phone()->create(['phone' => $telepon]);
-        }
-
-        foreach ($req->email as $email) {
-            $prospect->email()->create(['email' => $email]);
-        }
-
-        foreach ($req->norek as $norek) {
-            $prospect->bankAccount()->create(['bank_account' => $norek]);
-        }
-
-        foreach ($req->web as $web) {
-            $prospect->webAddress()->create(['web_addresses' => $web]);
-        }
- 
-        return redirect()->route('newProspectInsider',['id'=>$prospect->id]);
-        // ->with('message', 'Berhasil menambah prospect')
-        // ->with('messageType', 'success');
-    }
-
     public function createClientForm(\App\Http\Requests\StoreClient $req)
     {
 
@@ -160,8 +87,9 @@ class ClientController extends Controller
             $clientImage = $req->file('photo');
             dd($prospectImage);
         }
-    
-        $client->status   = $client->getStatusTextAttribute(Client::IS_CLIENT);
+
+        // this person is prospect until has project active
+        $client->status = Client::IS_PROSPECT;
         $client->save();
 
         $client->address()->create(['address'=>$req->alamat]);
@@ -189,13 +117,6 @@ class ClientController extends Controller
         return redirect()->route('newClientInsider',['id'=>$client->id]);
         // ->with('message', 'Berhasil menambah prospect')
         // ->with('messageType', 'success');
-    }
-
-    public function newProspectInsider(Request $req)
-    {
-        $getId = $req->all();
-        // print_r($getId);
-        return view('prospect.new-prospect-insider',['idClient'=>$getId['id']]);
     }
 
     public function newClientInsider(Request $req)

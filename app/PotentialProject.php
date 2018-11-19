@@ -8,9 +8,20 @@ class PotentialProject extends Model
 {
     /**
      * correspond to `status` column in table
+     *
+     * NOTE: be careful when comparing with == operator. Use NULL as right
+     *       operand of that operator if want to check current project is
+     *       *NOT BOTH* condition: isn't deal or deal.
+     *
+     * example:
+     *      if (self::status == self::ISNT_DEAL ||
+     *          self::status == self::IS_DEAL)
+     *
+     *      with assumption self::status == NULL then the if-condition is always
+     *      return true because NULL == 0 (ISNT_DEAL)
      */
     const ISNT_DEAL = 0;
-    const ISN_DEAL = 1;
+    const IS_DEAL = 1;
 
     /**
      * The attributes that are mass assignable.

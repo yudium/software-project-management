@@ -35,10 +35,18 @@
 <div class="stepwizard">
     <div class="stepwizard-row setup-panel">
         @foreach ($steps as $step)
-        <div class="stepwizard-step">
-            <a href="{{ $step['url'] }}" type="button" class="btn btn-secondary btn-circle">{{ $loop->iteration }}</a>
-            <p>{{ $step['text'] }}</p>
-        </div>
+            {{-- actually only different on class btn-primary or btn-secondary --}}
+            @if (array_key_exists('active', $step))
+                <div class="stepwizard-step">
+                    <a href="{{ $step['url'] }}" type="button" class="btn btn-primary btn-circle">{{ $loop->iteration }}</a>
+                    <p>{{ $step['text'] }}</p>
+                </div>
+            @else
+                <div class="stepwizard-step">
+                    <a href="{{ $step['url'] }}" type="button" class="btn btn-secondary btn-circle">{{ $loop->iteration }}</a>
+                    <p>{{ $step['text'] }}</p>
+                </div>
+            @endif
         @endforeach
     </div>
 </div>

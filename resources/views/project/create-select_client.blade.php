@@ -1,78 +1,18 @@
 @extends('template.master')
-@section('title', 'Project')
-@section('css')
-<style>
+@section('title', 'Tambah Proyek: Pilih Client')
 
-.btn-as-text {
-    color: #495057;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    cursor: pointer;
-}
-
-.stepwizard {
-    display: table;
-    width: 100%;
-    position: relative;
-    margin-top: 40px;
-}
-.stepwizard p {
-    margin-top: 10px;
-}
-.stepwizard-row {
-    display: table-row;
-}
-.stepwizard-row:before {
-    top: 14px;
-    bottom: 0;
-    position: absolute;
-    content: " ";
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    z-order: 0;
-}
-.stepwizard-step {
-    display: table-cell;
-    text-align: center;
-    position: relative;
-}
-.stepwizard-step .btn.disabled {
-    opacity: 1 !important;
-    filter: alpha(opacity=100) !important;
-}
-
-.btn-circle {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 12px;
-    line-height: 1.428571429;
-    border-radius: 15px;
-}
-        </style>
-@endsection
 @section('content')
-        <div class="stepwizard">
-            <div class="stepwizard-row setup-panel">
-                <div class="stepwizard-step">
-                    <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
-                    <p>Step 1</p>
-                </div>
-                <div class="stepwizard-step">
-                    <a href="#step-2" type="button" class="btn btn-secondary btn-circle disabled">2</a>
-                    <p>Step 2</p>
-                </div>
-                <div class="stepwizard-step">
-                    <a href="#step-3" type="button" class="btn btn-secondary btn-circle disabled">3</a>
-                    <p>Step 3</p>
-                </div>
-            </div>
-        </div>
+
+        @include('stepwizard', [
+            'steps' => [
+                ['text' => 'step1', 'url' => '#step1', 'active' => true],
+                ['text' => 'step2', 'url' => '#step2'],
+                ['text' => 'step3', 'url' => '#step3'],
+            ]
+        ])
 
         <div class="container">
+
             <div class="row row-cards row-deck" style="margin-top: 1.5rem; margin-bottom: 1.5rem">
                 <div class="col-6">
                     <h2 class="page-title">
@@ -102,22 +42,8 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-center">
-                                            <div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)">
-                                                <span class="avatar-status bg-green"></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>Elizabeth Martin</div>
-                                            <div class="small text-muted">
-                                                Email: example@gmail.com
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            Kurang Baik
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="javascript:void(0)" class="btn btn-outline-info btn-sm">Pilih</a>
+                                        <td class="text-center" colspan="4">
+                                            <div class="loader mx-auto"></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -140,48 +66,26 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-center">
-                                            <div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)">
-                                                <span class="avatar-status bg-green"></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>Elizabeth Martin</div>
-                                            <div class="small text-muted">
-                                                Email: example@gmail.com
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            Baik
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="javascript:void(0)" class="btn btn-outline-info btn-sm">Pilih</a>
+                                        <td class="text-center" colspan="4">
+                                            <div class="loader mx-auto"></div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <script>
-                window.scroll(0, 65.133 + 55.5 + 1);
-            </script>
-
-            <!--
-            THANKS TO:
-            (Progress bar wizard) https://codepen.io/brettmichaelorr/pen/RaRZLe
-            -->
         </div>
 
-    </div>
-</div>
-
 @endsection
+
 @section('js')
 <script>
+
+window.scroll(0, 65.133 + 55.5 + 1);
+
 require(['datatables', 'jquery'], function(datatable, $) {
     $('.datatable-client').DataTable({
         serverSide: true,

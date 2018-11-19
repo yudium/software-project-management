@@ -12,6 +12,7 @@ use App\PIC;
 use App\Termin;
 use App\TerminDetail;
 use App\Bank;
+use App\ProspectToClientTransformation;
 use Carbon;
 
 class ProjectController extends Controller
@@ -506,23 +507,6 @@ class ProjectController extends Controller
             $potential_project->save();
         }
 
-        /**
-         * Prospect is a person (pseudo-client) that doesn't have projects,
-         * except potential projects. So, after prospect has project he become
-         * client.
-         */
-        if ($client->status == Client::IS_PROSPECT) {
-            // change prospect status to client
-            $client->status = Client::IS_CLIENT;
-            $client->save();
-
-            // record 'when' the transformation happens to database
-            $prospect_transformation = new ProspectToClientTransformation;
-            $prospect_transformation->client()->associate($client);
-            $prospect_transformation->created_at = date('Y-m-d');
-            $prospect_transformation->save();
-        }
-
         return redirect()->route('project-detail', ['project_id' => $project->id])
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
@@ -857,6 +841,23 @@ class ProjectController extends Controller
         $project->status = Project::IS_ONPROGRESS;
         $project->save();
 
+        /**
+         | Change prospect to client
+         |
+         | if this person is prospect
+         |
+         | NOTE: Prospek adalah orang yang tidak memiliki riwayat
+         |       proyek *berjalan*. Sehingga setelah dia memiliki proyek berjalan
+         |       maka akan berubah menjadi client
+         | ---------------------------------------------- */
+        $project->client->status = Client::IS_CLIENT;
+        $project->client->save();
+        // record 'when' the transformation happens to database
+        $prospect_transformation = new ProspectToClientTransformation;
+        $prospect_transformation->client()->associate($project->client);
+        $prospect_transformation->created_at = date('Y-m-d');
+        $prospect_transformation->save();
+
         return redirect()->route('project-detail', ['project_id' => $id])
             ->with('message', 'Proyek telah aktif')
             ->with('messageType', 'success');
@@ -883,5 +884,26 @@ class ProjectController extends Controller
         $project->save();
 
         return redirect()->route('project-detail', ['id' => $project->id]);
+    }
+
+    public function deleteConfirmation($id)
+    {
+        $project = Project::find($id);
+
+        return view('project.delete_confirmation', compact('id', 'project'));
+    }
+
+    public function delete($id)
+    {
+        $project = Project::find($id);
+
+        // delete non-draft project is not allowed
+        if ( ! $project->is_draft) {
+            abort(405, 'Tidak diizinkan untuk proyek non-draft');
+        }
+
+        $project->delete();
+
+        return redirect()->route('draft-project-list');
     }
 }
