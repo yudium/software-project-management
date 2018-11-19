@@ -20,7 +20,7 @@ class CreateAgentsTable extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('photo');
-            $table->timestamp();
+            $table->timestamps();
    
         });
     }
