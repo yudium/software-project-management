@@ -3,8 +3,10 @@
  | ----------------------------------------------------------------------------
  | Helpers all about Trello
  |
- | NOTE: This helper loaded by composer.
- |       New helper file should execute `$ composer dump-autoload`
+ | NOTE: (1) This helper loaded by composer.
+ |           New helper file should execute `$ composer dump-autoload`
+ |
+ |       (2) Helper is registered in composer.json under 'autoload' > 'files' key
  | ----------------------------------------------------------------------------
  */
 
@@ -19,8 +21,20 @@
  */
 function fetchTrello($path) {
     $client = new \GuzzleHttp\Client();
-    // TODO: handle error like network error (you don't have internet)
+
+    /**
+     * user should catch exception from this method
+     *
+     *      \GuzzleHttp\Exception\ConnectException
+     *      \GuzzleHttp\Exception\ClientException
+     *      \GuzzleHttp\Exception\TooManyRedirectsException
+     *      \GuzzleHttp\Exception\RequestException
+     *      \GuzzleHttp\Exception\ServerException
+     *
+     * check: http://docs.guzzlephp.org/en/stable/quickstart.html#exceptions
+     */
     $response = $client->request('GET', $path, []);
+
 
     return json_decode((string) $response->getBody(), true);
 }

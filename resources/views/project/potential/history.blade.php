@@ -26,9 +26,9 @@
 .note > textarea {
     height: 37px;
     border: 1px solid #ddd;
-background: #f8f8f8;
+    background: #f8f8f8;
     resize: none;
-color: #555;
+    color: #555;
 }
 .note > textarea:hover {
     position: absolute;

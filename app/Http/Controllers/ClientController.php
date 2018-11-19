@@ -104,7 +104,7 @@ class ClientController extends Controller
         return view('client.new-client-form',['idType'=>$clientType]);
     }
 
-    public function createProspectForm(\App\Http\Requests\StoreCLient $req)
+    public function createProspectForm(\App\Http\Requests\StoreClient $req)
     {
 
         $prospect = new Client();
@@ -147,7 +147,7 @@ class ClientController extends Controller
         // ->with('messageType', 'success');
     }
 
-    public function createClientForm(\App\Http\Requests\StoreCLient $req)
+    public function createClientForm(\App\Http\Requests\StoreClient $req)
     {
 
         $client = new Client();

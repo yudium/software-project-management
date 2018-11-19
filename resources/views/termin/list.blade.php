@@ -84,7 +84,7 @@ div.remaining-amount .badge {
                         @foreach ($termin_details as $termin_detail)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $termin_detail->due_date }}</td>
+                            <td>{{ date('d M Y', strtotime($termin_detail->due_date)) }}</td>
                             <td>{{ $termin_detail->amount }}</td>
                             <td>
                                 @if ($termin_detail->amount != $termin_detail->paid_amount)
@@ -96,9 +96,13 @@ div.remaining-amount .badge {
                                     <span class="badge badge-success">Sudah</span>
                                 @endif
                             </td>
-                            <td class="text-center">
-                                <a href='{{ route('termin-payment-form', ['termin_detail_id' => $termin_detail->id]) }}' class="btn btn-outline-primary btn-sm mr-2">Bayar</a>
-                                <a href='termin-pembayaran_histori.html' class="btn btn-outline-secondary btn-sm mr-2">Riwayat Bayar</a>
+                            <td class="text-right">
+                                @if ($project->is_onprogress)
+                                    @if ($termin_detail->paid_amount < $termin_detail->amount)
+                                    <a href='{{ route('termin-payment-form', ['termin_detail_id' => $termin_detail->id]) }}' class="btn btn-outline-primary btn-sm mr-2">Bayar</a>
+                                    @endif
+                                @endif
+                                <a href='{{ route('termin-payment-history', ['termin_detail_id' => $termin_detail->id]) }}' class="btn btn-outline-secondary btn-sm mr-2">Riwayat Bayar</a>
                             </td>
                         </tr>
                         @endforeach

@@ -60,12 +60,15 @@ class Client extends Model
     {
         return $this->hasMany('App\Insider','client_id');
     }
-    
+
     public function getStatusTextAttribute($value)
     {
         return ($value == self::IS_CLIENT) ? 'client' : 'prospect';
     }
 
-
+    public function projects()
+    {
+        return $this->hasMany('App\Project','client_id');
+    }
 }
 

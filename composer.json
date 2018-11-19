@@ -26,7 +26,8 @@
             "app/Http/Helpers/TerminHelper.php",
             "app/Http/Helpers/StringHelper.php",
             "app/Http/Helpers/ArrayHelper.php",
-            "app/Http/Helpers/TrelloHelper.php"
+            "app/Http/Helpers/TrelloHelper.php",
+            "app/Http/Helpers/DateHelper.php"
         ],
         "classmap": [
             "database/seeds",

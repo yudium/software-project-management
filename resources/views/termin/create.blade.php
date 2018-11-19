@@ -3,54 +3,25 @@
 
 @section('css')
 <style>
-.btn-as-text {
-    color: #495057;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    cursor: pointer;
+
+.separator-left {
+    border-left: 1px solid #ddd;
 }
 
-.stepwizard {
-    display: table;
-    width: 100%;
+/* NOTE: maybe this css selector suitable only for this page */
+.container--anticipate-long-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.container--anticipate-long-text:hover {
+    overflow: visible;
     position: relative;
-    margin-top: 40px;
+    z-index: 9;
+    background-color: white;
 }
-.stepwizard p {
-    margin-top: 10px;
-}
-.stepwizard-row {
-    display: table-row;
-}
-.stepwizard-row:before {
-    top: 14px;
-    bottom: 0;
-    position: absolute;
-    content: " ";
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    z-order: 0;
-}
-.stepwizard-step {
-    display: table-cell;
-    text-align: center;
-    position: relative;
-}
-.stepwizard-step .btn.disabled {
-    opacity: 1 !important;
-    filter: alpha(opacity=100) !important;
-}
-
-.btn-circle {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 12px;
-    line-height: 1.428571429;
-    border-radius: 15px;
+span.content--anticipate-long-text:hover {
+    background-color: white;
 }
 
 .clearfix::after {
@@ -74,30 +45,6 @@
 @endsection
 
 @section('content')
-<div class="stepwizard">
-    <div class="stepwizard-row setup-panel">
-        <div class="stepwizard-step">
-            <a href="#step-1" type="button" class="btn btn-secondary btn-circle">1</a>
-            <p>Step 1</p>
-        </div>
-        <div class="stepwizard-step">
-            <a href="#step-2" type="button" class="btn btn-secondary btn-circle disabled">2</a>
-            <p>Step 2</p>
-        </div>
-        <div class="stepwizard-step">
-            <a href="#step-3" type="button" class="btn btn-primary btn-circle disabled">3</a>
-            <p>Step 3</p>
-        </div>
-        <div class="stepwizard-step">
-            <a href="#step-3" type="button" class="btn btn-primary btn-circle disabled">4</a>
-            <p>Step 4</p>
-        </div>
-        <div class="stepwizard-step">
-            <a href="#step-3" type="button" class="btn btn-primary btn-circle disabled">5</a>
-            <p>Step 5</p>
-        </div>
-    </div>
-</div>
 
 <div class="container">
 
@@ -109,18 +56,15 @@
 
     <div class="row row-cards">
         <div class="col-4">
+            <!-- this form only for reset by jQUery -->
             <form id="termin-setting" onsubmit="return false">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
                             Pengaturan Termin
                         </h3>
-                        <div class="card-options">
-                            <a href="#" class="btn btn-primary btn-sm">Lewati</a>
-                        </div>
                     </div>
                     <div class="card-body">
-                        <!-- this form only for reset by jQUery -->
                         <div class="form-group">
                             <div class="form-label">Dibayar secara</div>
                             <div class="custom-controls-stacked">
@@ -159,6 +103,7 @@
                                 </span>
                             </div>
                         </div>
+                        <p><small>*) Reload laman bila ingin mereset form ini</small></p>
                         <button id="selesai-btn" class="btn btn-primary" disabled>Selesai</button>
                     </div>
                 </div>
@@ -166,89 +111,158 @@
         </div>
         <div class="col-8">
             <form id="termin-form" method="POST" action="{{ route('store-termin', ['project_id' => $project->id]) }}">
-                @csrf
-                <input type="hidden" name="project_id" value="{{ $project->id }}">
-                <input type="hidden" name="periodic_type" id="periodic-type-hidden" value=""> 
+                <div class="row">
+                    <div class="col-12">
+                        @csrf
+                        <input type="hidden" name="project_id" value="{{ $project->id }}">
+                        <input type="hidden" name="periodic_type" id="periodic-type-hidden" value="">
 
-                <div id="termin-dates" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            Tanggal Termin
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-1">
-                                No
+                        <div id="termin-dates" class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    Tanggal Termin
+                                </h3>
                             </div>
-                            <div class="form-group col-5">
-                                Tanggal Penagihan
-                            </div>
-                            <div class="form-group col-6">
-                                Nominal Tagih
-                            </div>
-                        </div>
-                        @component('includes.form-element.multiple-input-custom', [
-                            'id' => 'termin-input-date',
-                            'name' => 'termin_date[]',
-                            'number' => 1,
-                        ])
-                            <div class="row row-termin-date">
-                                <div class="form-group col-1">
-                                    --iteration--
-                                </div>
-                                <div class="form-group col-5">
-                                    <div class="row gutters-xs">
-                                        <div class="col-4">
-                                            <select name="termin_detail[due_date][year][]" class="due-date-year form-control custom-select">
-                                                <option value="">Year</option>
-                                                @for ($year = date('Y'); $year <= date('Y') + 20; $year++)
-                                                <option value="{{ $year }}">{{ $year }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="col-5">
-                                            <select name="termin_detail[due_date][month][]" class="due-date-month form-control custom-select">
-                                                <option value="">Month</option>
-                                                <option value="1">January</option>
-                                                <option value="2">February</option>
-                                                <option value="3">March</option>
-                                                <option value="4">April</option>
-                                                <option value="5">May</option>
-                                                <option value="6">June</option>
-                                                <option value="7">July</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-3">
-                                            <select name="termin_detail[due_date][day][]" class="due-date-day form-control custom-select">
-                                                <option value="">Day</option>
-                                                @for ($day = 1; $day <= 32; $day++)
-                                                <option value="{{ $day }}">{{ $day }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-1">
+                                        No
+                                    </div>
+                                    <div class="form-group col-5">
+                                        Tanggal Penagihan
+                                    </div>
+                                    <div class="form-group col-6">
+                                        Nominal Tagih
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    @include('includes.form-element.input-money', [
-                                        'name' => 'termin_detail[debt_amount][]',
-                                        'class' => 'debt-amount form-control multi-input-focus-target',
-                                        'placeholder' => 'nominal tagih',
-                                    ])
+                                @component('includes.form-element.multiple-input-custom', [
+                                    'id' => 'termin-input-date',
+                                    'name' => 'termin_date[]',
+                                    'number' => 1,
+                                ])
+                                    <div class="row row-termin-date">
+                                        <div class="form-group col-1">
+                                            --iteration--
+                                        </div>
+                                        <div class="form-group col-5">
+                                            <div class="row gutters-xs">
+                                                <div class="col-4">
+                                                    <select name="termin_detail[due_date][year][]" class="due-date-year form-control custom-select">
+                                                        <option value="">Year</option>
+                                                        @for ($year = date('Y'); $year <= date('Y') + 20; $year++)
+                                                        <option value="{{ $year }}">{{ $year }}</option>
+                                                        @endfor
+                                                    </select>
+                                                </div>
+                                                <div class="col-5">
+                                                    <select name="termin_detail[due_date][month][]" class="due-date-month form-control custom-select">
+                                                        <option value="">Month</option>
+                                                        <option value="1">January</option>
+                                                        <option value="2">February</option>
+                                                        <option value="3">March</option>
+                                                        <option value="4">April</option>
+                                                        <option value="5">May</option>
+                                                        <option value="6">June</option>
+                                                        <option value="7">July</option>
+                                                        <option value="8">August</option>
+                                                        <option value="9">September</option>
+                                                        <option value="10">October</option>
+                                                        <option value="11">November</option>
+                                                        <option value="12">December</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-3">
+                                                    <select name="termin_detail[due_date][day][]" class="due-date-day form-control custom-select">
+                                                        <option value="">Day</option>
+                                                        @for ($day = 1; $day <= 32; $day++)
+                                                        <option value="{{ $day }}">{{ $day }}</option>
+                                                        @endfor
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            @include('includes.form-element.input-money', [
+                                                'name' => 'termin_detail[debt_amount][]',
+                                                'class' => 'debt-amount form-control multi-input-focus-target',
+                                                'placeholder' => 'nominal tagih',
+                                            ])
+                                        </div>
+                                    </div>
+                                @endcomponent
+                                <div id="remaining-debt-amount" class="alert alert-warning" role="alert">
+                                    <!-- message here -->
+                                </div>
+                                <div class="clearfix">
+                                    <div class="right">
+                                    </div>
                                 </div>
                             </div>
-                        @endcomponent
-                        <div id="remaining-debt-amount" class="alert alert-warning" role="alert">
-                            <!-- message here -->
                         </div>
-                        <div class="clearfix">
-                            <div class="right">
-                                <button class="btn btn-primary">Berikutnya</button>
+                    </div>
+                    <div class="col-12">
+                        <div id="confirmation-card" class="card ">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    Konfirmasi
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6 pr-6">
+
+                                        <fieldset class="form-fieldset">
+                                            <!-- create table with row and col class -->
+                                            <div class="row">
+                                                <div class="col-3">Proyek</div>
+                                                <div class="col-1">:</div>
+                                                <div class="col-8">
+                                                    <div class="container--anticipate-long-text">
+                                                        <span class="content--anticipate-long-text">
+                                                            <a href="{{ route('project-detail', ['id' => $project->id]) }}">{{ $project->name }}</a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">Client</div>
+                                                <div class="col-1">:</div>
+                                                <!-- TODO: link to client detail -->
+                                                <div class="col-8">
+                                                    <div class="container--anticipate-long-text">
+                                                        <span class="content--anticipate-long-text">
+                                                            {{ $project->client->name }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                    </div>
+                                    <div class="col-6 pl-6 separator-left">
+
+                                        <div>
+                                            <p>Ketik <code>Termin</code> di bawah</p>
+                                            <input id="validation" class="form-control" type="text" name="validation" placeholder="ketik disini...">
+                                        </div>
+
+                                        <div class="alert alert-warning p-4 mt-5">
+                                            <small class="status-animated">
+                                                <i class="fa fa-warning mr-2"></i>
+                                                Tindakan ini tidak bisa di-undo
+                                            </small>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <a href="" class="btn btn-link">Batal</a>
+                                            {{-- Create termin is only when activating project.
+                                                Activating means change project status from
+                                                'draft' to 'onprogress' --}}
+                                            <button id="primary-button" class="btn btn-primary ml-auto disabled">Ya, Termin dan Aktifkan Proyek</button>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,7 +276,6 @@
 @section('js')
 <script>
     window.scroll(0, 65.133 + 55.5 + 1);
-
 
     require(['input-mask']);
 
@@ -406,12 +419,15 @@
 
                 if (remaining_amount < 0) {
                     $('#remaining-debt-amount').text('Nilai melebihi total biaya termin');
+                    $('#confirmation-card :input').attr('disabled', true);
                 }
                 if (remaining_amount > 0) {
                     $('#remaining-debt-amount').text('Tersisa Rp.'+remaining_amount+' belum teralokasikan');
+                    $('#confirmation-card :input').attr('disabled', true);
                 }
                 if (remaining_amount === 0) {
                     $('#remaining-debt-amount').text('OK...');
+                    $('#confirmation-card :input').attr('disabled', false);
                 }
             });
         });
@@ -422,5 +438,23 @@
             $('#termin-dates .debt-amount').mask('000.000.000.000.000', {'reverse': true});
         });
     });
+</script>
+
+<script>
+require(['jquery'], function($){
+    $(document).ready(function(){
+        // disable all until user fill in all termin setting
+        $('#confirmation-card :input').attr('disabled', true);
+
+        $('input#validation').keyup(function(){
+            let val = $(this).val();
+            if (val == 'Termin') {
+                $('#primary-button').removeClass('disabled');
+            } else {
+                $('#primary-button').addClass('disabled');
+            }
+        });
+    });
+});
 </script>
 @endsection

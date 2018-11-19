@@ -34,7 +34,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <div class="h5">Termin Pembayaran</div>
-                    <div class="display-4 font-weight-bold mb-4 text-red">#1</div>
+                    <div class="display-4 font-weight-bold mb-4 text-red">#{{ $termin_detail->serial_number }}</div>
                 </div>
             </div>
         </div>
@@ -50,13 +50,21 @@
                         </tr>
                         </thead>
                         <tbody>
+
+                        @if ($termin_payments->count() == 0)
+                        <tr>
+                            <td colspan="3" class="text-center">Tidak ada data</td>
+                        </tr>
+                        @endif
+
                         @foreach ($termin_payments as $termin_payment)
                         <tr>
-                            <td class="text-center">{{ $termin_payment->pay_date }}</td>
+                            <td class="text-center">{{ date('d M Y', strtotime($termin_payment->pay_date)) }}</td>
                             <td>{{ $termin_payment->bank->name }}</td>
                             <td>Rp.{{ $termin_payment->amount }}</td>
                         </tr>
                         @endforeach
+
                         </tbody>
                     </table>
                 </div>
@@ -65,7 +73,7 @@
         <div class="col-2">
             <div class="card">
                 <div class="card-body">
-                    <h6>Sisa pembayaran:</h6>
+                    <h6>Sisa bayar:</h6>
                     <!-- TODO: below code -->
                     <span class="mt-2">Rp. {{ $termin_detail->amount - $termin_detail->paid_amount }}</span>
                 </div>

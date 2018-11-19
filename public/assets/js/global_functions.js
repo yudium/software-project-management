@@ -9,6 +9,8 @@ define('global_functions', ['jquery'], function($) {
         * sure, too lazy for make sure it).
         */
         'cleanValMask': (str) => {
+            // TODO: don't convert to number because input mask is not only for
+            //       number. And convert manually all script that use this func
             return Number( str.replace(/\D/g, '') );
         },
     }

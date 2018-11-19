@@ -23,10 +23,6 @@
                             <a href="{{ route('create-potential-project-step1') }}" class="dropdown-item  ">Tambah</a>
                             <a href="{{ route('potential-project-list') }}" class="dropdown-item  ">Daftar</a>
                             <a href="{{ route('potential-project-list-archive') }}" class="dropdown-item  ">Arsip</a>
-                            <a href="../" class="dropdown-item  dropdown-item-title">Antrian Proyek dari Agen</a>
-                            <a href="../agen_project-pending.html" class="dropdown-item  ">Antrian ** <span class="status-icon bg-danger"></span></a>
-                            <a href="../agen_project-pending_arsip.html" class="dropdown-item  ">Arsip Antrian **<span
-                                    class="status-icon bg-danger"></span></a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -68,8 +64,18 @@
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-settings"></i>
                             Setting</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="{{ route('setting-list') }}" class="dropdown-item  ">Daftar Setting</a>
+                            <a href="../" class="dropdown-item  dropdown-item-title">Setting Umum</a>
+                            <a href="{{ route('setting-list') }}" class="dropdown-item  ">Daftar</a>
                             <a href="{{ route('create-setting') }}" class="dropdown-item  ">Tambah</a>
+                            <a href="../" class="dropdown-item  dropdown-item-title">Bank Setting</a>
+                            <a href="{{ route('bank-list') }}" class="dropdown-item  ">Daftar</a>
+                            <a href="{{ route('create-bank') }}" class="dropdown-item  ">Tambah</a>
+                            <a href="../" class="dropdown-item  dropdown-item-title">Client Type Setting</a>
+                            <a href="{{ route('client-type-list') }}" class="dropdown-item  ">Daftar</a>
+                            <a href="{{ route('create-client-type') }}" class="dropdown-item  ">Tambah</a>
+                            <a href="../" class="dropdown-item  dropdown-item-title">Project Type Setting</a>
+                            <a href="{{ route('project-type-list') }}" class="dropdown-item  ">Daftar</a>
+                            <a href="{{ route('create-project-type') }}" class="dropdown-item  ">Tambah</a>
                         </div>
                     </li>
                 </ul>

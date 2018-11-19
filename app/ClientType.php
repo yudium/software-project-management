@@ -13,5 +13,7 @@ class ClientType extends Model
      */
     protected $fillable = [
         'icon', 'name',
-   ];
+    ];
+
+    public $timestamps = false;
 }

@@ -17,8 +17,9 @@
             </thead>
             <tbody>
             <tr>
-                <td class="text-center">tunggu..</td>
-                <td>tunggu..</td>
+                <td class="text-center" colspan="3">
+                    <div class="loader mx-auto"></div>
+                </td>
             </tr>
             </tbody>
         @endcomponent

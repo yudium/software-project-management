@@ -65,17 +65,17 @@
                     </div>
                     <div class="col-12">
                         @component('card', ['title' => 'Person In Charge'])
-{{--
-                        @if (count($errors->get('PIC.*')))
-                            @component('includes.alert-danger')
-                                @foreach ($errors->get('PIC.*') as $messages)
-                                    @foreach ($messages as $message)
-                                        {{ $message }}<br>
+
+                            @if (count($errors->get('PIC.*')))
+                                @component('includes.alert-danger')
+                                    @foreach ($errors->get('PIC.*') as $messages)
+                                        @foreach ($messages as $message)
+                                            {{ $message }}<br>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
-                            @endcomponent
-                        @endif
---}}
+                                @endcomponent
+                            @endif
+
                             @component('includes.alert-info')
                                 Fitur autocomplete menyediakan nama PIC yang terekam di DB
                             @endcomponent
@@ -104,19 +104,21 @@
 
             <div class="col-4">
                 @component('card', ['title' => 'Data Proyek'])
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="name">Platform</label>
-                            <div class="form-control-plaintext">
-                                <i class="{{ $project_type->icon }} mr-3"></i>
-                                {{ $project_type->name }}
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="name">Tipe Proyek</label>
+                                <div class="form-control-plaintext">
+                                    <i class="{{ $project_type->icon }} mr-3"></i>
+                                    {{ $project_type->name }}
+                                </div>
+                                {{-- dont worry, covered by $request->old() in controller in case of validation fails --}}
+                                <input name="project_type_id" type="hidden" value="{{ $project_type->id }}">
                             </div>
-                            {{-- dont worry, covered by $request->old() in controller in case of validation fails --}}
-                            <input name="project_type_id" type="hidden" value="{{ $project_type->id }}">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-9">
+                        <div class="col-8">
                             <div class="form-group">
                                 <label class="form-label" for="name">Nama proyek <span class="form-required">*</span></label>
                                 {{-- potential project has project name so use this, if current new project is from potential project --}}
@@ -128,21 +130,26 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label class="form-label" for="name">Kuantitas</label>
-                                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="quantity" value="{{ old('quantity') }}">
+                                <input class="form-control {{ $errors->has('quantity') ? 'is-invalid' : '' }}" type="text" name="quantity" value="{{ old('quantity') }}">
+                                @if ($errors->has('quantity'))
+                                    @foreach ($errors->get('quantity') as $message)
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6 form-group">
-                            <label class="form-label" for="price">Harga <span class="form-required">*</span></label>
+                            <label class="form-label" for="price">Harga</label>
                             <div class="input-group">
                                 <span id="basic-addon1" class="input-group-prepend">
                                     <span class="input-group-text">Rp.</span>
                                 </span>
-                                <input class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" type="text" name="price" value="{{ old('price') }}">
+                                <input id="price" class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" type="text" name="price" value="{{ old('price') }}">
                                 @if ($errors->has('price'))
                                     @foreach ($errors->get('price') as $message)
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -159,7 +166,7 @@
                                 @endcomponent
                             @endif
                             @include('includes.form-element.datepicker', [
-                                'label' => 'Tanggal Pembayaran DP',
+                                'label' => 'Tanggal Bayar DP',
                                 'id' => 'DP-time',
                                 'name' => 'DP_time',
                             ])
@@ -275,5 +282,14 @@
 @section('js')
 <script>
     window.scroll(0, 65.133 + 55.5 + 1);
+
+    require(['jquery', 'global_functions'], function($, g){
+        $(document).ready(function(){
+            // TODO; move this clean mask to input-money.blade.php
+            $('form').submit(function(){
+                $('#price').val(g.cleanValMask($('#price').val()));
+            });
+        });
+    });
 </script>
 @endsection

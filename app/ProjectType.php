@@ -21,4 +21,6 @@ class ProjectType extends Model
      * @var array
      */
     protected $hidden = [ ];
+
+    public $timestamps = false;
 }

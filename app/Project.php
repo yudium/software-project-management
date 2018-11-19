@@ -77,8 +77,8 @@ class Project extends Model
     public function getPaymentMethodTextAttribute()
     {
         if ($this->payment_method == self::PAYMENT_BY_FULLCASH) return 'Full cash';
-        if ($this->payment_method == self::PAYMENT_BY_TERMIN) return 'Menyicil';
-        return 'Belum ditentukan';
+        if ($this->payment_method == self::PAYMENT_BY_TERMIN) return 'Termin';
+        return null;
     }
 
     public function getIsPaymentMethodTerminAttribute()
@@ -120,12 +120,15 @@ class Project extends Model
      * For using with DataTable plugin as Ajax response
      *
      * @param $array    contains
-     *                      (1) progress percent (number in tens),
-     *                      (2) number of task (number),
-     *                      (3) number of task complete (number)
-     *                      (4) last progress activity (array or json from trello api)
+     *                      (1) Response status (HTTP Code) for example: 200
+     *                      (2) Response message for example: Error message
+     *                      (3) Data, contains:
+     *                            (a) progress percent (number in tens),
+     *                            (b) number of task (number),
+     *                            (c) number of task complete (number)
+     *                            (d) last progress activity (array or json from trello api)
      *
-     *                  NOTE: can be null.
+     *                  NOTE: can be null if project not have trello
      */
     public function setProgressAttribute($array)
     {

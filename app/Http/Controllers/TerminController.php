@@ -13,6 +13,11 @@ class TerminController extends Controller
 {
      /**
      * Create termin for project X
+     *
+     * NOTE: this method intended to only accessed by redirection from
+     *       ProjectController activationStep3() method.
+     *
+     *       Since creating termin only done when activating project.
      */
     public function create($project_id)
     {
@@ -40,12 +45,14 @@ class TerminController extends Controller
         $termin_detail = [];                            // new format
         $old_termin_detail = $request->termin_detail;   // old format that sent by form
         // debt_amount just representative number of element
-        for ($i = 1; $i <= count($old_termin_detail['debt_amount']); $i++) {
+        for ($i = 0; $i < count($old_termin_detail['debt_amount']); $i++) {
             // just aliasing, more shorter
             $due_date = $old_termin_detail['due_date'];
 
             array_push($termin_detail, [
-                'serial_number' => $i, // the order of termin_detail is important to `serial_number`
+                // because it zero-indexed so increment by 1 to get serial number
+                // the order of termin_detail is important to `serial_number`
+                'serial_number' => $i + 1,
                 'due_date' => sprintf('%s-%s-%s', $due_date['year'][$i], $due_date['month'][$i], $due_date['day'][$i]),
                 'amount' => $old_termin_detail['debt_amount'][$i],
             ]);
@@ -65,7 +72,15 @@ class TerminController extends Controller
         // the detail of termin is stored to database, like `amount` and `due_date`
         $termin->details()->createMany($termin_detail);
 
-        // TODO: kemana?
+        /**
+         | Activate project after termin created
+         |
+         | NOTE: since create termin only done when activating project.
+         | ------------------------------------------------------------- */
+        return redirect()->route('project-activation-step4', [
+            'id' => $project->id,
+            'choice' => \App\Project::PAYMENT_BY_TERMIN,
+        ]);
     }
 
     public function get($project_id)
@@ -101,6 +116,10 @@ class TerminController extends Controller
         // get bank data
         $bank = Bank::find($request->bank);
 
+        /**
+         | Store
+         |
+         | ----------------------------------------------------------- */
         $termin_payment = new TerminPayment;
         $termin_payment->bank()->associate($bank); // termin_payment has relation to bank
         $termin_payment->termin_detail()->associate($termin_detail); // termin_payment has relation to termin_detail
@@ -108,11 +127,48 @@ class TerminController extends Controller
         $termin_payment->serial_number = 1 + getCurrentSerialNumberForTerminPayment($termin_detail_id);
         $termin_payment->pay_date = date('Y-m-d', strtotime($request->pay_date)); // convert date to mysql format
         $termin_payment->amount = $request->amount;
-        // store photo to storage in public directory
-        $request->photo->store('termin_photos', 'public');
-        // save photo path to db column
-        $termin_payment->photo_evidance = $request->photo->hashName();
+
+        // TODO: The term 'photo' here is not suitable. Change to other term. Maybe proof?
+        if ($request->has('photo')) {
+            // store photo to storage in public directory
+            $request->photo->store('termin_photos', 'public');
+            // save photo path to db column
+            $termin_payment->photo_evidance = $request->photo->hashName();
+        }
+
         $termin_payment->save();
+
+
+        /**
+         | Mark termin as paid off (lunas)
+         |
+         | ----------------------------------------------------------- */
+        $termin = $termin_detail->termin;
+
+        $paid_off = true;
+        /**
+         * iterate over all termin detail and check one-by-one if each of detail
+         * is paid off
+         *
+         * NOTE: $termin_detail already defined so I use $detail
+         */
+        foreach ($termin->termin_details as $detail) {
+            if ($detail->paid_amount != $detail->amount) {
+                $paid_off = false;
+            }
+        }
+        if ($paid_off) {
+            $termin->paid_off = Termin::IS_PAID_OFF;
+        }
+
+
+        /**
+         | Footer code
+         |
+         | ----------------------------------------------------------- */
+        $project = $termin_detail->termin->project;
+
+        return redirect()->route('termin-list', ['project_id' => $project->id]);
     }
 
     public function paymentHistory($termin_detail_id)

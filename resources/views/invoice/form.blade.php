@@ -1,3 +1,8 @@
+{{-- This view handle invoice for project that payment method is Full Cash or Termin.
+     So there is some code that handle the difference between them. Alternative option
+     is create new laravel view that handle each of payment method.
+--}}
+
 @extends('template.master')
 @section('title', 'Invoice Form')
 
@@ -74,71 +79,46 @@ div.separator {
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Jabatan</label>
-                                    <input class="form-control" name="department" value="" type="text">
+                                    <input class="form-control" name="department" value="" type="text" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Nama Perusahaan</label>
-                                    <input class="form-control" name="company_name" value="" type="text">
+                                    <input class="form-control" name="company_name" value="" type="text" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Tempat</label>
-                                    <input class="form-control" name="company_address" value="" type="text">
+                                    <input class="form-control" name="company_address" value="" type="text" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Pihak Penerima Surat</label>
-                                    <input class="form-control" name="letter_receiver" type="text">
+                                    <input class="form-control" name="letter_receiver" type="text" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Sumber Pembayaran</label>
-                                    <select name="bank" class="form-control custom-select">
+                                    <select name="bank" class="form-control custom-select" required>
+                                        <option value="">-- Pilih --</option>
                                         @foreach ($banks as $bank)
-                                            <!-- TODO: seharusnya bukan nama bank saja -->
-                                            <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                            <option value="{{ $bank->id }}">{{ ucfirst($bank->name) }} -- {{ $bank->account_number }} -- {{ ucfirst($bank->owner) }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="card">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
-                                            <thead>
-                                            <tr>
-                                                <th>Pembayaran ke-</th>
-                                                <th>Tanggal Tenggat</th>
-                                                <th>Jumlah</th>
-                                                <th>Keterangan</th>
-                                                <th class="text-center">Pilih</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach ($project->termin->details as $termin_detail)
-                                            @if ($termin_detail->paid_amount == $termin_detail->amount)
-                                                @continue
-                                            @endif
-                                            <tr>
-                                                <td class="text-center">#{{ $termin_detail->serial_number }}</td>
-                                                <td>{{ $termin_detail->due_date }}</td>
-                                                <td><b>Rp.@money($termin_detail->amount)</b></td>
-                                                <td>
-                                                    @if ($termin_detail->amount != $termin_detail->paid_amount)
-                                                    Sisa <b>Rp.@money($termin_detail->amount - $termin_detail->paid_amount)</b>
-                                                    @elseif ($termin_detail->paid_amount == 0)
-                                                    <b>@money($termin_detail->amount)</b>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="checkbox" name="termin_detail_id[]" value="{{ $termin_detail->id }}">
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
                             </div>
+
+                            {{-- This part of form is only for project that has
+                                 Termin --}}
+                            @if ($project->payment_method == \App\Project::PAYMENT_BY_TERMIN)
+                                @include('invoice.partials.form_termin');
+                            @endif
+
                             <div class="card-footer text-right">
                                 <div class="d-flex">
                                     <a href="javascript:void(0)" class="btn btn-link">Batal</a>
-                                    <button type="submit" class="btn btn-primary ml-auto">Buat Invoice</button>
+                                    <button
+                                       id="primary-btn"
+                                       type="submit"
+                                       class="btn btn-primary ml-auto @echoIf('disabled', $project->payment_method == \App\Project::PAYMENT_BY_TERMIN)">
+                                        Buat Invoice
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -149,3 +129,34 @@ div.separator {
     </form>
 </div>
 @endsection
+
+@section('js')
+<script>
+
+{{-- This part of form is only for project that has Termin --}}
+@if ($project->payment_method == \App\Project::PAYMENT_BY_TERMIN)
+
+    require(['jquery'], function($){
+        $(document).ready(function(){
+            $('.termin-check').change(function(){
+                let checked = 0;
+
+                $('.termin-check').each(function(index){
+                    if ($(this).prop('checked')) {
+                        checked++;
+                    }
+                });
+
+                if (checked > 0) {
+                    $('#primary-btn').removeClass('disabled');
+                } else {
+                    $('#primary-btn').addClass('disabled');
+                }
+            });
+        });
+    });
+
+@endif
+
+</script>
+@endsection('js')

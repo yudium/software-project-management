@@ -94,39 +94,46 @@
                 {
                     render: function(data, type, row) {
                         // handle project that doesn't have trello (data = null)
-                        if (! data) {
+                        if (! row['progress']) {
                             return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
                         }
+                        if (row['progress']['status'] != 200) {
+                            return `<small> ${ row['progress']['message'] } </small>`;
+                        }
+                        if (row['progress']['status'] == 200) {
+                            // rename variable to make shorter
+                            let progress = row['progress']['data'];
 
-                        let progress_color = null;
+                            let progress_color = null;
 
-                        if ( Math.floor(data['progress_percent']) <= 100) {
-                             progress_color = 'bg-success';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 80) {
-                             progress_color = 'bg-primary';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 50) {
-                             progress_color = 'bg-warning';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 30) {
-                             progress_color = 'bg-danger';
-                        }
+                            if ( Math.floor(progress['progress_percent']) <= 100) {
+                                progress_color = 'bg-success';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 80) {
+                                progress_color = 'bg-primary';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 50) {
+                                progress_color = 'bg-warning';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 30) {
+                                progress_color = 'bg-danger';
+                            }
 
-                        return `
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <strong>${ Math.floor(data['progress_percent']) }%</strong>
+                            return `
+                                <div class="clearfix">
+                                    <div class="float-left">
+                                        <strong>${ Math.floor(progress['progress_percent']) }%</strong>
+                                    </div>
+                                    <div class="float-right">
+                                        <small class="text-muted">${ progress['number_of_task_complete'] } dari ${ progress['number_of_task'] } task</small>
+                                    </div>
                                 </div>
-                                <div class="float-right">
-                                    <small class="text-muted">${ data['number_of_task_complete'] } dari ${ data['number_of_task'] } task</small>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar ${ progress_color }" role="progressbar" style="width: ${ Math.floor( progress['progress_percent'] ) }%"
+                                    aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
-                            </div>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar ${ progress_color }" role="progressbar" style="width: ${ Math.floor( data['progress_percent'] ) }%"
-                                aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        `;
+                            `;
+                        }
                     },
                     className: 'text-center',
                     orderable: false,

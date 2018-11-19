@@ -42,53 +42,109 @@ class ProjectController extends Controller
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_ONPROGRESS)->get();
 
-        /**
-         | I do 2 thing:
-         |      (1) Calculate progress percent for each project,
-         |          but also take the number of task complete and total number of task
-         |
-         |      (2) Take the last progress activity relative time (completed task) in hours
-         | --------------------------------------------------------------- */
-        $progress_percent = 0;
-        $number_of_task = 0;
-        $number_of_task_complete = 0;
 
-        $last_complete_task = null;
-        foreach ($projects as $project) {
+        try
+        {
+            /**
+            | I do 2 thing:
+            |      (1) Calculate progress percent for each project,
+            |          but also take the number of task complete and total number of task
+            |
+            |      (2) Take the last progress activity relative time (completed task) in hours
+            |
+            |
+            | $project->progress will contain these value:
+            |       1) null
+            |          if the project not have trello
+            |       2) array contains data
+            |       3) array constains error message
+            | --------------------------------------------------------------- */
+            $progress_percent = 0;
+            $number_of_task = 0;
+            $number_of_task_complete = 0;
 
-            // we inform to ajax client that current project doesn't have
-            // trello
-            if (! $project->trello_board_id) {
-                $project->progress = null;
-                continue;
+            $last_complete_task = null;
+            foreach ($projects as $project) {
+
+                // we inform to ajax client that current project doesn't have
+                // trello
+                if (! $project->trello_board_id) {
+                    $project->progress = null;
+                    continue;
+                }
+
+                // (1)
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // (2)
+                // get last progress activity
+                $last_complete_task = getTrelloLastProgress(
+                    $project->trello_board_id,
+                    $this->trello_auth
+                );
+                // in hours
+                $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete',
+                        'last_progress_relative_time'
+                    ),
+                ];
             }
-
-            // (1)
-            // calculate progress percent
-            $progress_percent = getTrelloProgressByBoardId(
-                $project->trello_board_id,
-                $this->trello_auth,
-                $number_of_task,            // pass by reference
-                $number_of_task_complete    // pass by reference
-            );
-
-            // (2)
-            // get last progress activity
-            $last_complete_task = getTrelloLastProgress(
-                $project->trello_board_id,
-                $this->trello_auth
-            );
-            // in hours
-            $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
-
-            // now save to the current model as array
-            $project->progress = compact(
-                'progress_percent',
-                'number_of_task',
-                'number_of_task_complete',
-                'last_progress_relative_time'
-            );
         }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $project->progress = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $project->progress = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
+        }
+
 
         return DataTables::of($projects)->make(true);
     }
@@ -128,36 +184,83 @@ class ProjectController extends Controller
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_DONE_SUCCESS)->get();
 
-        /**
-         | Calculate progress percent for each project,
-         | but also take the number of task complete and total number of task
-         | --------------------------------------------------------------- */
-        $progress_percent = 0;
-        $number_of_task = 0;
-        $number_of_task_complete = 0;
-        foreach ($projects as $project) {
+        try
+        {
+            /**
+            | Calculate progress percent for each project,
+            | but also take the number of task complete and total number of task
+            | --------------------------------------------------------------- */
+            $progress_percent = 0;
+            $number_of_task = 0;
+            $number_of_task_complete = 0;
+            foreach ($projects as $project) {
 
-            // we inform to ajax client that current project doesn't have
-            // trello
-            if (! $project->trello_board_id) {
-                $project->progress = null;
-                continue;
+                // we inform to ajax client that current project doesn't have
+                // trello
+                if (! $project->trello_board_id) {
+                    $project->progress = null;
+                    continue;
+                }
+
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete'
+                    ),
+                ];
             }
-
-            // calculate progress percent
-            $progress_percent = getTrelloProgressByBoardId(
-                $project->trello_board_id,
-                $this->trello_auth,
-                $number_of_task,            // pass by reference
-                $number_of_task_complete    // pass by reference
-            );
-
-            // now save to the current model as array
-            $project->progress = compact(
-                'progress_percent',
-                'number_of_task',
-                'number_of_task_complete'
-            );
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $project->progress = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $project->progress = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
         }
 
         return DataTables::of($projects)->make(true);
@@ -178,6 +281,85 @@ class ProjectController extends Controller
     {
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_DONE_FAIL)->get();
+
+        try
+        {
+            /**
+            | Calculate progress percent for each project,
+            | but also take the number of task complete and total number of task
+            | --------------------------------------------------------------- */
+            $progress_percent = 0;
+            $number_of_task = 0;
+            $number_of_task_complete = 0;
+            foreach ($projects as $project) {
+
+                // we inform to ajax client that current project doesn't have
+                // trello
+                if (! $project->trello_board_id) {
+                    $project->progress = null;
+                    continue;
+                }
+
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete'
+                    ),
+                ];
+            }
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $project->progress = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $project->progress = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $project->progress = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
+        }
 
         return DataTables::of($projects)->make(true);
     }
@@ -278,15 +460,13 @@ class ProjectController extends Controller
      * Store data in main form of project to database
      *
      * NOTE: request data already validated and sanitized
-     *
-     * TODO: implementasi untuk kolom tabel: `bank_id` dan `payment_method`
      */
     public function storeStep3(\App\Http\Requests\StoreProject $request)
     {
-        // we need to convert date to mysql format
-        $request->merge(['starttime' => date('Y-m-d', strtotime($request->starttime))]);
-        $request->merge(['endtime' => date('Y-m-d', strtotime($request->endtime))]);
-        $request->merge(['DP_time' => date('Y-m-d', strtotime($request->DP_time))]);
+        // we need to convert date to mysql format. Use merge() instead of $request->property_name
+        $request->merge(['starttime' => str_to_date('Y-m-d', $request->starttime)]);
+        $request->merge(['endtime' => str_to_date('Y-m-d', $request->endtime)]);
+        $request->merge(['DP_time' => str_to_date('Y-m-d', $request->DP_time)]);
 
         $client = Client::find($request->client_id);
         $project_type = ProjectType::find($request->project_type_id);
@@ -349,6 +529,222 @@ class ProjectController extends Controller
     }
 
     /**
+     * Edit for draft project
+     *
+     * for onprogress project see @method editRestricted()
+     * for archive project is not allowed to edit
+     */
+    public function edit($id)
+    {
+        $project = Project::find($id);
+
+        $client = $project->client;
+
+        // get all PIC name uniquely, for autocomplete in the form
+        // below sql is alternative for distinct sql
+        $PICs = PIC::orderBy('name','asc')->groupBy('name')->get();
+
+        if ($project->is_draft) {
+            return view('project.edit-form', compact('project', 'client', 'PICs'));
+        }
+
+        // maybe project is archive or on progress
+        // return HTTP 405 method not allowed
+        abort(405);
+    }
+
+    /**
+     * Update data of draft project
+     *
+     * for onprogress project see @method updateRestricted()
+     * for archive project is not allowed to edit
+     *
+     * NOTE: request data already validated and sanitized
+     */
+    public function update(\App\Http\Requests\UpdateProject $request, $id)
+    {
+        $project = Project::find($id);
+
+        // non-draft not allowed
+        if (! $project->is_draft) abort(405);
+
+        // we need to convert date to mysql format. Use merge() instead of $request->property_name
+        $request->merge(['starttime' => str_to_date('Y-m-d', $request->starttime)]);
+        $request->merge(['endtime' => str_to_date('Y-m-d', $request->endtime)]);
+        $request->merge(['DP_time' => str_to_date('Y-m-d', $request->DP_time)]);
+
+        $project->name = $request->name;
+        $project->price = $request->price;
+        $project->quantity = $request->quantity;
+        $project->starttime = $request->starttime;
+        $project->endtime = $request->endtime;
+        $project->DP_time = $request->DP_time;
+        $project->additional_note = $request->additional_note;
+        $project->trello_board_id = $request->trello_board_id;
+        $project->save();
+
+        // [1] delete all PIC db record first
+        foreach ($project->PICs as $model) {
+            $model->delete();
+        }
+        // [2] then save again
+        foreach ($request->PIC as $PIC_name) {
+            $project->PICs()->create(['name' => $PIC_name]);
+        }
+
+        // [1] delete all backup link db record first
+        foreach ($project->backup_source_code_project_links as $model) {
+            $model->delete();
+        }
+        // [2] then save again
+        foreach ($request->backup_source_code_project_link as $link) {
+            $project->backup_source_code_project_links()->create(['link_text' => $link]);
+        }
+
+        // [1] delete all project link db record first
+        foreach ($project->project_links as $model) {
+            $model->delete();
+        }
+        // [2] then save again
+        foreach ($request->project_link as $link) {
+            $project->project_links()->create(['link_text' => $link]);
+        }
+
+        return redirect()->route('project-detail', ['project_id' => $project->id])
+            ->with('message', 'Berhasil mengubah proyek')
+            ->with('messageType', 'success');
+    }
+
+    /**
+     * Update data of onprogress project
+     *
+     * for draft project see @method edit()
+     * for archive project is not allowed to edit
+     *
+     * NOTE: request data already validated and sanitized
+     */
+    public function editRestricted($id)
+    {
+        $project = Project::find($id);
+
+        $client = $project->client;
+
+        if ($project->is_onprogress) {
+            return view('project.edit-form_restricted', compact('project', 'client'));
+        }
+
+        // maybe project is archive or draft
+        // return HTTP 405 method not allowed
+        abort(405);
+    }
+
+    /**
+     * Update data of onprogress project
+     *
+     * for draft project see @method update()
+     * for archive project is not allowed to edit
+     *
+     * NOTE: request data already validated and sanitized
+     */
+    public function updateRestricted(\App\Http\Requests\UpdateRestrictedProject $request, $id)
+    {
+        $project = Project::find($id);
+
+        // non-onprogress not allowed
+        if (! $project->is_onprogress) abort(405);
+
+        $project->additional_note = $request->additional_note;
+        $project->trello_board_id = $request->trello_board_id;
+        $project->save();
+
+        // [1] delete all backup link db record first
+        foreach ($project->backup_source_code_project_links as $model) {
+            $model->delete();
+        }
+        // [2] then save again
+        foreach ($request->backup_source_code_project_link as $link) {
+            $project->backup_source_code_project_links()->create(['link_text' => $link]);
+        }
+
+        // [1] delete all project link db record first
+        foreach ($project->project_links as $model) {
+            $model->delete();
+        }
+        // [2] then save again
+        foreach ($request->project_link as $link) {
+            $project->project_links()->create(['link_text' => $link]);
+        }
+
+        return redirect()->route('project-detail', ['project_id' => $project->id])
+            ->with('message', 'Berhasil mengubah proyek')
+            ->with('messageType', 'success');
+    }
+
+    public function changeClient($id)
+    {
+        $project = Project::find($id);
+
+        return view('project.change-client', compact('project'));
+    }
+
+    public function changeClientConfirmation($id, $new_client_id)
+    {
+        $project = Project::find($id);
+
+        $old_client = $project->client;
+        $new_client = Client::find($new_client_id);
+
+        return view('project.change-client_confirmation', compact('project', 'old_client', 'new_client'));
+    }
+
+    public function updateClient($id, $new_client_id)
+    {
+        $new_client = Client::find($new_client_id);
+
+        // update
+        $project = Project::find($id);
+        $project->client()->associate($new_client);
+        $project->save();
+
+        return redirect()->route('project-detail', ['id' => $project->id])
+            ->with('message', 'Berhasil mengubah client')
+            ->with('messageType', 'success');
+    }
+
+    public function changeType($id)
+    {
+        $project = Project::find($id);
+
+        $project_types = ProjectType::all();
+
+        return view('project.change-type', compact('project', 'project_types'));
+    }
+
+    public function changeTypeConfirmation($id, $new_type_id)
+    {
+        $project = Project::find($id);
+
+        $old_project_type = $project->project_type;
+        $new_project_type = ProjectType::find($new_type_id);
+
+        return view('project.change-type_confirmation', compact('project', 'old_project_type', 'new_project_type'));
+    }
+
+    public function updateType($id, $new_type_id)
+    {
+        $new_project_type = ProjectType::find($new_type_id);
+
+        // update
+        $project = Project::find($id);
+        $project->project_type()->associate($new_project_type);
+        $project->save();
+
+        return redirect()->route('project-detail', ['id' => $project->id])
+            ->with('message', 'Berhasil mengubah tipe proyek')
+            ->with('messageType', 'success');
+    }
+
+    /**
      * The logic is same as method `createStep3` except this purpose project
      * creation is for potential project conversion.
      */
@@ -383,13 +779,81 @@ class ProjectController extends Controller
 
 
     /**
-     * Mark current project as on progress
-     *
-     * @param $id   project's id
+     * This activation step is just confirmation. Make sure that all data is
+     * correct.
      */
-    public function activate($id)
+    public function activationStep1($id)
     {
         $project = Project::find($id);
+        $client = $project->client;
+
+        return view('project.activation.confirmation', compact('project', 'client'));
+    }
+
+    public function activationStep2($id)
+    {
+        return view('project.activation.ask-payment-method', compact('id'));
+    }
+
+    /**
+     * Payment method confirmation step
+     */
+    public function activationStep3($id, $choice)
+    {
+        $project = Project::find($id);
+
+        if ($choice == Project::PAYMENT_BY_FULLCASH) {
+            // we send confirmation
+            return view('project.activation.set-payment-method-as-fullcash_confirmation', compact('id', 'project'));
+        }
+        if ($choice == Project::PAYMENT_BY_TERMIN) {
+            // we send the work to termin controller
+            return redirect()->route('create-termin', ['project_id' => $id]);
+        }
+
+        // we don't understand $choice value
+        abort(404);
+    }
+
+    /**
+     *
+     * NOTE: if the flow is confusing I will make clear here.
+     *
+     * Below the flow of method execution based on user's chosen payment method.
+     *
+     *  1) Full Cash
+     *
+     *          activationStep3 -> activationStep4
+     *
+     *  2) Termin
+     *
+     *          activationStep3 -> termin controller -> activationStep4
+     *
+     *     if termin, this action method accessed by redirection from termin
+     *     controller store() method.
+     */
+    public function activationStep4($id, $choice)
+    {
+        $project = Project::find($id);
+
+        /**
+         | Set payment method
+         | ---------------------------------------------- */
+        if ($choice == Project::PAYMENT_BY_FULLCASH) {
+            // we set payment method here
+            $project->payment_method = Project::PAYMENT_BY_FULLCASH;
+        } else if ($choice == Project::PAYMENT_BY_TERMIN) {
+            // the work is done by termin controller store() method
+            // so here we have no work
+        } else {
+            abort(404);
+        }
+
+        /**
+         | Activate the project
+         |
+         | Mark project as On Progress
+         | ---------------------------------------------- */
         $project->status = Project::IS_ONPROGRESS;
         $project->save();
 
@@ -399,58 +863,23 @@ class ProjectController extends Controller
     }
 
     /**
-     * Set current project's payment method as full cash
-     *
-     * @param $id   project's id
+     * NOTE: deactivation = mark project done (success or fail)
      */
-    public function setPaymentMethodFullCash(Request $request, $id)
-    {
-        if ($request->isMethod('post')) {
-            $project = Project::find($id);
-            $project->payment_method = Project::PAYMENT_BY_FULLCASH;
-            $project->save();
-
-            return redirect()->route('project-detail')
-                ->with('message', 'Pembayaran diatur sebagai Full Cash')
-                ->with('messageType', 'success');
-        }
-
-        return view('project.set-payment-method-fullcash', compact('id'));
-    }
-
-    /**
-     * User choice between mark as fail or success for status of completed
-     * project
-     */
-    public function markProjectDone($id)
-    {
-        return view('project.mark-project-done', compact('id'));
-    }
-
-    /**
-     * Show dialog confirm to user about mark project as done
-     *
-     * @param $id        project's id
-     * @param $choice    possible value: Project::IS_DONE_FAIL or Project::IS_DONE_SUCCESS
-     */
-    public function confirmMarkProjectDone($id, $choice)
+    public function deactivationConfirmation($id)
     {
         $project = Project::find($id);
 
-        return view('project.mark-project-done_confirm', compact('project', 'choice'));
+        // we add 1 because diffInDays() is exclusive in one edge
+        $project_age = Carbon::now()->diffInDays(Carbon::parse($project['starttime']));
+
+        return view('project.deactivation.confirmation', compact('project', 'project_age'));
     }
 
-    /**
-     * User confirmed 100% sure will mark project as done
-     *
-     * @param $id        project's id
-     * @param $choice    possible value: Project::IS_DONE_FAIL or Project::IS_DONE_SUCCESS
-     */
-    public function confirmedMarkProjectDone($id, $choice)
+    public function deactivation(Request $request, $id)
     {
-        // TODO: add validation to make sure $choice is valid value
+        // TODO: add validation to make sure $request->status is valid value
         $project = Project::find($id);
-        $project->status = $choice;
+        $project->status = $request->status;
         $project->save();
 
         return redirect()->route('project-detail', ['id' => $project->id]);

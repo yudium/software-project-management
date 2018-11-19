@@ -2,7 +2,7 @@
 @section('title', 'Project')
 @section('css')
 <style>
-       
+
 .btn-as-text {
     color: #495057;
     border: none;
@@ -121,25 +121,6 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)">
-                                                <span class="avatar-status bg-green"></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>xxxxxxxxxxxx</div>
-                                            <div class="small text-muted">
-                                                <span class="badge badge-secondary">komunitas</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            xxxxxxxxxx
-                                        </td>
-                                        <td><a href="#" class="btn btn-success btn-sm"><i class="fe fe-plus"></i> Buat</a></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -178,11 +159,6 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4" class="text-center"><a href="#" class="btn btn-outline-success"><i class="fe fe-plus"></i> Buat Baru</a></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
 

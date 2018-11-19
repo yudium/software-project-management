@@ -115,10 +115,15 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
                         <tbody>
+                            @if ($listClientTypes->count() == 0)
+                            <tr>
+                                <td class="text-center"><small>Tidak ada data. Klik <a href="{{ route('create-client-type') }}">disini</a> untuk tambah.</small></td>
+                            </tr>
+                            @endif
                             @foreach ($listClientTypes as $type)
                             <tr>
                                 <td width="10%" class="text-center"><i class="{{ $type->icon }} text-muted"></i></td>
-                                <td width="80%" >{{ $type->name }}</td>
+                                <td width="80%" >{{ ucfirst($type->name) }}</td>
                                 <td width="10%" class="text-center">
                                         <span class="check-circle-container">
                                     <a href="#" data-client-type-id="{{ $type->id  }}"  class="btn btn-outline-info btn-sm pilihType" >Pilih</a>
