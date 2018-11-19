@@ -9,4 +9,6 @@ class AgentCommission extends Model
     protected $table =  'commissions';
     protected $fillable = ['amount'];
     public $timestapms = false;
+
+    
 }

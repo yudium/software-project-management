@@ -1,3 +1,4 @@
+
 @extends('template.master')
 @section('title','Client')
 @section('css')
@@ -129,7 +130,10 @@
 </div>
 
 <div class="container">
-
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span></p>
+    @endif
     <div class="page-header">
         <h1 class="page-title">
 
@@ -137,7 +141,7 @@
             Form Orang Dalam Client
         </h1>
     </div>
-    <form method="post" action="{{ route('createClientInsider') }}">
+    <form method="post" action="{{ route('createClientInsider') }}" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="did" value="{{ $idClient}}">
     <div class="row row-cards">
@@ -145,7 +149,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                    <script type="text/template" id="insiderTemplate">
+
+                        <script type="text/template" id="insiderTemplate">
                         <div class="row gutters-xs multiple-row-copy-target" id="multiple-row-copy@{{ idInsider}}" >
                             <div class="col-2">
                                 <input class="form-control" name="nama[@{{idInsider}}]" placeholder="Nama" type="text">
@@ -181,7 +186,7 @@
                             <div class="col-2">
                                 <div class="form-group" style="width: 128.217px; height: 2.375rem !important; margin: 0 auto">
                                     <div class="custom-file">
-                                        <input class="custom-file-input fotoProfile" name="fotoProfile[@{{idInsider}}]" id="fotoProfile" type="file">
+                                        <input class="custom-file-input fotoProfile" name="fotoProfile[@{{idInsider}}]" id="fotoProfile" type="file" >
                                         <label class="custom-file-label">Choose file</label>
                                         <div class="preview-foto">
                                         <span class="photo-preview avatar"  style="background-image: url(./demo/faces/female/25.jpg)"></span></div>

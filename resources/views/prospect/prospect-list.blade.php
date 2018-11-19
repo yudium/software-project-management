@@ -20,14 +20,15 @@
 @endsection
 @section('content')
 <div class="container">
+        @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<span aria-hidden="true"></span><button type="button"
+            class="close" data-dismiss="alert" aria-label="Close"></button></p>
+        @endif
     <div class="page-header">
 	<h1 class="page-title">
 		Daftar Prospect
 	</h1>
 </div>
-
-
-
     <div class="card">
 	<div class="table-responsive">
 		<table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="prospectTable">
@@ -43,7 +44,11 @@
             </tr>
 			</thead>
 			<tbody>		
-			
+                    <tr>
+                            <td class="text-center" colspan="8">
+                                <div class="loader mx-auto"></div>
+                            </td>
+                        </tr>
 			</tbody>
 		</table>
 	</div>
@@ -82,7 +87,7 @@
                     targets: 1,
                     data:'name',
                     render: function ( data, type, row ) {
-                       return '<div>'+data+'</div><div class="small text-muted">Registered: Mar 19, 2018</div>';
+                       return '<div>'+data+'</div><div class="small text-muted">Registered: '+row['created_at']+'</div>';
                     },
                 },
                 {
@@ -130,5 +135,27 @@
         })
     })
 })
+
+ function deleteProspect(id) {
+                // alert(id)
+                if(confirm('Apakah anda ingin menghapus data ini?'))
+                {
+                    
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url : "{{url('prospect/deleteProspect')}}"+"/"+id,
+                        type: "POST",
+                        dataType: "JSON",
+                    }).done(function(res){
+                            console.log(res)
+                            window.location.reload();
+                            toastr.success('Berhasil menghapus data', {timeOut: 5000});
+                    })
+
+
+                }
+            }
 </script>
 @endsection

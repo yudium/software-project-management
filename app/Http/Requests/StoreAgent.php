@@ -26,48 +26,33 @@ class StoreAgent extends FormRequest
         $this->sanitize();
 
         return [
-            'nama'=>'required',
+            'nama'=>'required|min:2',
             'alamat'=>'required',
             'kota'=>'required',
-            'telepon'=>'required|numeric',
-            'email'=>'required|email',
-            'norek'=>'required|numeric',
-            'web'=>'required|url',
-            'foto'=>'',
+            'photoAgent'=>'',
+            'telepon.*'=>'nullable|numeric|required',
+            'email.*'=>'nullable|email|required',
+            'norek.*'=>'nullable|numeric|required',
         ];
     }
 
     public function sanitize()
     {
         $input = $this->all();
-
-        dd($input);
-        $old_telepon = $input['agent-telepon'];
-        $input['agent-telepon'] = [];
-        foreach($old_telepon as $key => $telepon){
-            if(trim($telepon)) array_push($input['agent-telepon'],$telepon);
-        }
-
-        $old_email = $input['agent-email'];
-        $input['agent-email'] = [];
-        foreach($old_email as $key =>$email){
-            if(trim($email)) array_push($input['agent-email'],$email);
-
-        }
         
-        $old_norek = $input['agent-norek'];
-        $input['agent-norek'] = [];
-        foreach($old_norek as $key =>$norek){
-            if(trim($norek)) array_push($input['agent-norek'],$norek);
-    
-         }
-
-        $old_web = $input['agent-web'];
-        $input['agent-web'] = [];
-        foreach($old_web as $key =>$web){
-            if(trim($web)) array_push($input['agent-web'],$web);
-
+        if ($input['telepon']) {
+            array_filter_null_element($input['telepon']);
         }
+        if ($input['email']) {
+            array_filter_null_element($input['email']);
+        }
+        if ($input['norek']) {
+            array_filter_null_element($input['norek']);
+        }
+        if ($input['web']) {
+            array_filter_null_element($input['web']);
+        }
+        // dd($input);
         $this->replace($input);
     }
 }

@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Client')
+@section('title', 'Prospek')
 @section('css')
 <style>
     .stepwizard {
@@ -86,10 +86,10 @@
 <div class="container">
     <div class="page-header">
         <h1 class="page-title">
-            Form Tambah Client
+            Form Tambah Prospect
         </h1>
     </div>
-    <form method="post" action="{{ route('createClientForm') }}" enctype="multipart/form-data">
+    <form method="post" action="{{ route('createProspectForm') }}">
             @csrf
         <div class="row row-cards">
             <div class="col-4">
@@ -98,20 +98,14 @@
 
                         <div class="form-group">
                             <label class="form-label" for="name">Nama <span class="form-required">*</span></label>
-                            <input class="form-control {{ $errors->has('nama') ? 'is-invalid' : '' }}" type="text" name="nama" value="{{ old('name') }}">
-                            @if ($errors->has('nama'))
-                            @foreach ($errors->get('nama') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
+                            <input class="form-control" type="text" name="nama">
                             
                         </div>
-                        
                         <div class="form-group">
                             <label class="form-label">Jenis</label>
-                            <input name="tipeClient" type="hidden" value="{{ $idType->id }}">
+                            <input name="tipeProspect" type="hidden" value="{{ $idType->id }}">
                             <div class="form-control-plaintext"><i class="{{ $idType->icon }} mr-3" value="{{ $idType->id }}"
-                                    name="jenisClient"></i> {{ $idType->name }}</div>
+                                    name="jenisProspect"></i> {{ $idType->name }}</div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Status hubungan bisnis</label>
@@ -133,15 +127,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Alamat</label>
-                            <textarea class="form-control {{ $errors->has('alamat') ? 'is-invalid' : '' }}" name="alamat" type="text"></textarea>
-                            @if ($errors->has('alamat'))
-                            @foreach ($errors->get('alamat') as $message)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @endforeach
-                        @endif
+                            <textarea class="form-control" name="alamat" type="text"></textarea>
                         </div>
-
-                   
                         <div class="form-group">
                                 @if (count($errors->get('kota.*')))
                                 @component('includes.alert-danger')
@@ -152,26 +139,26 @@
                                     @endforeach
                                 @endcomponent
                             @endif
-    
                             <label class="form-label">Kota</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-kota',
                             'name' => 'kota[]',
                             'number' => 1,
                             ])
-                          
                         </div>
-               
                     </div>
+
+                    <!--
+                    <div class="card-footer">
+                        This is standard card footer
+                    </div>
+                -->
                 </div>
             </div>
             <div class="col-4">
                 <div class="card">
                     <div class="card-body">
-
-
                         <div class="form-group">
-                            
                                 @if (count($errors->get('telepon.*')))
                                 @component('includes.alert-danger')
                                     @foreach ($errors->get('telepon.*') as $messages)
@@ -188,19 +175,16 @@
                             'number' => 1,
                             ])
                         </div>
-
-              
                         <div class="form-group">
-                                @if (count($errors->get('email.*')))
+                                @if (count($errors->get('telepon.*')))
                                 @component('includes.alert-danger')
-                                    @foreach ($errors->get('email.*') as $messages)
+                                    @foreach ($errors->get('telepon.*') as $messages)
                                         @foreach ($messages as $message)
                                             {{ $message }}<br>
                                         @endforeach
                                     @endforeach
                                 @endcomponent
                             @endif
-        
                             <label class="form-label">Email</label>
                             @include('includes.form-element.multiple-input', [
                             'id' => 'multi-email',
@@ -208,8 +192,6 @@
                             'number' => 1,
                             ])
                         </div>
-                 
-
                         <div class="form-group">
                                 @if (count($errors->get('norek.*')))
                                 @component('includes.alert-danger')
@@ -227,8 +209,6 @@
                             'number' => 1,
                             ])
                         </div>
-            
-
                         <div class="form-group">
                                 @if (count($errors->get('web.*')))
                                 @component('includes.alert-danger')
@@ -261,7 +241,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-file">
-                                        <input class="custom-file-input" name="photo" type="file" id="fotoProfile">
+                                        <input class="custom-file-input" name="foto" type="file" id="fotoProfile">
                                         <label class="custom-file-label">Choose file</label>
                                     </div>
                                 </div>
@@ -302,6 +282,9 @@
                 alert("Please select image file (jpg, jpeg, png).")
         });
 
+        $('#btn-kota').on('click',function(){
+            $('.btn-kota').parent.parent.remove()
+        })
 
        
     })

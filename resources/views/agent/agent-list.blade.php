@@ -20,28 +20,18 @@
 @endsection
 @section('content')
 <div class="container">
-
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}
+            <span aria-hidden="true"></span><button type="button"
+            class="close" data-dismiss="alert" aria-label="Close"></button></p>
+    @endif
     <div class="page-header">
         <h1 class="page-title">
             Daftar Agen
         </h1>
     </div>
 
-    <div class="row row-cards">
-        <div class="col-6 col-sm-4 col-lg-4">
-            <div class="form-group">
-                <div class="input-icon mb-3">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-icon-addon">
-                        <i class="fe fe-search"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="card">
-        <div class="table-responsive">
             <table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="agentTable">
                 <thead>
                     <tr>
@@ -52,14 +42,17 @@
                         <th>Kota</th>
                         <th>Telepon</th>
                         <th>Email</th>
-                        <th class="text-center"><i class="icon-settings"></i></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody>
-
+                        <tr>
+                                <td class="text-center" colspan="8">
+                                    <div class="loader mx-auto"></div>
+                                </td>
+                            </tr>
                 </tbody>
             </table>
-        </div>
 
     </div>
 
@@ -67,7 +60,7 @@
 @endsection
 @section('js')
 <script>
-    require(['datatables', 'jquery'],function (datatable, $) {
+    require(['datatables', 'jquery','toastr'],function (datatable, $,toastr) {
         $('#agentTable').DataTable({
             serverSide:true,
             ajax: "{{ route('getAgent') }}",
@@ -82,7 +75,8 @@
                 },
                 {
                     render:function(data,type,row){
-                        return '<div>'+data+'</div><div class="small text-muted">Registered: Mar 19, 2018</div>';
+                        console.log(row)
+                        return '<div>'+data+'</div><div class="small text-muted">Registered: '+row['created_at']+'</div>';
                     },
                     orderable:false,
                     targets:1,
@@ -96,7 +90,7 @@
                 },
                 {
                     render:function(data,type,row){
-                       return data  ;
+                       return  data ? formatRupiah(data, "Rp. ") : "Belum Ada";   
                     },
                     orderable:false,
                     targets:3,
@@ -143,6 +137,50 @@
                 { data: 'options' },
             ]
         });
+    $(document).ready(function(){
+
+     $('#agentTable').on('click', '.deleteAgent',function(e){
+         e.preventDefault()
+         idAgent = $(this).data('id-agent')
+         if(confirm('Apakah anda ingin menghapus data ini?'))
+                {
+                    
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url : "{{url('agent/deleteAgent')}}"+"/"+idAgent,
+                        type: "POST",
+                        dataType: "JSON",
+                    }).done(function(res){
+                            console.log(res)
+                            window.location.reload();
+                            toastr.success('Berhasil menghapus data', {timeOut: 5000});
+                    })
+
+
+                }
+     });
+    })
     });
+ 
+    /* Fungsi formatRupiah */
+    function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, "").toString(),
+        split = number_string.split(","),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+        separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+    }
+
+    rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+    return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+    }
+
 </script>
 @endsection
