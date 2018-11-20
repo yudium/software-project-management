@@ -14,7 +14,7 @@ class AddQuantityColumnToProjectsTable extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->tinyInteger('quantity')->after('price');
+            $table->tinyInteger('quantity')->nullable()->after('price');
         });
     }
 
