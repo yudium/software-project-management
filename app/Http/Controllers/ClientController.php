@@ -105,7 +105,7 @@ class ClientController extends Controller
     }
 
 
-    public function createClientForm(\App\Http\Requests\StoreCLient $req)
+    public function createClientForm(\App\Http\Requests\StoreClient $req)
     {
        
         $client = new Client();
