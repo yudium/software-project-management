@@ -47,21 +47,35 @@
                             <th>Tanggal bayar</th>
                             <th>Sumber Pembayaran</th>
                             <th>Jumlah</th>
+                            <th>Foto Bukti</th>
                         </tr>
                         </thead>
                         <tbody>
 
                         @if ($termin_payments->count() == 0)
                         <tr>
-                            <td colspan="3" class="text-center">Tidak ada data</td>
+                            <td colspan="4" class="text-center">Tidak ada data</td>
                         </tr>
                         @endif
 
                         @foreach ($termin_payments as $termin_payment)
                         <tr>
                             <td class="text-center">{{ date('d M Y', strtotime($termin_payment->pay_date)) }}</td>
-                            <td>{{ $termin_payment->bank->name }}</td>
+                            <td>
+                            @if ($termin_payment->bank_id)
+                                {{ $termin_payment->bank->name }}
+                            @else
+                                <span class="tag tag-blue">Cash</span>
+                            @endif
+                            </td>
                             <td>Rp.{{ $termin_payment->amount }}</td>
+                            <td class="text-right">
+                                @if ($termin_payment->photo_evidance)
+                                    <a target="_blank" class="btn btn-secondary btn-sm" href="{{ asset("storage/termin_photos/$termin_payment->photo_evidance") }}">Buka</a>
+                                @else
+                                    <small><i>Tidak ada</i></small>
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
 

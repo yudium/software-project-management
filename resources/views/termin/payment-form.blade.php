@@ -55,27 +55,9 @@ div.separator {
             <div class="col-3">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center pt-2 mt-auto">
-                                    <div class="avatar avatar-md mr-3" style="background-image: url(./demo/faces/female/18.jpg)"></div>
-                                    <div>
-                                        <a href="./profile.html" class="text-default">{{ $client->name }}</a>
-                                        <div class="d-block text-muted">
-                                            <span class="badge badge-success">{{ ucfirst($client->type->name) }}</span>
-                                            <span class="badge badge-info">{{ ucfirst($client->status_text) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <a href="#" class="icon d-none d-md-inline-block ml-3"><i class="fe fe-eye mr-1"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="separator"></div>
-                                <h5 class="mt-3">{{ $project->name }}</h5>
-                                <p><i class="icon-box text-center mr-2"><i class="fa {{ $project->project_type->icon }}"></i></i> {{ $project->project_type->name }}</p>
-                            </div>
-                        </div>
+                        @include('includes.cards.client-with-project-info', [
+                            'project' => $project,
+                        ])
                     </div>
                     <div class="col-12">
                         <div class="card">
@@ -106,8 +88,12 @@ div.separator {
                             <label class="form-label">Sumber pembayaran</label>
                             <select name="bank" class="form-control custom-select" required>
                                 <option value="">-- Pilih --</option>
+
+                                {{-- NOTE: be careful with "cash" value. It should same as in TerminController@storePayment value --}}
+                                <option value="cash">[Pembayaran dilakukan secara Cash]</option>
+
                                 @foreach ($banks as $bank)
-                                <option value="{{ $bank->id }}">{{ $bank->name }} -- {{ $bank->account_number }} -- {{ $bank->owner }}</option>
+                                    <option value="{{ $bank->id }}">{{ $bank->name }} -- {{ $bank->account_number }} -- {{ $bank->owner }}</option>
                                 @endforeach
                             </select>
                         </div>
