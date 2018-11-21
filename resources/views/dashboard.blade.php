@@ -88,7 +88,7 @@ span.content--anticipate-long-text:hover {
 
                     @if ($project_onprogress->count() == 0)
                         <tr>
-                            <td colspan="2" class="text-center text-muted"><i>Tidak ada data</i></td>
+                            <td colspan="2" class="text-center text-muted"><i>Tidak ada proyek berjalan</i></td>
                         </tr>
                     @endif
 
@@ -134,7 +134,7 @@ span.content--anticipate-long-text:hover {
 
                         @if ($termins->count() == 0)
                         <tr>
-                            <td class="text-center">Tidak ada data</td>
+                            <td class="text-center">Tidak ada termin</td>
                         </tr>
                         @endif
 
