@@ -11,16 +11,16 @@
                 <div class="card-title">Tambah Bank</div>
 
                 <div class="form-group">
-                    <label class="form-label" for="name">Bank Name</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="Masukan bank name">
+                    <label class="form-label" for="name">Nama Bank</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Masukan bank name" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="account_number">No. Rekening</label>
-                    <input type="text" name="account_number" class="form-control" id="account_number" placeholder="Masukan no. rekening">
+                    <input type="text" name="account_number" class="form-control" id="account_number" placeholder="Masukan no. rekening" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="name">Atas Nama</label>
-                    <input type="text" name="owner" class="form-control" id="owner" placeholder="Masukkan nama pemilik rekening">
+                    <input type="text" name="owner" class="form-control" id="owner" placeholder="Masukkan nama pemilik rekening" required>
                 </div>
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary btn-block">Simpan</button>
