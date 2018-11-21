@@ -16,7 +16,7 @@ class AddPaidOffColumnToTerminsTable extends Migration
         Schema::table('termins', function (Blueprint $table) {
             // The default value must be same as @const IS_NOT_PAID_OFF
             // in Termin.php model
-            $table->char('paid_off', 1)->nullable()->default(2);
+            $table->char('paid_off', 1)->default(2);
         });
     }
 
