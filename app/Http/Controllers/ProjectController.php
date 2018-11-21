@@ -11,6 +11,7 @@ use App\ProjectType;
 use App\PIC;
 use App\Termin;
 use App\TerminDetail;
+use App\ProjectTag;
 use App\Bank;
 use App\ProspectToClientTransformation;
 use Carbon;
@@ -147,6 +148,46 @@ class ProjectController extends Controller
     {
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_DRAFT)->get();
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
+     * Get draft project by tags
+     */
+    public function getDraftByTags(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        // get all PIC name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.list-draft-by-tags', compact('query_tags', 'available_tags'));
+    }
+
+    /**
+     * Data for DataTable plugin, in draft project by tags page
+     */
+    public function getDraftByTagsAjax(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        /**
+         | Get projects that has specific tags
+         |
+         | --------------------------------------------- */
+        // get individual tags as array
+        $tags = explode(',', $query_tags);
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DRAFT);
+        foreach ($tags as $tag) {
+            // chaining in loop. Please look at assignment operator.
+            $projects = $projects->whereHas('tags', function ($query) use ($tag) {
+                $query->where('name', '=', $tag);
+            });
+        }
+        $projects = $projects->get();
 
         return DataTables::of($projects)->make(true);
     }

@@ -57,6 +57,9 @@ Route::auth();
     Route::get('/project/list/draft', 'ProjectController@getDraft')->name('draft-project-list');
     Route::get('/project/list/draft/ajax', 'ProjectController@getDraftAjax')->name('draft-project-list-ajax');
 
+    Route::get('/project/list/draft/by-tags', 'ProjectController@getDraftByTags')->name('draft-project-by-tags-list');
+    Route::get('/project/list/draft/by-tags/ajax', 'ProjectController@getDraftByTagsAjax')->name('draft-project-by-tags-list-ajax');
+
     Route::get('/project/list/success', 'ProjectController@getSuccess')->name('success-project-list');
     Route::get('/project/list/success/ajax', 'ProjectController@getSuccessAjax')->name('success-project-list-ajax');
 
