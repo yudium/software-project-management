@@ -52,7 +52,6 @@ div.remaining-amount .badge {
                         <div>
                             <a href="./profile.html" class="text-default">{{ $agent->name }}</a>
                             <div class="d-block text-muted">
-                                {{-- <span class="badge badge-success">{{ ucfirst($client->type->name) }}</span> --}}
                                 <span class="badge badge-info">{{ ucfirst($agent->username) }}</span>
                             </div>
                         </div>
@@ -61,20 +60,17 @@ div.remaining-amount .badge {
                         </div>
                     </div>
 
-                    <div class="separator"></div>
-                    {{-- <h5 class="mt-3">{{ $project->name }}</h5>
-                    <p><i class="icon-box text-center mr-2"><i class="fa {{ $project->project_type->icon }}"></i></i> {{ $project->project_type->name }}</p> --}}
                 </div>
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-8">
             <div class="card">
-                <div class="table-responsive">
                     <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
                         <thead>
                         <tr>
                             <th>No</th>
                             <th>Tanggal</th>
+                            <th>Project</th>
                             <th>Jumlah</th>
                             <th>Status lunas</th>
                             <th class="text-center"><i class="icon-settings"></i></th>
@@ -85,6 +81,7 @@ div.remaining-amount .badge {
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ date('d M Y', strtotime($listCommission->commission->due_date)) }}</td>
+                            <td>{{$listCommission->project_name}}</td>
                             <td>Rp.{{ $listCommission->commission->amount }}</td>
                             <td>
                                 @if ($listCommission->commission->amount != $listCommission->commission->paid_amount)
@@ -107,7 +104,7 @@ div.remaining-amount .badge {
                         @endforeach
                         </tbody>
                     </table>
-                </div>
+             
             </div>
         </div>
 

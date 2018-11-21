@@ -37,11 +37,6 @@ class AgentController extends Controller
 
     }
 
-    // public function getAgentCommission()
-    // {
-    //     // $agentCommission = Agent::
-    // }
-
     public function listCommission()
     {
         return view('agent.agent-listCommission');
@@ -64,21 +59,7 @@ class AgentController extends Controller
         $listCommissions = AgentProject::with(['commission'])->where('agent_id','=',$id)->get();
         return view('agent.agent-listCommission-detail',compact('agent','listCommissions'));
     }
-    // public function getListCommission()
-    // {
-    //     $listCommission = DB::table('agents')
-    //                     ->join('agent_projects','agents.id','=','agent_projects.agent_id')
-    //                     ->join('agent_commissions','agent_projects.id','=','agent_commissions.agent_project_id')
-    //                     ->get();
-    //     return Datatables::of($listCommission)
-    //     ->addColumn('options',function($listCommission){
-    //             return '<div class="text-center"><a href="'.route('agentPayment',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="'.route('agentPaymentHistory',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
-    //     })
-    //     ->addColumn('status_bayar',function($listCommission){
-    //         return '<span class="badge badge-danger">Belum dibayar</span>';
-    //     })
-    //     ->rawColumns(['options','status_bayar'])->make(true);
-    // }
+
 
     public function newAgentForm()
     {
