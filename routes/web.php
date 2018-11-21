@@ -50,6 +50,14 @@ Route::auth();
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');
     Route::get('/agent/new/agent-form','AgentController@newAgentForm')->name('newAgentForm');
     Route::post('/agent/new/agent-form','AgentController@createAgentForm')->name('createAgentForm');
+    Route::get('/agent/agent-activation/{id}','AgentController@activateAgent')->name('activateAgent');
+    Route::post('/agent/deleteAgent/{id}','AgentController@deleteAgent')->name('deleteAgent');
+    Route::get('/agent/agent-payment/{id}','AgentController@paymentAgent')->name('agentPayment');
+    Route::post('/agent/agent-payment/{id}','AgentController@storePaymentAgent')->name('storePaymentAgent');
+    Route::get('/agent/agent-payment-history/{id}','AgentController@paymentHistory')->name('agentPaymentHistory');
+    Route::get('/agent/agent-listCommission','AgentController@listCommission')->name('listCommission');
+    Route::get('/agent/agent-commission-detail/{id}','AgentController@listCommissionDetail')->name('listCommissionDetail');
+    Route::get('/getListCommission','AgentController@getListCommission')->name('getListCommission');
 
     Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
     Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');

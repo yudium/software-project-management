@@ -41,12 +41,12 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="../gallery.html" class="nav-link" data-toggle="dropdown"><i class="fe fe-image"></i>
+                        <a href="../gallery.html" class="nav-link @if(request()->segment(1) == 'agent') active @endif" data-toggle="dropdown"><i class="fe fe-image"></i>
                             Agen</a>
                         <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../komisi-agen_daftar.html" class="dropdown-item  ">Komisi Agen</a>
-                            <a href="../agen-list.html" class="dropdown-item  ">Daftar Agen</a>
-                            <a href="../new-agen_form.html" class="dropdown-item  ">Tambah Agen</a>
+                        <a href="{{route('listCommission')}}" class="dropdown-item  ">Komisi Agen</a>
+                            <a href="{{route('agentList')}}" class="dropdown-item  ">Daftar Agen</a>
+                            <a href="{{route('newAgentForm')}}" class="dropdown-item  ">Tambah Agen</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
