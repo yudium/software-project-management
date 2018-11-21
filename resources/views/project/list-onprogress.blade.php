@@ -99,7 +99,7 @@
                     render: function(data, type, row) {
                         // doesn't have trello board or connection error
                         if (! row['progress']) {
-                            return `NULL`;
+                            return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
                         }
                         if (row['progress']['status'] != 200) {
                             return `<small> ${ row['progress']['message'] } </small>`;

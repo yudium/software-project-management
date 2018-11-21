@@ -34,7 +34,7 @@
                 <th>Client</th>
                 <th class="text-center w-1">Jenis</th>
                 <th>Proyek</th>
-                <th>Progress</th>
+                <th>Progress Terakhir</th>
                 <th class="text-center"><i class="icon-settings"></i></th>
             </tr>
             </thead>
