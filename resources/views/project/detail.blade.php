@@ -205,7 +205,7 @@ ol.link-list span.anticipate-long-text {
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label class="form-label">Berakhir pada</label>
+                                    <label class="form-label">Deadline</label>
                                     <div class="form-control-plaintext">
                                         @if ($project->endtime)
                                             {{ date('d M Y', strtotime($project->endtime)) }}
