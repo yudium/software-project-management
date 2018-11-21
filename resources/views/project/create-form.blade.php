@@ -41,7 +41,7 @@
                     <div class="row row-cards">
                         <div class="col-12">
                             @include('includes.cards.client', [
-                                'ganti_button' => true,
+                                'ganti_button' => false,
                                 'client' => $client,
                             ])
                             <input name="client_id" type="hidden" value="{{ $client->id }}">
@@ -82,6 +82,14 @@
                                 @endcomponent
                             @endcomponent
                         </div>
+{{--
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label" for="tag">Tag</label>
+                                <input class="form-control" type="text" name="tag" value="{{ old('tag') }}">
+                            </div>
+                        </div>
+--}}
                     </div>
                 </div>
 
