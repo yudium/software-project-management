@@ -854,6 +854,7 @@ class ProjectController extends Controller
         // TODO: add validation to make sure $request->status is valid value
         $project = Project::find($id);
         $project->status = $request->status;
+        $project->endtime_actual = date('Y-m-d');
         $project->save();
 
         return redirect()->route('project-detail', ['id' => $project->id]);
