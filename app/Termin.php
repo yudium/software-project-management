@@ -7,12 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Termin extends Model
 {
     /**
+     * correspond to `paid_off` column in table
+     *
+     * NOTE: to get record that NOT paid-off use IS NULL query
+     */
+    const IS_PAID_OFF          = '1';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
         'periodic_type',
+        'paid_off',
     ];
 
     public $timestamps = false;
@@ -31,5 +39,16 @@ class Termin extends Model
     public function payments()
     {
         return $this->hasManyThrough('App\TerminPayment', 'App\TerminDetail')->orderBy('pay_date');
+    }
+
+    /**
+     * Get current termin (termin detail)
+     */
+    public function getCurrentTerminDetailAttribute()
+    {
+        return $this->details()
+            ->whereRaw('due_date >= CURDATE()')
+            ->orderBy('due_date', 'asc')
+            ->first();
     }
 }

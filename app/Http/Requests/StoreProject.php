@@ -32,20 +32,56 @@ class StoreProject extends FormRequest
          *
          * should use `nullable` validation rule, after `sanitize` method called
          * because it can be empty array `[]` if those field not filled by user
+         *
+         * sanitize method will remove any empty input from array
          */
         return [
             'client_id' => 'required|exists:clients,id',
             'project_type_id' => 'required|exists:project_types,id',
             'name' => 'required|max:255|min:3',
             'price' => 'nullable|numeric',
+            'quantity' => 'nullable|numeric',
             'starttime' => 'nullable|date_format:"j F, Y"',
             'endtime' => 'nullable|date_format:"j F, Y"',
             'DP_time' => 'nullable|date_format:"j F, Y"',
-            'additional_note' => '',
-            'trello_board_id' => 'max:255|min:3',
-            'PIC.*' => 'nullable|string',
-            'backup_source_code_project_link.*' => 'nullable|url',
-            'project_link.*' => 'nullable|url',
+            'additional_note' => 'nullable',
+            'PIC.*' => 'nullable|distinct',
+            'backup_source_code_project_link.*' => 'nullable|url|distinct',
+            'project_link.*' => 'nullable|url|distinct',
+            'trello_board_id' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    $trello_key = \Setting::value('trello_api_key');
+                    $trello_token = \Setting::value('trello_token');
+
+                    $client = new \GuzzleHttp\Client();
+
+                    try
+                    {
+                        $response = $client->request('GET', "https://api.trello.com/1/boards/$value?key=$trello_key&token=$trello_token", []);
+                    }
+                    catch (\GuzzleHttp\Exception\ConnectException $e)
+                    {
+                        $fail('Tidak bisa memvalidasi melalui Trello API server. Koneksi anda mungkin sedang bermasalah. Solusi sementara: Anda boleh mengosongkan field ini');
+                    }
+                    catch (\GuzzleHttp\Exception\ClientException $e)
+                    {
+                        $fail('Error HTTP 400 dari Trello API server. Mungkin trello board id tidak ada. Solusi sementara: Anda boleh mengosongkan field ini');
+                    }
+                    catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+                    {
+                        $fail('Error Too Many Redirection dari Trello API server. Solusi sementara: Anda boleh mengosongkan field ini');
+                    }
+                    catch (\GuzzleHttp\Exception\RequestException $e)
+                    {
+                        $fail('Error koneksi. Gagal memvalidasi trello board id. Solusi sementara: Anda boleh mengosongkan field ini');
+                    }
+                    catch (\GuzzleHttp\Exception\ServerException $e)
+                    {
+                        $fail('Error HTTP 500 dari Trello API server. Solusi sementara: Anda boleh mengosongkan field ini');
+                    }
+                }
+            ],
         ];
     }
 

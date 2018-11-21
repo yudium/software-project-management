@@ -29,16 +29,39 @@ class ProgressController extends Controller
 
         $board_id = $project->trello_board_id;
 
-        $number_of_task = 0;
-        $number_of_task_complete = 0;
-        $progress_percent = getTrelloProgressByBoardId(
-            $board_id,
-            $auth,
-            $number_of_task,            // pass by reference
-            $number_of_task_complete    // pass by reference
-        );
+        try
+        {
+            $number_of_task = 0;
+            $number_of_task_complete = 0;
+            $progress_percent = getTrelloProgressByBoardId(
+                $board_id,
+                $auth,
+                $number_of_task,            // pass by reference
+                $number_of_task_complete    // pass by reference
+            );
 
-        $last_complete_task = getTrelloLastProgress($board_id, $auth);
+            $last_complete_task = getTrelloLastProgress($board_id, $auth);
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            abort(502, 'Can\'t connect to Trello. Check your internet');
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            abort(400, 'Error 4XX HTTP Code');
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            abort(502, 'Too Many Redirection from Trello');
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            abort(502, 'Networking error');
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            abort(500, 'Error 5XX HTTP Code');
+        }
 
         return view('progress', compact(
             'project',

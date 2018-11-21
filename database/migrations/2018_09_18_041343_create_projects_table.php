@@ -19,6 +19,10 @@ class CreateProjectsTable extends Migration
             $table->unsignedInteger('project_type_id');
             $table->unsignedInteger('termin_id')->nullable();
             $table->string('name');
+            // TODO: check nullable because in my database it is not null-able
+            //       if after re-migrate (refresh) and null-able still not
+            //       working then I should create separate migration for set
+            //       nullable.
             $table->unsignedInteger('price')->nullable();
             $table->date('starttime')->nullable();
             $table->date('endtime')->nullable();

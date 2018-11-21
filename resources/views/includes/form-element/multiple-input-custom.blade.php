@@ -1,13 +1,22 @@
 {{-- TODO: in case validation fails, keep last input --}}
 
 <div id="{{ $id }}">
+    @isset($label)
+    <label class="form-label" for="project_link">{{ $label }}</label>
+    @endisset
+
+    {{-- predefined contain html that should included. Useful for edit page --}}
+    @isset ($predefined)
+        {{ $predefined }}
+    @endisset
+
     @for ($i = 1; $i <= $number; $i++)
         <div class="multi-input-copy-target">
             {{-- User can use `--iteration--` format to display number of iteration --}}
             {!! str_replace('--iteration--', '<span class="iteration">'.$i.'</span>', $slot) !!}
         </div>
     @endfor
-    <input class="form-control multi-input-control mb-2" name="{{ $id }}" data-iteration="$number" type="text" placeholder="Add item..">
+    <input class="form-control multi-input-control mb-2 {{ $class ?? '' }}" name="{{ $id }}" data-iteration="$number" type="text" placeholder="Add item..">
 </div>
 
 <script>
@@ -18,7 +27,7 @@ require(['jquery'], function($) {
             let el = $(this);
             let clonedTarget = el.parent().children(".multi-input-copy-target").first().clone();
             let insertedEl = clonedTarget.insertBefore(el);
-            $(insertedEl).find(".multi-input-focus-target")
+            $(insertedEl).find("input")
                 .val("")
                 .focus();
 

@@ -3,8 +3,10 @@
  | ----------------------------------------------------------------------------
  | Helpers all about Termin
  |
- | NOTE: This helper loaded by composer.
- |       New helper file should execute `$ composer dump-autoload`
+ | NOTE: (1) This helper loaded by composer.
+ |           New helper file should execute `$ composer dump-autoload`
+ |
+ |       (2) Helper is registered in composer.json under 'autoload' > 'files' key
  | ----------------------------------------------------------------------------
  */
 
@@ -60,7 +62,8 @@ function getCurrentSerialNumberForTerminPayment($termin_detail_id)
 {
     $result = \DB::table('termin_payments')
                     ->select(DB::raw('MAX(serial_number) AS max_value'))
-                    ->where('termin_detail_id', '=', $termin_detail_id);
+                    ->where('termin_detail_id', '=', $termin_detail_id)
+                    ->first();
 
     return $result->max_value;
 }

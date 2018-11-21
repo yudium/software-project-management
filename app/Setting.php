@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Setting extends Model
 {
@@ -35,7 +36,17 @@ class Setting extends Model
      */
     public static function value($setting_name)
     {
-        return self::where('name', '=', $setting_name)->first()->value;
+        try
+        {
+            $setting = self::findOrFail($setting_name);
+        }
+        catch (ModelNotFoundException $exception)
+        {
+            abort(500, "Setting '$setting_name' is not exists in settings table");
+        }
+
+        // if setting found, return the value
+        return $setting->value;
     }
 
     /**

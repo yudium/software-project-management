@@ -167,4 +167,27 @@ class PotentialProjectController extends Controller
 
         return view('project.potential.history', compact('potential_project'));
     }
+
+    public function deleteConfirmation($id)
+    {
+        $project = PotentialProject::find($id);
+
+        return view('project.potential.delete_confirmation', compact('id', 'project'));
+    }
+
+    public function delete($id)
+    {
+        $project = PotentialProject::find($id);
+
+        // delete archive-potential-project not allowed
+        // archive is indicated by status IS NOT NULL
+        if ($project->status != null)
+        {
+            abort(405, 'Tidak diizinkan untuk proyek potensial non-archive');
+        }
+
+        $project->delete();
+
+        return redirect()->route('potential-project-list');
+    }
 }

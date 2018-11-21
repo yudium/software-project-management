@@ -3,8 +3,10 @@
  | ----------------------------------------------------------------------------
  | Helpers all about Array
  |
- | NOTE: This helper loaded by composer.
- |       New helper file should execute `$ composer dump-autoload`
+ | NOTE: (1) This helper loaded by composer.
+ |           New helper file should execute `$ composer dump-autoload`
+ |
+ |       (2) Helper is registered in composer.json under 'autoload' > 'files' key
  | ----------------------------------------------------------------------------
  */
 

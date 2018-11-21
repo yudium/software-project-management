@@ -26,9 +26,9 @@
 .note > textarea {
     height: 37px;
     border: 1px solid #ddd;
-background: #f8f8f8;
+    background: #f8f8f8;
     resize: none;
-color: #555;
+    color: #555;
 }
 .note > textarea:hover {
     position: absolute;
@@ -52,19 +52,6 @@ color: #555;
         <h1 class="page-title">
             Riwayat Follow Up
         </h1>
-    </div>
-
-    <div class="row row-cards">
-        <div class="col-6 col-sm-4 col-lg-4">
-            <div class="form-group">
-                <div class="input-icon mb-3">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-icon-addon">
-                        <i class="fe fe-search"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="card">

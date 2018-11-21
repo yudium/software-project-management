@@ -19,6 +19,7 @@ class InvoiceController extends Controller
 
         $banks = Bank::all();
 
+        // call view that handle both payment method: Full Cash and Termin
         return view('invoice.form', compact('project', 'client', 'banks', 'termin_details'));
     }
 
@@ -46,29 +47,45 @@ class InvoiceController extends Controller
         // save incremented invoice_number column value
         \Setting::change('last_invoice_number', $invoice_number);
 
-        /**
-         | Get termin details that are selected by user in invoice form.
-         | -----------------------------------------------------------*/
-        $termin_details = TerminDetail::whereIn('id', $request->termin_detail_id)->get();
 
         /**
-         | Sum all amount that already paid by client
+         | Different logic depends on payment method value
+         |
          | -----------------------------------------------------------*/
-        $total_paid_amount = 0;
-        foreach ($project->termin->payments as $termin_payment) {
-            $total_paid_amount += $termin_payment->amount;
-        }
 
         // retrieve all input sent by form
         $input = $request->all();
 
-        return view('invoice.generate', compact(
-            'project',
-            'input',
-            'total_paid_amount',
-            'termin_details',
-            'invoice_number',
-            'bank'
-        ));
+        if ($project->payment_method == Project::PAYMENT_BY_FULLCASH) {
+            return view('invoice.generate_fullcash', compact(
+                'project',
+                'input',
+                'invoice_number',
+                'bank'
+            ));
+        }
+        if ($project->payment_method == Project::PAYMENT_BY_TERMIN) {
+            /**
+            | Get termin details that are selected by user in invoice form.
+            | -----------------------------------------------------------*/
+            $termin_details = TerminDetail::whereIn('id', $request->termin_detail_id)->get();
+
+            /**
+            | Sum all amount that already paid by client
+            | -----------------------------------------------------------*/
+            $total_paid_amount = 0;
+            foreach ($project->termin->payments as $termin_payment) {
+                $total_paid_amount += $termin_payment->amount;
+            }
+
+            return view('invoice.generate', compact(
+                'project',
+                'input',
+                'total_paid_amount',
+                'termin_details',
+                'invoice_number',
+                'bank'
+            ));
+        }
     }
 }

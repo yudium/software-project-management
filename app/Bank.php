@@ -13,5 +13,9 @@ class Bank extends Model
      */
     protected $fillable = [
         'name',
+        'account_number',
+        'owner',
     ];
+
+    public $timestamps = false;
 }

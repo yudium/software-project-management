@@ -104,9 +104,10 @@ div.separator {
                     <div class="card-body d-flex flex-column">
                         <div class="form-group">
                             <label class="form-label">Sumber pembayaran</label>
-                            <select name="bank" class="form-control custom-select">
+                            <select name="bank" class="form-control custom-select" required>
+                                <option value="">-- Pilih --</option>
                                 @foreach ($banks as $bank)
-                                <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                <option value="{{ $bank->id }}">{{ $bank->name }} -- {{ $bank->account_number }} -- {{ $bank->owner }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -114,6 +115,7 @@ div.separator {
                             'label' => 'Tanggal pembayaran',
                             'id' => 'pay-date',
                             'name' => 'pay_date',
+                            'required' => true,
                         ])
                         <div class="row">
                             <div class="col-6">
@@ -134,6 +136,7 @@ div.separator {
                             'name' => 'amount',
                             'class' => 'form-control',
                             'placeholder' => '',
+                            'required' => true,
                         ])
                         <div class="row">
                             <div class="col-6"><button class="btn btn-primary btn-block">Simpan</button></div>
@@ -148,44 +151,7 @@ div.separator {
                         <div class="card">
                             <div class="card-body text-center">
                                 <div class="h5">Termin Pembayaran</div>
-                                <div class="display-4 font-weight-bold mb-4 text-red">#1</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Histori Pembayaran</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>Tanggal</th>
-                                            <th>Sumber Pembayaran</th>
-                                            <th>Jumlah</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>12 Feb 2018</td>
-                                            <td>BANK BNI(USD)</td>
-                                            <td>Rp.500.000</td>
-                                        </tr>
-                                        <tr>
-                                            <td>12 Feb 2018</td>
-                                            <td>BANK BNI(USD)</td>
-                                            <td>Rp.500.000</td>
-                                        </tr>
-                                        <tr>
-                                            <td>12 Feb 2018</td>
-                                            <td>BANK BNI(USD)</td>
-                                            <td>Rp.500.000</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <div class="display-4 font-weight-bold mb-4 text-red">#{{ $termin_detail->serial_number }}</div>
                             </div>
                         </div>
                     </div>
@@ -199,8 +165,28 @@ div.separator {
 
 @section('js')
 <script type="text/javascript">
-    require(['jquery'], function($) {
+    require(['jquery', 'global_functions'], function($, g) {
         $(document).ready(function(){
+            $('form').submit(function(){
+                // take value from DB with laravel
+                let total_amount = {{ $termin_detail->amount }};
+                let paid_amount = {{ $total_paid_amount }};
+
+                // <input id="amount">
+                let input_amount = Number(g.cleanValMask( $('#amount').val() ));
+
+                // we don't need validate minus value because input mask prevent
+                // user to input minus value
+                if ((input_amount+paid_amount) > total_amount) {
+                    alert('Jumlah uang tidak valid');
+                    // abort submit
+                    return false;
+                }
+            });
+
+            /**
+             * Upload preview
+             */
             var imagesPreview = function (input, place, place2 = '') {
                 if (input.files) {
                     var reader = new FileReader();

@@ -13,8 +13,8 @@
         <div class="card-footer">
             <div class="btn-list text-right">
                 <a href="" class="btn btn-link">Batal</a>
-                <a href="{{ route('confirm-mark-project-done', ['id' => $id, 'choice' => \App\Project::IS_DONE_FAIL]) }}" class="btn btn-outline-danger ml-auto">Gagal</a>
-                <a href="{{ route('confirm-mark-project-done', ['id' => $id, 'choice' => \App\Project::IS_DONE_SUCCESS]) }}" class="btn btn-outline-success ml-auto">Sukses</a>
+                <a href="{{ route('mark-project-done-confirmation', ['id' => $id, 'choice' => \App\Project::IS_DONE_FAIL]) }}" class="btn btn-outline-danger ml-auto">Gagal</a>
+                <a href="{{ route('mark-project-done-confirmation', ['id' => $id, 'choice' => \App\Project::IS_DONE_SUCCESS]) }}" class="btn btn-outline-success ml-auto">Sukses</a>
             </div>
         </div>
     </div>

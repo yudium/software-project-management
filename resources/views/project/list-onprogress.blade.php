@@ -95,35 +95,47 @@
                 },
                 {
                     render: function(data, type, row) {
-                        let progress_color = null;
+                        // doesn't have trello board or connection error
+                        if (! row['progress']) {
+                            return `NULL`;
+                        }
+                        if (row['progress']['status'] != 200) {
+                            return `<small> ${ row['progress']['message'] } </small>`;
+                        }
+                        if (row['progress']['status'] == 200) {
+                            // rename variable to make shorter
+                            let progress = row['progress']['data'];
 
-                        if ( Math.floor(data['progress_percent']) <= 100) {
-                             progress_color = 'bg-success';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 80) {
-                             progress_color = 'bg-primary';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 50) {
-                             progress_color = 'bg-warning';
-                        }
-                        if ( Math.floor(data['progress_percent']) <= 30) {
-                             progress_color = 'bg-danger';
-                        }
+                            let progress_color = null;
 
-                        return `
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <strong>${ Math.floor(data['progress_percent']) }%</strong>
+                            if ( Math.floor(progress['progress_percent']) <= 100) {
+                                progress_color = 'bg-success';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 80) {
+                                progress_color = 'bg-primary';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 50) {
+                                progress_color = 'bg-warning';
+                            }
+                            if ( Math.floor(progress['progress_percent']) <= 30) {
+                                progress_color = 'bg-danger';
+                            }
+
+                            return `
+                                <div class="clearfix">
+                                    <div class="float-left">
+                                        <strong>${ Math.floor(progress['progress_percent']) }%</strong>
+                                    </div>
+                                    <div class="float-right">
+                                        <small class="text-muted">${ progress['number_of_task_complete'] } dari ${ progress['number_of_task'] } task</small>
+                                    </div>
                                 </div>
-                                <div class="float-right">
-                                    <small class="text-muted">${ data['number_of_task_complete'] } dari ${ data['number_of_task'] } task</small>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar ${ progress_color }" role="progressbar" style="width: ${ Math.floor( progress['progress_percent'] ) }%"
+                                    aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
-                            </div>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar ${ progress_color }" role="progressbar" style="width: ${ Math.floor( data['progress_percent'] ) }%"
-                                aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        `;
+                            `;
+                        }
                     },
                     className: 'text-center',
                     orderable: false,
@@ -131,10 +143,23 @@
                 },
                 {
                     render: function(data, type, row) {
-                        return `
-                            <div class="small text-muted">Progress Terbaru</div>
-                            <div>${ data['last_progress_relative_time'] } jam yang lalu</div>
-                        `;
+                        // doesn't have trello board or connection error
+                        if (! row['progress']) {
+                            return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
+                        }
+                        if (row['progress']['status'] != 200) {
+                            return `<small> ${ row['progress']['message'] } </small>`;
+                        }
+                        if (row['progress']['status'] == 200) {
+                            // rename variable to make shorter
+                            let progress = row['progress']['data'];
+
+                            return `
+                                <div class="small text-muted">Progress Terbaru</div>
+                                <div>${ progress['last_progress_relative_time'] } jam yang lalu</div>
+                            `;
+                        }
+
                     },
                     className: 'text-center',
                     orderable: false,
@@ -144,13 +169,13 @@
                     render: function(data, type, row) {
                         let html = `
                             <div class="item-action dropdown">
-                            <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
+                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
                         `;
 
                         /**
-                         * Order of IF is important
+                         * order of IF is important
                          */
                         if (row['trello_board_id']) {
                             // if current project has trello board
@@ -167,7 +192,7 @@
                         }
 
                         html += `
-                            </div>
+                                </div>
                             </div>
                         `;
 

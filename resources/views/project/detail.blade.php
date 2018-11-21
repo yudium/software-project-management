@@ -3,6 +3,7 @@
 
 @section('css')
 <style>
+// TODO: move clearfix css to global css
 .clearfix::after {
     content: "";
     clear: both;
@@ -12,12 +13,19 @@
 .clearfix .left {float: left}
 .clearfix .right {float:right}
 
-.multiple-field-js {
-    background: #f8f8f8;
-    border: none;
+ol.link-list {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
-.multiple-field-copy-target .fe {
-    color: #a19090
+ol.link-list:hover {
+    overflow: visible;
+    position: relative;
+    z-index: 9;
+    background-color: white;
+}
+ol.link-list span.anticipate-long-text {
+    background-color: white;
 }
 </style>
 @endsection
@@ -46,6 +54,7 @@
                                         <small class="d-block text-muted">{{ $project->client->phone()->first()->phone }}</small>
                                     </div>
                                     <div class="ml-auto">
+                                        <!-- TODO: link to client's detail page -->
                                         <a href="#" class="icon d-none d-md-inline-block ml-3"><i class="fe fe-eye mr-1"></i></a>
                                     </div>
                                 </div>
@@ -68,6 +77,8 @@
                             </div>
                             <table class="table card-table">
                             <tbody>
+                                @echoIf ('<td><small><i>Belum diatur</i></small></td>', $project->PICs->count() == 0)
+
                                 @foreach ($project->PICs as $PIC)
                                 <tr>
                                     <td width="1">#{{ $loop->iteration }}</td>
@@ -90,9 +101,11 @@
                                         <small>
                                             <i>@echoIf('kosong', count($project->backup_source_code_project_links) === 0)</i>
                                         </small>
-                                        @foreach ($project->backup_source_code_project_links as $link)
-                                            <a href="{{ $link->link_text }}">{{ $link->link_text }}</a><br>
-                                        @endforeach
+                                        <ol class="link-list">
+                                            @foreach ($project->backup_source_code_project_links as $link)
+                                                <li><span class="anticipate-long-text"><a href="{{ $link->link_text }}">{{ $link->link_text }}</a><br></span></li>
+                                            @endforeach
+                                        </ol>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -101,9 +114,11 @@
                                         <small>
                                             <i>@echoIf('kosong', count($project->project_links) === 0)</i>
                                         </small>
-                                        @foreach ($project->project_links as $link)
-                                            <a href="{{ $link->link_text }}">{{ $link->link_text }}</a><br>
-                                        @endforeach
+                                        <ol class="link-list">
+                                            @foreach ($project->project_links as $link)
+                                                <li><a href="{{ $link->link_text }}">{{ $link->link_text }}</a><br></li>
+                                            @endforeach
+                                        </ol>
                                     </div>
                                 </div>
                             </div>
@@ -112,12 +127,23 @@
                 </div>
             </div>
             <div class="col-5">
-                <div class="card card-client">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">{{ $project->name }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Tipe Proyek</label>
+                                    <div class="form-control-plaintext">
+                                        <i class="{{ $project->project_type->icon }} mr-3"></i>
+                                        {{ $project->project_type->name }}
+                                    </div>
+                                    {{-- dont worry, covered by $request->old() in controller in case of validation fails --}}
+                                    <input name="project_type_id" type="hidden" value="{{ $project->project_type->id }}">
+                                </div>
+                            </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">Status</label>
@@ -139,45 +165,88 @@
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label class="form-label">Cara Pembayaran</label>
-                                    <div class="form-control-plaintext">{{ $project->payment_method_text }} </div>
+                                    <label class="form-label">ID Board Trello</label>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->trello_board_id)
+                                            <a href="http://trello.com/b/{{ $project->trello_board_id }}" target="_blank">
+                                                {{ $project->trello_board_id }}
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="price">Kuantitas</label>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->quantity)
+                                            {{ $project->quantity }}
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label" for="price">Nilai</label>
-                                    <div class="form-control-plaintext">Rp.@money($project->price)</div>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->price)
+                                            Rp.@money($project->price)
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="form-label">Cara Pembayaran</label>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->payment_method_text)
+                                            {{ $project->payment_method_text }}
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">Dimulai pada</label>
-                                    <div class="form-control-plaintext">{{ $project->starttime }}</div>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->starttime)
+                                            {{ date('d M Y', strtotime($project->starttime)) }}
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">Berakhir pada</label>
-                                    <div class="form-control-plaintext">{{ $project->endtime }}</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">ID Board Trello</label>
                                     <div class="form-control-plaintext">
-                                        <a href="http://trello.com/b/{{ $project->trello_board_id }}">
-                                            {{ $project->trello_board_id }}
-                                            <i class="fa fa-external-link"></i>
-                                        </a>
+                                        @if ($project->endtime)
+                                            {{ date('d M Y', strtotime($project->endtime)) }}
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4"></div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label class="form-label">Tanggal bayar DP</label>
-                                    <div class="row gutters-xs">
-                                        <div class="form-control-plaintext">{{ $project->DP_time }}</div>
+                                    <div class="form-control-plaintext">
+                                        @if ($project->DP_time)
+                                            {{ date('d M Y', strtotime($project->DP_time)) }}
+                                        @else
+                                            <small class="text-muted">Belum diatur</small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -216,14 +285,33 @@
                                 </a>
                                 @endif
 
-                                {{-- show button 'Termin Pembayaran' only if project has termin data --}}
+                                {{-- different edit button depends between draft
+                                     and onprogress project --}}
+                                @if ($project->is_draft)
+                                    <a href="{{ route('edit-project', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah</a>
+                                @endif
+                                @if ($project->is_onprogress)
+                                    <a href="{{ route('edit-restricted-project', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah</a>
+                                @endif
+
+                                @if ($project->is_draft)
+                                    <a href="{{ route('project-delete-confirmation', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Hapus</a>
+                                @endif
+
+                                <!-- this action only allowed for project draft -->
+                                <a href="{{ route('change-project-client', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->is_draft)">Ubah Client</a>
+                                <!-- this action only allowed for project draft -->
+                                <a href="{{ route('change-project-type', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->is_draft)">Ubah Tipe Proyek</a>
+
+                                {{-- show button 'Termin Pembayaran' only if project has termin data.
+                                     that is, onprogress or archive project that payment method is termin --}}
                                 @if ($project->termin)
-                                <a href="{{ route('termin-list', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->termin)">Termin Pembayaran</a>
+                                    <a href="{{ route('termin-list', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->termin)">Termin Pembayaran</a>
                                 @endif
 
                                 {{-- print invoice only for onprogress project --}}
                                 @if ($project->is_onprogress)
-                                <a href="{{ route('invoice-form', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->status == \App\Project::IS_ONPROGRESS)">Cetak Invoice</a>
+                                    <a href="{{ route('invoice-form', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->status == \App\Project::IS_ONPROGRESS)">Cetak Invoice</a>
                                 @endif
 
 
@@ -231,26 +319,42 @@
                                      only if the project's payment method already set up --}}
                                 @if ($project->is_draft)
                                     <hr>
-                                    @if ($project->is_payment_method_termin OR $project->is_payment_method_fullcash)
-                                        <a href="{{ route('activate-project', ['id' => $project->id]) }}" class="btn btn-primary btn-block btn-sm">Tandai Proyek Aktif</a>
+                                    @if ($project->PICs->count() == 0 OR
+                                         ! $project->quantity OR
+                                         ! $project->price OR
+                                         ! $project->DP_time OR
+                                         ! $project->starttime OR
+                                         ! $project->endtime)
+
+                                        <div class="alert alert-info">
+                                            <p>
+                                                <small>
+                                                    Anda belum mengisi semua kolom wajib. Yaitu:
+                                                    <ol>
+                                                        <li>PIC</li>
+                                                        <li>Kuantitas</li>
+                                                        <li>Harga proyek</li>
+                                                        <li>Tanggal bayar DP</li>
+                                                        <li>Waktu mulai proyek</li>
+                                                        <li>Waktu berakhir proyek</li>
+                                                    </ol>
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <a href="{{ route('project-activation-step1', ['id' => $project->id]) }}" class="btn btn-primary btn-block btn-sm disabled">Aktifkan Proyek</a>
                                     @else
+ 
                                         <div class="alert alert-warning">
                                             <p>
                                                 <small>
-                                                    <b>Pembayaran belum diatur</b> <br><br>
-                                                    <i>Sehingga tombol di bawah menjadi disabled.</i> <br><br>
-                                                    Jika proyek dibayar secara cicilan, klik <code>Buat Termin</code>.
-                                                    Jika dibayar cash, <code>Pembayaran secara Cash</code>
+                                                    <b>Peringatan</b><br>
+                                                    Tindakan ini tidak bisa di-<i>undo</i>
                                                 </small>
                                             </p>
-                                            <div class="btn-list">
-                                                <a href="{{ route('set-payment-method-fullcash', ['id' => $project->id]) }}" class="btn btn-secondary btn-sm">1. Pembayaran secara Cash</a>
-                                                <a href="{{ route('create-termin', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-sm">2. [atau] Buat Termin</a>
-                                            </div>
                                         </div>
-                                        <a href="#" class="btn btn-primary btn-block btn-sm @echoIf('disabled', ! $project->payment_method)">Tandai Proyek Aktif</a>
+                                        <a href="{{ route('project-activation-step1', ['id' => $project->id]) }}" class="btn btn-primary btn-block btn-sm">Aktifkan Proyek</a>
                                     @endif
-                                @endif
+                               @endif
 
                                 {{-- show button 'Tandai Proyek Selesai' --}}
                                 @if ($project->is_onprogress)
@@ -258,7 +362,7 @@
                                     <div class="alert alert-warning" role="alert">
                                         <small>Anda tidak bisa membatalkan setelah aksi ini dilakukan</small>
                                     </div>
-                                    <a href="{{ route('mark-project-done', ['id' => $project->id]) }}" class="btn btn-danger btn-block btn-sm">Tandai Proyek Selesai</a>
+                                    <a href="{{ route('project-deactivation-confirmation', ['id' => $project->id]) }}" class="btn btn-danger btn-block btn-sm">Tandai Proyek Selesai</a>
                                 @endif
                             </div>
                         </div>
