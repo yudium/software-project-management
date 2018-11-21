@@ -52,6 +52,8 @@
     require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
+            // TODO: if trello request has been optimized then change this value
+            pageLength: 3,
             ajax: '{{ route('success-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
