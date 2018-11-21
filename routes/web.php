@@ -41,7 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/agent/new/agent-form','AgentController@createAgentForm')->name('createAgentForm');
     Route::get('/agent/agent-activation/{id}','AgentController@activateAgent')->name('activateAgent');
     Route::post('/agent/deleteAgent/{id}','AgentController@deleteAgent')->name('deleteAgent');
-    Route::get('/agent/agent-payment','AgentController@paymentAgent');
+    Route::get('/agent/agent-payment/{id}','AgentController@paymentAgent')->name('agentPayment');
+    Route::post('/agent/agent-payment/{id}','AgentController@storePaymentAgent')->name('storePaymentAgent');
+    Route::get('/agent/agent-payment-history/{id}','AgentController@paymentHistory')->name('agentPaymentHistory');
     Route::get('/agent/agent-listCommission','AgentController@listCommission')->name('listCommission');
     Route::get('/getListCommission','AgentController@getListCommission')->name('getListCommission');
 

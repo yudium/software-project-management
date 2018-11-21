@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use DataTables;
 use DB;
 use App\Agent;
+use App\Bank;
+use App\AgentCommission;
+use App\AgentCommissionPayment;
 use File;
 use Storage;
 use Redirect;
@@ -51,7 +54,7 @@ class AgentController extends Controller
                         ->get();
         return Datatables::of($listCommission)
         ->addColumn('options',function($listCommission){
-                return '<div class="text-center"><a href="komisi-agen_form-bayar.html" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="komisi-agen_history.html" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
+                return '<div class="text-center"><a href="'.route('agentPayment',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="'.route('agentPaymentHistory',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
         })
         ->addColumn('status_bayar',function($listCommission){
             return '<span class="badge badge-danger">Belum dibayar</span>';
@@ -133,8 +136,55 @@ class AgentController extends Controller
         return view('agent.agent-activation',['usernameKode'=>$random]);
     } 
 
-    public function paymentAgent()
+    public function paymentAgent($id)
     {
-        return view('agent.agent-payment');
+        //list of bank for payment
+        $listBank = Bank::all();
+        //get id agent that has project
+        $agent    = DB::table('agents')
+        ->join('agent_projects','agents.id','=','agent_projects.agent_id')
+        ->join('agent_commissions','agent_projects.id','=','agent_commissions.agent_project_id')
+        ->select('agents.id','agents.name','agents.username')
+        ->where('agent_commissions.id','=',$id)->first();
+        //find amount commission of agent by his id
+        $agentCommission = AgentCommission::findorFail($id);
+        //total commission agent that paid
+        $totalCommission = 0;
+        foreach ($agentCommission->commissionDetails as $commissionDetail){
+            $totalCommission += $commissionDetail->amount;
+        }
+        // dd($totalCommission);
+        return view('agent.agent-payment',compact('id','listBank','agent','agentCommission','totalCommission'));
+    }
+
+    public function storePaymentAgent($id_commission,Request $req)
+    {
+    
+  
+          $agent_commission_payment = new AgentCommissionPayment;
+          $agent_commission_payment->agent_commission_id = $id_commission;
+          $agent_commission_payment->bank_id =$req->bank;
+          $agent_commission_payment->pay_date = date('Y-m-d', strtotime($req->pay_date)); 
+          $agent_commission_payment->amount = $req->amount;
+          if($req->hasFile('photo'))
+          {
+              $agentImage      = $req->file('photo');
+              $fileName   =  $agentImage->getClientOriginalName();
+              Storage::putFileAs('public/agentImage/agentPayment', $agentImage, $fileName);
+              $agent_commission_payment->photo_evidance            = $fileName;
+          }
+
+          $agent_commission_payment->save();
+          return redirect()->route('listCommission');
+
+
+    }
+
+    public function paymentHistory($id)
+    {
+      $agent_commission = AgentCommission::findorFail($id);
+      $agent_commission_history = $agent_commission->commissionHistory;
+      
+      return view('agent.agent-payment-history', compact('agent_commission', 'agent_commission_history'));
     }
 }
