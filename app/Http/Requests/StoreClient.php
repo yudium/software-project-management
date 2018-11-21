@@ -27,15 +27,15 @@ class StoreClient extends FormRequest
         $this->sanitize();
 
         return [
-            'tipeProspect'=>'',
+            'tipeProspect'=>'', // TODO: for what??
             'nama'=>'required|min:2',
-            'statusHub'=>'',
-            'alamat'=>'required',
-            'kota.*'=>'nullable|string|required',
-             'telepon.*'=>'nullable|numeric|required',
-             'email.*'=>'nullable|email|required',
-            'norek.*'=>'nullable|numeric|required',
-            'web.*'=>'nullable|url|required',
+            'statusHub'=>'nullable',
+            'alamat'=>'nullable',
+            'kota.*'=>'nullable|string',
+             'telepon.*'=>'nullable|numeric',
+             'email.*'=>'nullable|email',
+            'norek.*'=>'nullable|numeric',
+            'web.*'=>'nullable|url',
         
 
         ];
