@@ -74,6 +74,11 @@ class Project extends Model
         return $this->hasOne('App\Termin');
     }
 
+    public function potential_project()
+    {
+        return $this->hasOne('App\PotentialProject');
+    }
+
     public function getPaymentMethodTextAttribute()
     {
         if ($this->payment_method == self::PAYMENT_BY_FULLCASH) return 'Full cash';

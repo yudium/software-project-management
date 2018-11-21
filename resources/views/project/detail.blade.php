@@ -272,6 +272,11 @@ ol.link-list span.anticipate-long-text {
                             </div>
                             <div class="card-body">
 
+                            {{-- only show if the project is from potential project --}}
+                            @if ($project->potential_project)
+                                <a href="{{ route('follow-up-potential-project-history-list', ['potential_project_id' => $project->potential_project->id]) }}" class="btn btn-secondary btn-block btn-sm" target="_blank">Riwayat Follow Up</a>
+                            @endif
+
                                 {{-- Draft project doesn't have progress --}}
                                 @if (! $project->is_draft AND $project->trello_board_id)
                                 <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">
