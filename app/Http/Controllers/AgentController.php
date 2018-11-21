@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DataTables;
 use DB;
 use App\Agent;
+use App\AgentProject;
 use App\Bank;
 use App\AgentCommission;
 use App\AgentCommissionPayment;
@@ -36,10 +37,10 @@ class AgentController extends Controller
 
     }
 
-    public function getAgentCommission()
-    {
-        // $agentCommission = Agent::
-    }
+    // public function getAgentCommission()
+    // {
+    //     // $agentCommission = Agent::
+    // }
 
     public function listCommission()
     {
@@ -48,19 +49,36 @@ class AgentController extends Controller
 
     public function getListCommission()
     {
-        $listCommission = DB::table('agents')
-                        ->join('agent_projects','agents.id','=','agent_projects.agent_id')
-                        ->join('agent_commissions','agent_projects.id','=','agent_commissions.agent_project_id')
-                        ->get();
-        return Datatables::of($listCommission)
-        ->addColumn('options',function($listCommission){
-                return '<div class="text-center"><a href="'.route('agentPayment',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="'.route('agentPaymentHistory',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
-        })
-        ->addColumn('status_bayar',function($listCommission){
-            return '<span class="badge badge-danger">Belum dibayar</span>';
-        })
-        ->rawColumns(['options','status_bayar'])->make(true);
+        $agentListCommission = Agent::with(['agentProject'])->get();
+    
+         return Datatables::of($agentListCommission)
+        ->addColumn('options',function($agentListCommission){
+                return '<div class="text-center"><a href="'.route('listCommissionDetail',$agentListCommission->id).'" class="btn btn-secondary btn-sm mr-3">Detail Commission</a>';
+         
+        })->rawColumns(['options'])->make(true);
     }
+
+    public function listCommissionDetail($id)
+    {
+        $agent = Agent::find($id)->first();
+        $listCommissions = AgentProject::with(['commission'])->where('agent_id','=',$id)->get();
+        return view('agent.agent-listCommission-detail',compact('agent','listCommissions'));
+    }
+    // public function getListCommission()
+    // {
+    //     $listCommission = DB::table('agents')
+    //                     ->join('agent_projects','agents.id','=','agent_projects.agent_id')
+    //                     ->join('agent_commissions','agent_projects.id','=','agent_commissions.agent_project_id')
+    //                     ->get();
+    //     return Datatables::of($listCommission)
+    //     ->addColumn('options',function($listCommission){
+    //             return '<div class="text-center"><a href="'.route('agentPayment',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Bayar</a><a href="'.route('agentPaymentHistory',$listCommission->id).'" class="btn btn-secondary btn-sm mr-3">Riwayat Komisi</a></div>';
+    //     })
+    //     ->addColumn('status_bayar',function($listCommission){
+    //         return '<span class="badge badge-danger">Belum dibayar</span>';
+    //     })
+    //     ->rawColumns(['options','status_bayar'])->make(true);
+    // }
 
     public function newAgentForm()
     {
@@ -150,7 +168,7 @@ class AgentController extends Controller
         $agentCommission = AgentCommission::findorFail($id);
         //total commission agent that paid
         $totalCommission = 0;
-        foreach ($agentCommission->commissionDetails as $commissionDetail){
+        foreach ($agentCommission->commissionHistory as $commissionDetail){
             $totalCommission += $commissionDetail->amount;
         }
         // dd($totalCommission);

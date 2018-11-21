@@ -33,9 +33,6 @@
                 <th class="text-center w-1"><i class="icon-people"></i></th>
                 <th>Agen</th>
                 <th>Username</th>
-                <th>Proyek</th>
-                <th>Komisi</th>
-                <th>Status Bayar</th>
                 <th class="text-center"><i class="icon-settings"></i></th>
             </tr>
 			</thead>
@@ -82,29 +79,13 @@
                     orderable:false,
                     targets:2,
                 },        
-                {
-                    render:function(data,type,row){
-                       return data;   
-                    },
-                    orderable:false,
-                    targets:3,
-                },        
-                {
-                    render:function(data,type,row){
-                        return  data ? formatRupiah(data, "Rp. ") : "Belum Ada";   
-                    },
-                    orderable:false,
-                    targets:4,
-                },
+                
              
             ],
             columns: [
                 { data: 'photo_evidance' },  
                 { data: 'name' },
                 { data: 'username' },
-                { data: 'project_name' },
-                { data: 'amount'},
-                { data: 'status_bayar', orderable: false, searchable: false},
                 { data: 'options', orderable: false, searchable: false },
             ]
  })
