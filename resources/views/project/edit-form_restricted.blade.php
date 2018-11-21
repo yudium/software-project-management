@@ -140,8 +140,8 @@
                             @if (old('backup_source_code_project_link'))
                                 @foreach (old('backup_source_code_project_link') as $backup_link)
 
-                                    // old value can contain null from last
-                                    // input form
+                                    {{-- old value can contain null from last
+                                         input form --}}
                                     @if (! $backup_link)
                                         @continue
                                     @endif
@@ -198,8 +198,8 @@
                             @if (old('project_link'))
                                 @foreach (old('project_link') as $project_link)
 
-                                    // old value can contain null from last
-                                    // input form
+                                    {{-- old value can contain null from last
+                                         input form --}}
                                     @if (! $backup_link)
                                         @continue
                                     @endif
