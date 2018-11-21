@@ -57,9 +57,9 @@
             columnDefs: [
                 {
                     render: function(data, type, row) {
-                        if (row['photo']) {
+                        if (data) {
                             return `
-                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['client.photo']) } )"></div>
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
                             `;
                         }
 
