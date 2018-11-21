@@ -18,17 +18,24 @@ class TerminDetail extends Model
         'amount',
     ];
 
+    protected $casts = [
+        'paid_amount' => 'integer',
+    ];
+
     public $timestamps = false;
 
     protected static function boot()
     {
         parent::boot();
 
-        // Now we have @property paid_amount that very useful, represent money that client has been paid
+        // Now we have @property $paid_amount that very useful, represent money that client has been paid
         static::addGlobalScope('withPaidAmountColumn', function(Builder $builder){
             /**
              * Paid amount can return number or null. I don't want it return null but 0
              * so I add IFNULL function to query
+             *
+             * NOTE: @property $paid_amount return in string type. So I
+             *       put @property $casts in this model
              */
             $builder->select(\DB::raw('termin_details.*, ( SELECT IFNULL( SUM(amount), 0) FROM termin_payments WHERE termin_payments.termin_detail_id = termin_details.id ) AS paid_amount'));
         });
