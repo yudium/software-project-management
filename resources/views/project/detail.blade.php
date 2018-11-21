@@ -227,6 +227,22 @@ ol.link-list span.anticipate-long-text {
                                     </div>
                                 </div>
                             </div>
+                            @if ($project->is_done)
+                                <div class="col-4"><!-- spacing --></div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Berakhir pada</label>
+                                        <div class="form-control-plaintext">
+                                            @if ($project->endtime)
+                                                {{ date('d M Y', strtotime($project->endtime_actual)) }}
+                                            @else
+                                                <small class="text-muted">Belum diatur</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4"><!-- spacing --></div>
+                            @endif
                             <div class="col-12"><hr></div>
                             <div class="col-12">
                                 <div class="form-group">
