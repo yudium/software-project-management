@@ -11,6 +11,12 @@
             </tr>
             </thead>
             <tbody>
+            @if ($project->termin->paid_off == \App\Termin::IS_PAID_OFF)
+            <tr>
+                <td class="text-center" colspan="5"><small><i>Sudah Lunas</i></small></td>
+            </tr>
+            @endif
+
             @foreach ($project->termin->details as $termin_detail)
             @if ($termin_detail->paid_amount == $termin_detail->amount)
                 @continue
