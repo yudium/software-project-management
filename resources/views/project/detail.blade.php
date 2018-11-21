@@ -272,7 +272,7 @@ ol.link-list span.anticipate-long-text {
 
                                 {{-- Draft project doesn't have progress --}}
                                 @if (! $project->is_draft AND $project->trello_board_id)
-                                <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">
+                                <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm" target="_blank">
                                     {{-- show different text for different project's status --}}
                                     @if ($project->is_onprogress)
                                         Progress Tracker
