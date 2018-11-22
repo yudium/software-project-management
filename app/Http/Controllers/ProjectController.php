@@ -134,6 +134,130 @@ class ProjectController extends Controller
     }
 
     /**
+     * Get onprogress project by tags
+     */
+    public function getOnProgressByTags(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        // get all tags name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.list-onprogress-by-tags', compact('query_tags', 'available_tags'));
+    }
+
+    /**
+     * Data for DataTable plugin, in onprogress project by tags page
+     */
+    public function getOnProgressByTagsAjax(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        /**
+         | Get projects that has specific tags
+         |
+         | --------------------------------------------- */
+        // get individual tags as array
+        $tags = $query_tags;
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_ONPROGRESS);
+        foreach ($tags as $tag) {
+            // chaining in loop. Please look at assignment operator.
+            $projects = $projects->whereHas('tags', function ($query) use ($tag) {
+                $query->where('name', '=', $tag);
+            });
+        }
+        $projects = $projects->get();
+
+        /**
+        | Calculate progress percent for each project,
+        | but also take the number of task complete and total number of task
+        | --------------------------------------------------------------- */
+        foreach ($projects as $project) {
+
+            // we inform to ajax client that current project doesn't have
+            // trello
+            if (! $project->trello_board_id) {
+                $project->progress = null;
+                continue;
+            }
+
+            try {
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // get last progress activity
+                $last_complete_task = getTrelloLastProgress(
+                    $project->trello_board_id,
+                    $this->trello_auth
+                );
+                // in hours
+                $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete',
+                        'last_progress_relative_time'
+                    ),
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ConnectException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => '502 HTTP Code. Try to check your internet connection',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ClientException $e)
+            {
+                $project->progress = [
+                    'status' => 400,
+                    'message' => 'Error 4XX HTTP Code',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Error. Too Many Redirection from Trello',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\RequestException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Networking Error',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ServerException $e)
+            {
+                $project->progress = [
+                    'status' => 500,
+                    'message' => 'Error 5XX HTTP Code',
+                    'data' => null
+                ];
+            }
+        }
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
      * Get draft project
      */
     public function getDraft()
@@ -159,7 +283,7 @@ class ProjectController extends Controller
     {
         $query_tags = $request->query('tags');
 
-        // get all PIC name uniquely
+        // get all tags name uniquely
         // below is alternative for distinct sql
         $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
 
@@ -178,7 +302,7 @@ class ProjectController extends Controller
          |
          | --------------------------------------------- */
         // get individual tags as array
-        $tags = explode(',', $query_tags);
+        $tags = $query_tags;
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_DRAFT);
         foreach ($tags as $tag) {
@@ -286,6 +410,120 @@ class ProjectController extends Controller
     }
 
     /**
+     * Get success project by tags
+     */
+    public function getSuccessByTags(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        // get all tags name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.list-success-by-tags', compact('query_tags', 'available_tags'));
+    }
+
+    /**
+     * Data for DataTable plugin, in success project by tags page
+     */
+    public function getSuccessByTagsAjax(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        /**
+         | Get projects that has specific tags
+         |
+         | --------------------------------------------- */
+        // get individual tags as array
+        $tags = $query_tags;
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DONE_SUCCESS);
+        foreach ($tags as $tag) {
+            // chaining in loop. Please look at assignment operator.
+            $projects = $projects->whereHas('tags', function ($query) use ($tag) {
+                $query->where('name', '=', $tag);
+            });
+        }
+        $projects = $projects->get();
+
+        /**
+        | Calculate progress percent for each project,
+        | but also take the number of task complete and total number of task
+        | --------------------------------------------------------------- */
+        foreach ($projects as $project) {
+            // we inform to ajax client that current project doesn't have
+            // trello
+            if (! $project->trello_board_id) {
+                $project->progress = null;
+                continue;
+            }
+
+            try {
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete'
+                    ),
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ConnectException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => '502 HTTP Code. Try to check your internet connection',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ClientException $e)
+            {
+                $project->progress = [
+                    'status' => 400,
+                    'message' => 'Error 4XX HTTP Code',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Error. Too Many Redirection from Trello',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\RequestException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Networking Error',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ServerException $e)
+            {
+                $project->progress = [
+                    'status' => 500,
+                    'message' => 'Error 5XX HTTP Code',
+                    'data' => null
+                ];
+            }
+        }
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
      * Get fail project
      */
     public function getFail()
@@ -300,6 +538,121 @@ class ProjectController extends Controller
     {
         $projects = Project::with(['client', 'project_type'])
                            ->where('status', '=', Project::IS_DONE_FAIL)->get();
+
+        /**
+        | Calculate progress percent for each project,
+        | but also take the number of task complete and total number of task
+        | --------------------------------------------------------------- */
+        foreach ($projects as $project) {
+
+            // we inform to ajax client that current project doesn't have
+            // trello
+            if (! $project->trello_board_id) {
+                $project->progress = null;
+                continue;
+            }
+
+            try {
+                // calculate progress percent
+                $progress_percent = getTrelloProgressByBoardId(
+                    $project->trello_board_id,
+                    $this->trello_auth,
+                    $number_of_task,            // pass by reference
+                    $number_of_task_complete    // pass by reference
+                );
+
+                // now save to the current model as array
+                $project->progress = [
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => compact(
+                        'progress_percent',
+                        'number_of_task',
+                        'number_of_task_complete'
+                    ),
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ConnectException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => '502 HTTP Code. Try to check your internet connection',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ClientException $e)
+            {
+                $project->progress = [
+                    'status' => 400,
+                    'message' => 'Error 4XX HTTP Code',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Error. Too Many Redirection from Trello',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\RequestException $e)
+            {
+                $project->progress = [
+                    'status' => 502,
+                    'message' => 'Networking Error',
+                    'data' => null
+                ];
+            }
+            catch (\GuzzleHttp\Exception\ServerException $e)
+            {
+                $project->progress = [
+                    'status' => 500,
+                    'message' => 'Error 5XX HTTP Code',
+                    'data' => null
+                ];
+            }
+        }
+
+        return DataTables::of($projects)->make(true);
+    }
+
+    /**
+     * Get fail project by tags
+     */
+    public function getFailByTags(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        // get all tags name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.list-fail-by-tags', compact('query_tags', 'available_tags'));
+    }
+
+    /**
+     * Data for DataTable plugin, in fail project by tags page
+     */
+    public function getFailByTagsAjax(Request $request)
+    {
+        $query_tags = $request->query('tags');
+
+        /**
+         | Get projects that has specific tags
+         |
+         | --------------------------------------------- */
+        // get individual tags as array
+        $tags = $query_tags;
+        $projects = Project::with(['client', 'project_type'])
+                           ->where('status', '=', Project::IS_DONE_FAIL);
+        foreach ($tags as $tag) {
+            // chaining in loop. Please look at assignment operator.
+            $projects = $projects->whereHas('tags', function ($query) use ($tag) {
+                $query->where('name', '=', $tag);
+            });
+        }
+        $projects = $projects->get();
 
         /**
         | Calculate progress percent for each project,

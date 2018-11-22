@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Proyek Draft: Daftar')
+@section('title', 'Proyek Draft: Daftar berdasarkan Tag')
 
 @section('css')
 <style>
@@ -18,6 +18,13 @@
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
 }
+
+/* consider to move this css to global css */
+footer {
+    /* pull footer to bottom of page, even content is small amount */
+    position: absolute;
+    bottom: 0;
+}
 </style>
 @endsection
 
@@ -33,10 +40,16 @@
                     <div class="form-group">
                         <div class="row gutters-xs">
                             <div class="col">
-                                <input id="tags" type="text" class="form-control" name="tags">
+                                <select id="tags" class="form-control" name="tags[]">
+                                    <option value="">-- Pilih --</option>
+
+                                    @foreach ($available_tags as $tag)
+                                        <option value="{{ $tag->name }}">{{ $tag->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <span class="col-auto">
-                                <button class="btn btn-secondary" type="button"><i class="fe fe-search"></i></button>
+                                <button class="btn btn-secondary" type="submit">Terapkan</button>
                             </span>
                         </div>
                     </div>
@@ -45,7 +58,15 @@
         </form>
 
 @if ($query_tags)
-
+        <div>
+            <div class="d-inline-block">
+                <h4>Pencarian untuk Tag:
+                @foreach ($query_tags as $tag)
+                    <span class="tag tag-primary">{{ $tag }}</span>
+                @endforeach
+                </h4>
+            </div>
+        </div>
         @component('cardtable', ['class' => 'datatable'])
             <thead>
             <tr>
@@ -69,22 +90,6 @@
     <script>
     require(['datatables', 'jquery', 'selectize'], function(datatable, $, selectize) {
         $(document).ready(function(){
-            $("input#tags").selectize({
-                delimiter: ',',
-                persist: false,
-                create: function(input) {
-                    return {
-                        value: input,
-                        text: input
-                    }
-                },
-                openOnFocus: true,
-                options: [
-                    'CRM',
-                    'SI',
-                ],
-            });
-
             $('.datatable').DataTable({
                 serverSide: true,
                 ajax: '{{ route('draft-project-by-tags-list-ajax', ['tags' => $query_tags]) }}',
@@ -159,4 +164,14 @@
     });
     </script>
 @endif
+
+<script>
+    require(['jquery', 'selectize'], function($, selectize) {
+        $(document).ready(function(){
+            $("#tags").selectize({
+                maxItems: 99
+            });
+        });
+    });
+</script>
 @endsection

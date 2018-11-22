@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Proyek Gagal: Daftar')
+@section('title', 'Proyek Gagal: Daftar berdasarkan Tag')
 
 @section('css')
 <style>
@@ -18,17 +18,54 @@
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
 }
+
+/* consider to move this css to global css */
+footer {
+    /* pull footer to bottom of page, even content is small amount */
+    position: absolute;
+    bottom: 0;
+}
 </style>
 @endsection
 
 @section('content')
     <div class="container">
         @component('pagetitle')
-            Daftar Proyek Gagal
+            Daftar Proyek Gagal Berdasarkan Tag
         @endcomponent
 
-        <div class="text-right mb-3">
-            <a href="{{ route('fail-project-by-tags-list') }}" class="btn btn-link">Filter Berdasarkan Tag <i class="fe fe-tag ml-2"></i></a>
+        <form action="{{ route('fail-project-by-tags-list') }}" method="get">
+            <div class="row row-cards">
+                <div class="col-6 col-sm-4 col-lg-4">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select id="tags" class="form-control" name="tags[]">
+                                    <option value="">-- Pilih --</option>
+
+                                    @foreach ($available_tags as $tag)
+                                        <option value="{{ $tag->name }}">{{ $tag->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <span class="col-auto">
+                                <button class="btn btn-secondary" type="submit">Terapkan</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+@if ($query_tags)
+        <div>
+            <div class="d-inline-block">
+                <h4>Pencarian untuk Tag:
+                @foreach ($query_tags as $tag)
+                    <span class="tag tag-primary">{{ $tag }}</span>
+                @endforeach
+                </h4>
+            </div>
         </div>
 
         @component('cardtable', ['class' => 'datatable'])
@@ -56,7 +93,7 @@
     require(['datatables', 'jquery'], function(datatable, $) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ route('fail-project-list-ajax') }}',
+            ajax: '{{ route('fail-project-by-tags-list-ajax', ['tags' => $query_tags]) }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -193,4 +230,15 @@
         });
     });
     </script>
+@endif
+
+<script>
+    require(['jquery', 'selectize'], function($, selectize) {
+        $(document).ready(function(){
+            $("#tags").selectize({
+                maxItems: 99
+            });
+        });
+    });
+</script>
 @endsection

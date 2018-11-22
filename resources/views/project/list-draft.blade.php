@@ -27,6 +27,10 @@
             Daftar Proyek Draft
         @endcomponent
 
+        <div class="text-right mb-3">
+            <a href="{{ route('draft-project-by-tags-list') }}" class="btn btn-link">Filter Berdasarkan Tag <i class="fe fe-tag ml-2"></i></a>
+        </div>
+
         @component('cardtable', ['class' => 'datatable'])
             <thead>
             <tr>

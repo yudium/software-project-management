@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Proyek Gagal: Daftar')
+@section('title', 'Proyek Aktif: Daftar berdasarkan Tag')
 
 @section('css')
 <style>
@@ -18,17 +18,54 @@
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
 }
+
+/* consider to move this css to global css */
+footer {
+    /* pull footer to bottom of page, even content is small amount */
+    position: absolute;
+    bottom: 0;
+}
 </style>
 @endsection
 
 @section('content')
     <div class="container">
         @component('pagetitle')
-            Daftar Proyek Gagal
+            Daftar Proyek Aktif Berdasarkan Tag
         @endcomponent
 
-        <div class="text-right mb-3">
-            <a href="{{ route('fail-project-by-tags-list') }}" class="btn btn-link">Filter Berdasarkan Tag <i class="fe fe-tag ml-2"></i></a>
+        <form action="{{ route('onprogress-project-by-tags-list') }}" method="get">
+            <div class="row row-cards">
+                <div class="col-6 col-sm-4 col-lg-4">
+                    <div class="form-group">
+                        <div class="row gutters-xs">
+                            <div class="col">
+                                <select id="tags" class="form-control" name="tags[]">
+                                    <option value="">-- Pilih --</option>
+
+                                    @foreach ($available_tags as $tag)
+                                        <option value="{{ $tag->name }}">{{ $tag->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <span class="col-auto">
+                                <button class="btn btn-secondary" type="submit">Terapkan</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+@if ($query_tags)
+        <div>
+            <div class="d-inline-block">
+                <h4>Pencarian untuk Tag:
+                @foreach ($query_tags as $tag)
+                    <span class="tag tag-primary">{{ $tag }}</span>
+                @endforeach
+                </h4>
+            </div>
         </div>
 
         @component('cardtable', ['class' => 'datatable'])
@@ -38,13 +75,15 @@
                 <th>Client</th>
                 <th class="text-center w-1">Jenis</th>
                 <th>Proyek</th>
-                <th>Progress Terakhir</th>
-                <th class="text-center"><i class="icon-settings"></i></th>
+                <th>Progress</th>
+                <th></th>
+                <th>Deadline</th>
+                <th class="text-center"><i class="fe fe-settings"></i></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="text-center" colspan="7">
+                <td class="text-center" colspan="8">
                     <div class="loader mx-auto"></div>
                 </td>
             </tr>
@@ -53,10 +92,12 @@
     </div>
 
     <script>
-    require(['datatables', 'jquery'], function(datatable, $) {
+    require(['datatables', 'jquery', 'moment'], function(datatable, $, moment) {
         $('.datatable').DataTable({
             serverSide: true,
-            ajax: '{{ route('fail-project-list-ajax') }}',
+            // TODO: if trello request has been optimized then change this value
+            pageLength: 3,
+            ajax: '{{ route('onprogress-project-by-tags-list-ajax', ['tags' => $query_tags]) }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
@@ -97,7 +138,7 @@
                 },
                 {
                     render: function(data, type, row) {
-                        // handle project that doesn't have trello (data = null)
+                        // doesn't have trello board or connection error
                         if (! row['progress']) {
                             return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
                         }
@@ -145,15 +186,39 @@
                 },
                 {
                     render: function(data, type, row) {
+                        // doesn't have trello board or connection error
+                        if (! row['progress']) {
+                            return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
+                        }
+                        if (row['progress']['status'] != 200) {
+                            return `<small> ${ row['progress']['message'] } </small>`;
+                        }
+                        if (row['progress']['status'] == 200) {
+                            // rename variable to make shorter
+                            let progress = row['progress']['data'];
+
+                            return `
+                                <div class="small text-muted">Progress Terbaru</div>
+                                <div>${ progress['last_progress_relative_time'] } jam yang lalu</div>
+                            `;
+                        }
+
+                    },
+                    className: 'text-center',
+                    orderable: false,
+                    targets: 5,
+                },
+                {
+                    render: function(data, type, row) {
                         let html = `
                             <div class="item-action dropdown">
-                            <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
+                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
                         `;
 
                         /**
-                         * Order of IF is important
+                         * order of IF is important
                          */
                         if (row['trello_board_id']) {
                             // if current project has trello board
@@ -170,7 +235,7 @@
                         }
 
                         html += `
-                            </div>
+                                </div>
                             </div>
                         `;
 
@@ -178,7 +243,7 @@
                     },
                     className: 'text-center',
                     orderable: false,
-                    targets: 5,
+                    targets: 7,
                 },
             ],
             columns: [
@@ -187,10 +252,23 @@
                 { data: 'project_type.icon' },
                 { data: 'name' },
                 { data: 'progress' },
+                { data: 'progress' },
+                { data: 'endtime' },
 
                 { data: null },
             ]
         });
     });
     </script>
+@endif
+
+<script>
+    require(['jquery', 'selectize'], function($, selectize) {
+        $(document).ready(function(){
+            $("#tags").selectize({
+                maxItems: 99
+            });
+        });
+    });
+</script>
 @endsection
