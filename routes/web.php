@@ -92,6 +92,9 @@ Route::auth();
     Route::get('/project/create/step-3', 'ProjectController@createStep3')->name('create-project-step3');
     Route::post('/project/create/step-3', 'ProjectController@storeStep3')->name('store-project-step3');
 
+    Route::get('/project/create/step-4/{id}', 'ProjectController@createStep4')->name('create-project-step4');
+    Route::post('/project/create/step-4/{id}', 'ProjectController@storeStep4')->name('store-project-step4');
+
     Route::get('/project/edit/{id}', 'ProjectController@edit')->name('edit-project');
     Route::post('/project/update/{id}', 'ProjectController@update')->name('update-project');
 

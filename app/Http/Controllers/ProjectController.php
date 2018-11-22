@@ -879,6 +879,45 @@ class ProjectController extends Controller
             ->with('messageType', 'success');
     }
 
+    /*
+     * Create project step 4
+     *
+     * Add tag to project
+     */
+    public function createStep4($id)
+    {
+        $project = Project::find($id);
+
+        // get all tags name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.tag.add', compact('project', 'available_tags'));
+    }
+
+    /*
+     * store new project data in step 4
+     *
+     * Store project tag to DB
+     */
+    public function storeStep4(Request $request, $id)
+    {
+        $project = Project::find($id);
+
+        // value is separated by comma
+        $tags = explode(',', $request->tags);
+
+        // store tag to DB and link relation between project and project-tag
+        foreach ($tags as $tag) {
+            $project->tags()->save(new ProjectTag([
+                'name' => trim( $tag )
+            ]));
+        }
+
+        return redirect()
+               ->route('project-detail', ['id' => $project->id]);
+    }
+
     /**
      * Edit for draft project
      *
