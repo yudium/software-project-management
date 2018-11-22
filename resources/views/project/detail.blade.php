@@ -255,7 +255,7 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                             <label class="form-label" for="note">Catatan</label>
                                             <div class="form-control-plaintext">
-                                                {{ $project->additional_note OR 'tidak ada catatan' }}
+                                                {{ $project->additional_note ?? 'tidak ada catatan' }}
                                             </div>
                                         </div>
                                     </div>

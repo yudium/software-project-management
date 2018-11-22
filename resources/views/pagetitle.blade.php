@@ -1,5 +1,5 @@
 <div class="page-header">
     <h1 class="page-title">
-        {{ $title OR $slot }}
+        {{ $title ?? $slot }}
     </h1>
 </div>
