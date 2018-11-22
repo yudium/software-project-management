@@ -47,6 +47,7 @@ Route::auth();
     Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
     Route::get('/client/client-detail/{id}','ClientController@clientDetail')->name('clientDetail');
     Route::get('/client/client-edit/{id}','ClientController@clientEdit')->name('clientEdit');
+    Route::post('/client/client-update/{id}','ClientController@clientUpdate')->name('clientUpdate');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');

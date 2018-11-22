@@ -247,6 +247,13 @@ class ClientController extends Controller
     public function clientEdit($client_id)
     {
         $client = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_CLIENT],['clients.id','=',$client_id]])->first();
-    
+
+        return view('client.client-edit',compact('client'));
     }
+
+    public function clientUpdate($client_id,\App\Http\Requests\StoreCLient $req)
+    {
+        dd($req->all());
+    }
+
 }

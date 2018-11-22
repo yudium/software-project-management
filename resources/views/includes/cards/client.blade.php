@@ -9,7 +9,7 @@
     </div>
     <div class="card-body d-flex flex-column">
         <div class="d-flex align-items-center pt-2 mt-auto">
-            <div class="avatar avatar-md mr-3" style="background-image: url(./demo/faces/female/18.jpg)"></div>
+            <div class="avatar avatar-md mr-3" style="background-image: url(/storage/clientImage/{{$client->photo}})"></div>
             <div>
                 <a href="./profile.html" class="text-default">{{ $client->name }}</a>
                 <div class="d-block text-muted">
