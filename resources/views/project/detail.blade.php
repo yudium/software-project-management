@@ -27,6 +27,11 @@ ol.link-list:hover {
 ol.link-list span.anticipate-long-text {
     background-color: white;
 }
+
+/* consider move the code to global css */
+.separator-left {
+    border-left: 1px solid #ddd;
+}
 </style>
 @endsection
 
@@ -245,10 +250,30 @@ ol.link-list span.anticipate-long-text {
                             @endif
                             <div class="col-12"><hr></div>
                             <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="note">Catatan</label>
-                                    <div class="form-control-plaintext">
-                                        {{ $project->additional_note OR 'tidak ada catatan' }}
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <label class="form-label" for="note">Catatan</label>
+                                            <div class="form-control-plaintext">
+                                                {{ $project->additional_note OR 'tidak ada catatan' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 separator-left">
+                                        <div class="form-group">
+                                            <label class="form-label" for="note">Tag: </label>
+                                            <div class="form-control-plaintext">
+                                                @if ($project->tags->count() == 0)
+                                                    <small class="text-muted">Kosong</small>
+                                                @endif
+
+                                                <div class="tags d-inline-block">
+                                                    @foreach ($project->tags as $tag)
+                                                    <span class="tag tag-primary">{{ $tag->name }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -295,6 +320,9 @@ ol.link-list span.anticipate-long-text {
                                 @if ($project->is_draft)
                                     <a href="{{ route('project-delete-confirmation', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Hapus</a>
                                 @endif
+
+                                <!-- this action only allowed for draft and onprogress project -->
+                                <a href="{{ route('edit-project-tag', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', $project->is_done)">Ubah Tag</a>
 
                                 <!-- this action only allowed for project draft -->
                                 <a href="{{ route('change-project-client', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->is_draft)">Ubah Client</a>
