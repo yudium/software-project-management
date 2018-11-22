@@ -95,6 +95,9 @@ Route::auth();
     Route::get('/project/create/step-4/{id}', 'ProjectController@createStep4')->name('create-project-step4');
     Route::post('/project/create/step-4/{id}', 'ProjectController@storeStep4')->name('store-project-step4');
 
+    Route::get('/project/tag/edit/{id}', 'ProjectController@editTag')->name('edit-project-tag');
+    Route::post('/project/tag/update/{id}', 'ProjectController@updateTag')->name('update-project-tag');
+
     Route::get('/project/edit/{id}', 'ProjectController@edit')->name('edit-project');
     Route::post('/project/update/{id}', 'ProjectController@update')->name('update-project');
 
