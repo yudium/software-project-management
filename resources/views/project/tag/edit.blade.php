@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label class="form-label" for="name">Tag <span class="form-required">*</span></label>
-                            <input id="tags" class="form-control" type="text" name="tags" value="{{ $project->tags->implode('name', ',') }}" required>
+                            <input id="tags" class="form-control" type="text" name="tags" value="{{ $project->tags->implode('name', ',') }}">
                         </div>
 
                         <div class="d-flex">

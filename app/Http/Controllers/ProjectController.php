@@ -1086,18 +1086,25 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
 
-        // value is separated by comma
-        $tags = explode(',', $request->tags);
+        if (! $request->tags) {
+            // if tags is empty, null here; we know user want to delete all tags
+            foreach ($project->tags as $tag) {
+                $tag->delete();
+            }
+        } else {
+            // value is separated by comma
+            $tags = explode(',', $request->tags);
 
-        // [1] delete all project tag record first
-        foreach ($project->tags as $tag) {
-            $tag->delete();
-        }
-        // [2] then save again
-        foreach ($tags as $tag) {
-            $project->tags()->save(new ProjectTag([
-                'name' => trim( $tag )
-            ]));
+            // [1] delete all project tag record first
+            foreach ($project->tags as $tag) {
+                $tag->delete();
+            }
+            // [2] then save again
+            foreach ($tags as $tag) {
+                $project->tags()->save(new ProjectTag([
+                    'name' => trim( $tag )
+                ]));
+            }
         }
 
         return redirect()
