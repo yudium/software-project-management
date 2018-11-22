@@ -151,7 +151,7 @@
                         targets: 0,
                         orderable: false,
                         render: function (data, type, row) {
-                            return '<div class="avatar d-block"><span class="avatar-status bg-green"></span></div>';
+                            return '<div class="avatar d-block"  style="background-image: url(/storage/clientImage/'+row['photo']+')"><span class="avatar-status bg-green"></span></div>';
                         }
                     },
                     {
@@ -167,7 +167,7 @@
                         data: 'type',
                         orderable: false,
                         render: function (data, type, row) {
-                            return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="fe fe-user"></i></i><div class="small text-muted">' +
+                            return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="'+row['type']['icon']+'"></i></i><div class="small text-muted">' +
                                 data + '</div></div>';
                         },
                     },

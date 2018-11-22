@@ -33,7 +33,7 @@ class Client extends Model
 
     public function city()
     {
-        return $this->hasMany('App\ClientCity');
+        return $this->hasOne('App\ClientCity');
     }
 
     public function bankAccount()

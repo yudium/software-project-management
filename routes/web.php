@@ -45,6 +45,8 @@ Route::auth();
     Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
     Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
     Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
+    Route::get('/client/client-detail/{id}','ClientController@clientDetail')->name('clientDetail');
+    Route::get('/client/client-edit/{id}','ClientController@clientEdit')->name('clientEdit');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');

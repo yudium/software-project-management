@@ -30,7 +30,7 @@
 	</h1>
 </div>
     <div class="card">
-	<div class="table-responsive">
+	
 		<table class="table table-hover table-outline table-vcenter text-nowrap card-table" id="prospectTable">
 			<thead>
             <tr>
@@ -51,7 +51,7 @@
                         </tr>
 			</tbody>
 		</table>
-	</div>
+
 
 </div>
 
@@ -80,7 +80,7 @@
                 targets: 0,
                 orderable:false,
                 render: function ( data, type, row ) {
-                   return '<div class="avatar d-block"><span class="avatar-status bg-green"></span></div>';
+                    return '<div class="avatar d-block"  ><img src="/storage/clientImage/'+row['photo']+'"></img> <span class="avatar-status bg-green"></span></div>';
                     }
                 },
                 {

@@ -43,7 +43,7 @@ class ClientController extends Controller
 
         return Datatables::of($client)
         ->addColumn('options',function($client){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" id="deleteClient" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="'.route('clientDetail',$client->id).'" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" id="deleteClient" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
         })->rawColumns(['options'])->make(true);
     }
 
@@ -235,5 +235,18 @@ class ClientController extends Controller
         ->with('message', 'Berhasil menambah Insider Client')
         ->with('alert-class', 'alert-success');
      
+    }
+
+    public function clientDetail($client_id)
+    {
+        $client = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_CLIENT],['clients.id','=',$client_id]])->first();
+    
+        return view('client.client-detail',compact('client'));
+    }
+
+    public function clientEdit($client_id)
+    {
+        $client = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_CLIENT],['clients.id','=',$client_id]])->first();
+    
     }
 }

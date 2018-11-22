@@ -31,27 +31,15 @@ class StoreClient extends FormRequest
             'nama'=>'required|min:2',
             'statusHub'=>'',
             'alamat'=>'required',
-            'kota.*'=>'nullable|string|required',
-             'telepon.*'=>'nullable|numeric|required',
-             'email.*'=>'nullable|email|required',
-            'norek.*'=>'nullable|numeric|required',
-            'web.*'=>'nullable|url|required',
+            'kota.*'=>'nullable|string',
+             'telepon.*'=>'nullable|numeric',
+             'email.*'=>'nullable|email',
+            'norek.*'=>'nullable|numeric',
+            'web.*'=>'nullable|url',
         
 
         ];
     }
-
-    // public function messages()
-    // {
-    //     return [
-    //         'kota[].required' => 'The kota field  is required',
-    //         'telepon[].required'  => 'The telepon field  is required',
-    //         'email[].required' => 'The email field  is required',
-    //         'norek[].required'  => 'The norek field  is required',
-    //         'web[].required' => 'The web field  is required',
-       
-    //     ];
-    // }
 
     public function sanitize()
     {
