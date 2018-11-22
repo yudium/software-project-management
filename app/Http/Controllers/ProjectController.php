@@ -874,7 +874,8 @@ class ProjectController extends Controller
             $potential_project->save();
         }
 
-        return redirect()->route('project-detail', ['project_id' => $project->id])
+        // TODO: message below is not used
+        return redirect()->route('create-project-step4', ['id' => $project->id])
             ->with('message', 'Berhasil menambah proyek')
             ->with('messageType', 'success');
     }
