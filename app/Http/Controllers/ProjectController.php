@@ -1071,6 +1071,39 @@ class ProjectController extends Controller
             ->with('messageType', 'success');
     }
 
+    public function editTag($id)
+    {
+        $project = Project::find($id);
+
+        // get all tags name uniquely
+        // below is alternative for distinct sql
+        $available_tags = ProjectTag::orderBy('name','asc')->groupBy('name')->get();
+
+        return view('project.tag.edit', compact('project', 'available_tags'));
+    }
+
+    public function updateTag(Request $request, $id)
+    {
+        $project = Project::find($id);
+
+        // value is separated by comma
+        $tags = explode(',', $request->tags);
+
+        // [1] delete all project tag record first
+        foreach ($project->tags as $tag) {
+            $tag->delete();
+        }
+        // [2] then save again
+        foreach ($tags as $tag) {
+            $project->tags()->save(new ProjectTag([
+                'name' => trim( $tag )
+            ]));
+        }
+
+        return redirect()
+               ->route('project-detail', ['id' => $project->id]);
+    }
+
     public function changeClient($id)
     {
         $project = Project::find($id);
