@@ -16,6 +16,14 @@
 .clearfix .left {float: left}
 .clearfix .right {float:right}
 
+.form-control.selectize-control {
+    /**
+     * the form-control class has fixed. I want the selectize control height to
+     * to be auto so if the input value is wrapped. The rest html can adjust.
+     */
+    height: auto ! important;
+}
+
 </style>
 @endsection
 
