@@ -53,75 +53,77 @@
 
     <script>
     require(['datatables', 'jquery'], function(datatable, $) {
-        $('.datatable').DataTable({
-            serverSide: true,
-            ajax: '{{ route('draft-project-list-ajax') }}',
-            // why? It because I want to remove sort icon for col 0
-            order: [],
-            columnDefs: [
-                {
-                    render: function(data, type, row) {
-                        if (data) {
+        $(document).ready(function(){
+            $('.datatable').DataTable({
+                serverSide: true,
+                ajax: '{{ route('draft-project-list-ajax') }}',
+                // why? It because I want to remove sort icon for col 0
+                order: [],
+                columnDefs: [
+                    {
+                        render: function(data, type, row) {
+                            if (data) {
+                                return `
+                                    <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
+                                `;
+                            }
+
                             return `
-                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
+                                <div class="avatar avatar-placeholder d-block"></div>
                             `;
-                        }
-
-                        return `
-                            <div class="avatar avatar-placeholder d-block"></div>
-                        `;
+                        },
+                        orderable: false,
+                        targets: 0,
                     },
-                    orderable: false,
-                    targets: 0,
-                },
-                {
-                    render: function(data, type, row) {
-                        return `
-                            <div>${data}</div>
-                            <div class="small text-muted">
-                            Bekerja sama sejak: ${row['created_at']}
-                            </div>
-                        `;
+                    {
+                        render: function(data, type, row) {
+                            return `
+                                <div>${data}</div>
+                                <div class="small text-muted">
+                                Bekerja sama sejak: ${row['created_at']}
+                                </div>
+                            `;
+                        },
+                        targets: 1,
                     },
-                    targets: 1,
-                },
-                {
-                    render: function(data, type, row) {
-                        return `
-                            <i class="icon-box"><i class="${data}"></i></i>
-                        `;
+                    {
+                        render: function(data, type, row) {
+                            return `
+                                <i class="icon-box"><i class="${data}"></i></i>
+                            `;
+                        },
+                        className: 'text-center',
+                        targets: 2,
                     },
-                    className: 'text-center',
-                    targets: 2,
-                },
-                {
-                    render: function(data, type, row) {
-                        let html = `
-                            <div class="item-action dropdown">
-                            <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
-                            </div>
-                            </div>
-                        `;
+                    {
+                        render: function(data, type, row) {
+                            let html = `
+                                <div class="item-action dropdown">
+                                <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="{{ url('/project/detail') }}/${row['id']}" target="_blank" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a>
+                                </div>
+                                </div>
+                            `;
 
-                        return html;
+                            return html;
+                        },
+                        className: 'text-center',
+                        orderable: false,
+                        targets: 4,
                     },
-                    className: 'text-center',
-                    orderable: false,
-                    targets: 4,
-                },
-            ],
-            columns: [
-                { data: 'client.photo' },
-                { data: 'client.name' },
+                ],
+                columns: [
+                    { data: 'client.photo' },
+                    { data: 'client.name' },
 
-                { data: 'project_type.icon' },
+                    { data: 'project_type.icon' },
 
-                { data: 'name' },
+                    { data: 'name' },
 
-                { data: null },
-            ]
+                    { data: null },
+                ]
+            });
         });
     });
     </script>
