@@ -103,7 +103,7 @@ span.content--anticipate-long-text:hover {
 
                 <div class="p-4">
                     <p>Ketik <code>Proyek Telah Selesai</code> di bawah</p>
-                    <input id="validation" class="form-control" type="text" name="validation" placeholder="ketik disini...">
+                    <input id="validation" class="form-control" type="text" name="validation" placeholder="ketik disini..." autocomplete="off">
                 </div>
 
                 <div class="alert alert-warning p-4 mt-5">

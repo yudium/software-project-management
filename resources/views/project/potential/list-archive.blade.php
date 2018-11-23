@@ -60,9 +60,9 @@
             columnDefs: [
                 {
                     render: function(data, type, row) {
-                        if (row['photo']) {
+                        if (data) {
                             return `
-                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['client.photo']) } )"></div>
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
                             `;
                         }
 
@@ -115,9 +115,6 @@
                             return `
                                 <a href="{{ url('/project/detail/') }}/${row['project_id']}" class="btn btn-secondary btn-sm mr-2">Lihat Proyek</a>
                                 <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
-                                <a class="icon ml-5" href="javascript:void(0)">
-                                    <i class="fe fe-edit"></i>
-                                </a>
                             `;
                         }
                         if (! project_id && last_deal_history.status == '{{ \App\FollowUpDealHistory::IS_DEAL }}') {
@@ -125,18 +122,12 @@
                             return `
                                 <a href="{{ url('/project/create/potential/') }}/${row['id']}" class="btn btn-primary btn-sm mr-2">Buat Proyek</a>
                                 <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
-                                <a class="icon ml-5" href="javascript:void(0)">
-                                    <i class="fe fe-edit"></i>
-                                </a>
                             `;
                         }
                         if (! project_id && last_deal_history.status == '{{ \App\FollowUpDealHistory::ISNT_DEAL }}') {
                             // show 'Buat Proyek' button
                             return `
                                 <a href="{{ url('/project/potential/history') }}/${row['id']}"  class="btn btn-secondary btn-sm">Lihat Riwayat</a>
-                                <a class="icon ml-5" href="javascript:void(0)">
-                                    <i class="fe fe-edit"></i>
-                                </a>
                             `;
                         }
                     },

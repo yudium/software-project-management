@@ -8,10 +8,9 @@ class Termin extends Model
 {
     /**
      * correspond to `paid_off` column in table
-     *
-     * NOTE: to get record that NOT paid-off use IS NULL query
      */
     const IS_PAID_OFF          = '1';
+    const IS_NOT_PAID_OFF      = '2';
 
     /**
      * The attributes that are mass assignable.

@@ -67,6 +67,7 @@ class TerminController extends Controller
         $termin = new Termin;
         $termin->periodic_type = $request->periodic_type;
         $termin->project()->associate($project); // termin has relation to project
+        $termin->paid_off = Termin::IS_NOT_PAID_OFF;
         $termin->save();
 
         // the detail of termin is stored to database, like `amount` and `due_date`
@@ -121,7 +122,14 @@ class TerminController extends Controller
          |
          | ----------------------------------------------------------- */
         $termin_payment = new TerminPayment;
-        $termin_payment->bank()->associate($bank); // termin_payment has relation to bank
+
+        // If payment is cash; not transfer we know that by null value in DB
+        if ($request->bank == 'cash') {
+            // then we know that $termin_payment->bank_id will be null
+        } else {
+            $termin_payment->bank()->associate($bank); // termin_payment has relation to bank
+        }
+
         $termin_payment->termin_detail()->associate($termin_detail); // termin_payment has relation to termin_detail
         // increment serial number for this termin_payment
         $termin_payment->serial_number = 1 + getCurrentSerialNumberForTerminPayment($termin_detail_id);
@@ -152,13 +160,14 @@ class TerminController extends Controller
          *
          * NOTE: $termin_detail already defined so I use $detail
          */
-        foreach ($termin->termin_details as $detail) {
+        foreach ($termin->details as $detail) {
             if ($detail->paid_amount != $detail->amount) {
                 $paid_off = false;
             }
         }
         if ($paid_off) {
             $termin->paid_off = Termin::IS_PAID_OFF;
+            $termin->save();
         }
 
 

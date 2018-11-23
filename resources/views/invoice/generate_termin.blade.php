@@ -190,32 +190,11 @@ body {
         <th class="col-header">Jumlah Yang Dibayar</th>
         <th class="col-header">Keterangan</th>
     </tr>
-    <!--
-    <tr>
-        <td class="text-right">Pembayaran ke-1 (Cash, 7 Agu 2018)</td>
-        <td>Rp.40.000.000,-</td>
-        <td>LUNAS</td>
-    </tr>
-    <tr>
-        <td class="text-right">Pembayaran ke-2 (Cash, 7 Agu 2018)</td>
-        <td>Rp.40.000.000,-</td>
-        <td>SISA Rp.10.000.000,-</td>
-    </tr>
-    <tr>
-        <td class="text-right">Pembayaran ke-2 (Cash, 7 Agu 2018)</td>
-        <td>Rp.10.000.000,-</td>
-        <td>LUNAS</td>
-    </tr>
-    <tr>
-        <td class="text-right">Pembayaran ke-4 (Cash, 7 Agu 2018)</td>
-        <td>Rp.40.000.000,-</td>
-        <td>Rp.40.000.000,-</td>
-    </tr>
-    -->
     {{-- Termin Payment already ordered by pay_date --}}
     @foreach ($project->termin->payments as $termin_payment)
     <tr>
-        <td>ke-{{ $termin_payment->termin_detail->serial_number }} (Cash, {{ date('d-M-Y', strtotime($termin_payment->pay_date)) }})</td>
+        <td>
+            ke-{{ $termin_payment->termin_detail->serial_number }} ({{ ($termin_payment->bank_id ? 'Transfer' : 'Cash') }}, {{ date('d-M-Y', strtotime($termin_payment->pay_date)) }})</td>
         <td>Rp.@money($termin_payment->termin_detail->amount),-</td>
         <td>Rp.@money($termin_payment->amount),-</td>
         <td>

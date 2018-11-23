@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddQuantityColumnToProjectsTable extends Migration
+class RemoveBankIdInProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class AddQuantityColumnToProjectsTable extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->tinyInteger('quantity')->nullable()->after('price');
+            // Project doesn't have relation with bank
+            $table->dropForeign('projects_bank_id_foreign');
+            $table->dropColumn('bank_id');
         });
     }
 
@@ -26,7 +28,11 @@ class AddQuantityColumnToProjectsTable extends Migration
     public function down()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('quantity');
+            $table->unsignedInteger('bank_id')->nullable()->after('project_type_id');
+
+            $table->foreign('bank_id')->references('id')->on('banks')
+                ->onDelete('no action')
+                ->onUpdate('cascade');
         });
     }
 }

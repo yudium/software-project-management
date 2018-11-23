@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProspectToClientTransformation extends Model
+class ProjectTag extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,13 +12,8 @@ class ProspectToClientTransformation extends Model
      * @var array
      */
     protected $fillable = [
-        'created_at',
+        'name',
     ];
 
     public $timestamps = false;
-
-    public function client()
-    {
-        return $this->belongsTo('App\Client');
-    }
 }

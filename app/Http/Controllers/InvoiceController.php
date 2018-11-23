@@ -78,7 +78,7 @@ class InvoiceController extends Controller
                 $total_paid_amount += $termin_payment->amount;
             }
 
-            return view('invoice.generate', compact(
+            return view('invoice.generate_termin', compact(
                 'project',
                 'input',
                 'total_paid_amount',

@@ -11,7 +11,15 @@ define('global_functions', ['jquery'], function($) {
         'cleanValMask': (str) => {
             // TODO: don't convert to number because input mask is not only for
             //       number. And convert manually all script that use this func
-            return Number( str.replace(/\D/g, '') );
+            let cleaned = str.replace(/\D/g, '');
+
+            // we don't want input field become 0 if empty string converted to
+            // number
+            if (cleaned.trim() == '') {
+                return '';
+            }
+
+            return Number( cleaned );
         },
     }
 });

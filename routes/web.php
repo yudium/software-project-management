@@ -74,14 +74,26 @@ Route::auth();
     Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
     Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');
 
+    Route::get('/project/list/onprogress/by-tags', 'ProjectController@getOnProgressByTags')->name('onprogress-project-by-tags-list');
+    Route::get('/project/list/onprogress/by-tags/ajax', 'ProjectController@getOnProgressByTagsAjax')->name('onprogress-project-by-tags-list-ajax');
+
     Route::get('/project/list/draft', 'ProjectController@getDraft')->name('draft-project-list');
     Route::get('/project/list/draft/ajax', 'ProjectController@getDraftAjax')->name('draft-project-list-ajax');
+
+    Route::get('/project/list/draft/by-tags', 'ProjectController@getDraftByTags')->name('draft-project-by-tags-list');
+    Route::get('/project/list/draft/by-tags/ajax', 'ProjectController@getDraftByTagsAjax')->name('draft-project-by-tags-list-ajax');
 
     Route::get('/project/list/success', 'ProjectController@getSuccess')->name('success-project-list');
     Route::get('/project/list/success/ajax', 'ProjectController@getSuccessAjax')->name('success-project-list-ajax');
 
+    Route::get('/project/list/success/by-tags', 'ProjectController@getSuccessByTags')->name('success-project-by-tags-list');
+    Route::get('/project/list/success/by-tags/ajax', 'ProjectController@getSuccessByTagsAjax')->name('success-project-by-tags-list-ajax');
+
     Route::get('/project/list/fail', 'ProjectController@getFail')->name('fail-project-list');
     Route::get('/project/list/fail/ajax', 'ProjectController@getFailAjax')->name('fail-project-list-ajax');
+
+    Route::get('/project/list/fail/by-tags', 'ProjectController@getFailByTags')->name('fail-project-by-tags-list');
+    Route::get('/project/list/fail/by-tags/ajax', 'ProjectController@getFailByTagsAjax')->name('fail-project-by-tags-list-ajax');
 
     Route::get('/project/create/step-1', 'ProjectController@createStep1')->name('create-project-step1');
     Route::get('/project/create/step-1/ajax/client', 'ProjectController@createStep1AjaxClient')->name('create-project-step1-client-ajax');
@@ -91,6 +103,12 @@ Route::auth();
 
     Route::get('/project/create/step-3', 'ProjectController@createStep3')->name('create-project-step3');
     Route::post('/project/create/step-3', 'ProjectController@storeStep3')->name('store-project-step3');
+
+    Route::get('/project/create/step-4/{id}', 'ProjectController@createStep4')->name('create-project-step4');
+    Route::post('/project/create/step-4/{id}', 'ProjectController@storeStep4')->name('store-project-step4');
+
+    Route::get('/project/tag/edit/{id}', 'ProjectController@editTag')->name('edit-project-tag');
+    Route::post('/project/tag/update/{id}', 'ProjectController@updateTag')->name('update-project-tag');
 
     Route::get('/project/edit/{id}', 'ProjectController@edit')->name('edit-project');
     Route::post('/project/update/{id}', 'ProjectController@update')->name('update-project');

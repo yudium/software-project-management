@@ -27,6 +27,10 @@
             Daftar Proyek Aktif
         @endcomponent
 
+        <div class="text-right mb-3">
+            <a href="{{ route('onprogress-project-by-tags-list') }}" class="btn btn-link">Filter Berdasarkan Tag <i class="fe fe-tag ml-2"></i></a>
+        </div>
+
         @component('cardtable', ['class' => 'datatable'])
             <thead>
             <tr>
@@ -54,15 +58,17 @@
     require(['datatables', 'jquery', 'moment'], function(datatable, $, moment) {
         $('.datatable').DataTable({
             serverSide: true,
+            // TODO: if trello request has been optimized then change this value
+            pageLength: 3,
             ajax: '{{ route('onprogress-project-list-ajax') }}',
             // why? It because I want to remove sort icon for col 0
             order: [],
             columnDefs: [
                 {
                     render: function(data, type, row) {
-                        if (row['photo']) {
+                        if (data) {
                             return `
-                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['client.photo']) } )"></div>
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
                             `;
                         }
 
@@ -97,7 +103,7 @@
                     render: function(data, type, row) {
                         // doesn't have trello board or connection error
                         if (! row['progress']) {
-                            return `NULL`;
+                            return '<small class="text-muted"><i>Tidak memiliki trello</i></small>';
                         }
                         if (row['progress']['status'] != 200) {
                             return `<small> ${ row['progress']['message'] } </small>`;

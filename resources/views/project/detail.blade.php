@@ -27,6 +27,11 @@ ol.link-list:hover {
 ol.link-list span.anticipate-long-text {
     background-color: white;
 }
+
+/* consider move the code to global css */
+.separator-left {
+    border-left: 1px solid #ddd;
+}
 </style>
 @endsection
 
@@ -42,33 +47,10 @@ ol.link-list span.anticipate-long-text {
             <div class="col-4">
                 <div class="row row-cards">
                     <div class="col-12">
-                        <div class="card card-client">
-                            <div class="card-header">
-                                <h3 class="card-title">Data Client</h3>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-center pt-2 mt-auto">
-                                    <div class="avatar avatar-md mr-3" style="background-image: url(./demo/faces/female/18.jpg)"></div>
-                                    <div>
-                                        <a href="./profile.html" class="text-default">{{ $project->client->name }}</a>
-                                        <small class="d-block text-muted">{{ $project->client->phone()->first()->phone }}</small>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <!-- TODO: link to client's detail page -->
-                                        <a href="#" class="icon d-none d-md-inline-block ml-3"><i class="fe fe-eye mr-1"></i></a>
-                                    </div>
-                                </div>
-                                <div class="info mt-3">
-                                    <div class="clearfix">
-                                        <div class="left"></div>
-                                        <div class="right">
-                                            <span class="badge badge-success">{{ ucfirst($project->client->type->name) }}</span>
-                                            <span class="badge badge-info">{{ ucfirst($project->client->status_text) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('includes.cards.client', [
+                            'ganti_button' => false,
+                            'client' => $project->client,
+                        ])
                     </div>
                     <div class="col-12">
                         <div class="card">
@@ -228,7 +210,7 @@ ol.link-list span.anticipate-long-text {
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label class="form-label">Berakhir pada</label>
+                                    <label class="form-label">Deadline</label>
                                     <div class="form-control-plaintext">
                                         @if ($project->endtime)
                                             {{ date('d M Y', strtotime($project->endtime)) }}
@@ -250,12 +232,48 @@ ol.link-list span.anticipate-long-text {
                                     </div>
                                 </div>
                             </div>
+                            @if ($project->is_done)
+                                <div class="col-4"><!-- spacing --></div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Berakhir pada</label>
+                                        <div class="form-control-plaintext">
+                                            @if ($project->endtime)
+                                                {{ date('d M Y', strtotime($project->endtime_actual)) }}
+                                            @else
+                                                <small class="text-muted">Belum diatur</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4"><!-- spacing --></div>
+                            @endif
                             <div class="col-12"><hr></div>
                             <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="note">Catatan</label>
-                                    <div class="form-control-plaintext">
-                                        {{ $project->additional_note OR 'tidak ada catatan' }}
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <label class="form-label" for="note">Catatan</label>
+                                            <div class="form-control-plaintext">
+                                                {{ $project->additional_note ?? 'tidak ada catatan' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 separator-left">
+                                        <div class="form-group">
+                                            <label class="form-label" for="note">Tag: </label>
+                                            <div class="form-control-plaintext">
+                                                @if ($project->tags->count() == 0)
+                                                    <small class="text-muted">Kosong</small>
+                                                @endif
+
+                                                <div class="tags d-inline-block">
+                                                    @foreach ($project->tags as $tag)
+                                                    <span class="tag tag-primary">{{ $tag->name }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -272,9 +290,14 @@ ol.link-list span.anticipate-long-text {
                             </div>
                             <div class="card-body">
 
+                            {{-- only show if the project is from potential project --}}
+                            @if ($project->potential_project)
+                                <a href="{{ route('follow-up-potential-project-history-list', ['potential_project_id' => $project->potential_project->id]) }}" class="btn btn-secondary btn-block btn-sm" target="_blank">Riwayat Follow Up</a>
+                            @endif
+
                                 {{-- Draft project doesn't have progress --}}
                                 @if (! $project->is_draft AND $project->trello_board_id)
-                                <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">
+                                <a href="{{ route('project-progress', ['project_id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm" target="_blank">
                                     {{-- show different text for different project's status --}}
                                     @if ($project->is_onprogress)
                                         Progress Tracker
@@ -297,6 +320,9 @@ ol.link-list span.anticipate-long-text {
                                 @if ($project->is_draft)
                                     <a href="{{ route('project-delete-confirmation', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm">Hapus</a>
                                 @endif
+
+                                <!-- this action only allowed for draft and onprogress project -->
+                                <a href="{{ route('edit-project-tag', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', $project->is_done)">Ubah Tag</a>
 
                                 <!-- this action only allowed for project draft -->
                                 <a href="{{ route('change-project-client', ['id' => $project->id]) }}" class="btn btn-secondary btn-block btn-sm @echoIf('disabled', ! $project->is_draft)">Ubah Client</a>

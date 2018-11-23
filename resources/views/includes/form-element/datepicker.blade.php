@@ -1,6 +1,6 @@
 <div class="form-group">
     <label class="form-label">{{ $label }}</label>
-    <input type="text" name="{{ $name }}" class="form-control {{ $class ?? '' }}" id="{{ $id }}" style="{{ $css OR '' }}" value="{{ old($name) }}">
+    <input type="text" name="{{ $name }}" class="form-control {{ $class ?? '' }}" id="{{ $id }}" style="{{ $css ?? '' }}" value="{{ old($name) }}">
 </div>
 
 <script>

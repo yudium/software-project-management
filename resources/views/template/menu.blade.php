@@ -50,16 +50,6 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-activity"></i>
-                            Statistics</a>
-                        <div class="dropdown-menu dropdown-menu-arrow">
-                            <a href="../project_statistics.html" class="dropdown-item  ">Proyek</a>
-                            <a href="../charts.html" class="dropdown-item  ">Client</a>
-                            <a href="../pricing-cards.html" class="dropdown-item  ">Prospect</a>
-                            <a href="../pricing-cards.html" class="dropdown-item  ">Agen</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-settings"></i>
                             Setting</a>
                         <div class="dropdown-menu dropdown-menu-arrow">

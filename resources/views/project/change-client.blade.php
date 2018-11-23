@@ -137,13 +137,16 @@ require(['datatables', 'jquery'], function(datatable, $) {
         columnDefs: [
             {
                 render: function(data, type, row) {
-                    // TODO: ubah path asset pake row['client.photo']
-                    // reference: https://www.datatables.net/examples/advanced_init/column_render.html
+                    if (data) {
+                        return `
+                            <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
+                        `;
+                    }
+
                     return `
-                        <div class="avatar d-block" style="background-image: url({{ asset('demo/faces/female/26.jpg') }})">
-                        <span class="avatar-status bg-green"></span>
-                        </div>
+                        <div class="avatar avatar-placeholder d-block"></div>
                     `;
+
                 },
                 orderable: false,
                 targets: 0,
@@ -186,12 +189,14 @@ require(['datatables', 'jquery'], function(datatable, $) {
         columnDefs: [
             {
                 render: function(data, type, row) {
-                    // TODO: ubah path asset pake row['client.photo']
-                    // reference: https://www.datatables.net/examples/advanced_init/column_render.html
+                    if (data) {
+                        return `
+                            <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + data) } )"></div>
+                        `;
+                    }
+
                     return `
-                        <div class="avatar d-block" style="background-image: url({{ asset('demo/faces/female/26.jpg') }})">
-                        <span class="avatar-status bg-green"></span>
-                        </div>
+                        <div class="avatar avatar-placeholder d-block"></div>
                     `;
                 },
                 orderable: false,

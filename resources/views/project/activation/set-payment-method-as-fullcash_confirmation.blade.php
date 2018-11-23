@@ -37,7 +37,7 @@ span.content--anticipate-long-text:hover {
                     <div class="col-8">
                         <div class="container--anticipate-long-text">
                             <span class="content--anticipate-long-text">
-                                <a href="{{ route('project-detail', ['id' => $project->id]) }}">{{ $project->name }}</a>
+                                <a href="{{ route('project-detail', ['id' => $project->id]) }}" target="_blank">{{ $project->name }}</a>
                             </span>
                         </div>
                     </div>
@@ -58,7 +58,7 @@ span.content--anticipate-long-text:hover {
 
             <div class="p-4">
                 <p>Ketik <code>Full Cash</code> di bawah</p>
-                <input id="validation" class="form-control" type="text" name="validation" placeholder="ketik disini...">
+                <input id="validation" class="form-control" type="text" name="validation" placeholder="ketik disini..." autocomplete="off">
             </div>
 
             <div class="alert alert-warning p-4 mt-5">
@@ -70,7 +70,7 @@ span.content--anticipate-long-text:hover {
         </div>
         <div class="card-footer">
             <div class="d-flex">
-                <a href="" class="btn btn-link">Batal</a>
+                <a href="{{ route('project-detail', ['id' => $project->id]) }}" class="btn btn-link">Batal</a>
                 <a href="{{ route('project-activation-step4', ['id' => $project->id, 'choice' => \App\Project::PAYMENT_BY_FULLCASH]) }}" id="primary-button" class="btn btn-primary ml-auto disabled">Ya, Full Cash dan Aktifkan Proyek</a>
             </div>
         </div>

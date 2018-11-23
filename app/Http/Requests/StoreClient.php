@@ -27,7 +27,7 @@ class StoreClient extends FormRequest
         $this->sanitize();
 
         return [
-            'tipeProspect'=>'',
+            'tipeProspect'=>'', // TODO: for what??
             'nama'=>'required|min:2',
             'statusHub'=>'',
             'alamat'=>'required',

@@ -12,12 +12,12 @@
 
                 <div class="form-group">
                     <label class="form-label" for="icon">Icon</label>
-                    <input type="text" name="icon" class="form-control" id="icon" placeholder="Masukan icon">
+                    <input type="text" name="icon" class="form-control" id="icon" placeholder="Masukan icon" required>
                     <p class="hint text-muted"><small>Silakan masukkan kode icon CSS dari <a href="{{ route('icon-list') }}" target="_blank">icon list</a></small></p>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="name">Nama Tipe</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="Masukan nama tipe">
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Masukan nama tipe" required>
                 </div>
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary btn-block">Simpan</button>
