@@ -79,6 +79,8 @@ function getTrelloChecklist($card_id, $query, $auth) {
 }
 
 /**
+ * TODO: remove if not used
+ *
  * Fetch all board's action
  *
  * @return array
@@ -146,6 +148,8 @@ function getBatchTrelloChecklistByBoardId($board_ids, $query, $auth) {
 }
 
 /**
+ * TODO: remove if not used
+ *
  * Get progress for specific board_id in tens percent
  *
  * @param $project      Project eloquent model
