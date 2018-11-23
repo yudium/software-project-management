@@ -76,6 +76,7 @@
 
                                 <div class="form-footer">
                                     <button type="submit" class="btn btn-primary btn-block">   {{ __('Login') }}</button>
+                                    <div ><a href="'.route('loginAgent').'">Masuk Sebagai Agent</a></div>
                                 </div>
                             </div>
                         </form>

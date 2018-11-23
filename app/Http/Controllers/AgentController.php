@@ -16,6 +16,10 @@ use Redirect;
 use Illuminate\Support\Facades\Log;
 class AgentController extends Controller
 {
+    public function loginAgent()
+    {
+        return view('agent.agent-login');
+    }
     public function index()
     {
         return view('agent.agent-list');
@@ -37,18 +41,18 @@ class AgentController extends Controller
 
     }
 
-    public function listCommission()
+    public function listProjectAgent()
     {
-        return view('agent.agent-listCommission');
+        return view('agent.agent-listProjectAgent');
     }
 
-    public function getListCommission()
+    public function getListProjectAgent()
     {
-        $agentListCommission = Agent::with(['agentProject'])->get();
+        $agentListProject = Agent::with(['agentProject'])->get();
     
-         return Datatables::of($agentListCommission)
-        ->addColumn('options',function($agentListCommission){
-                return '<div class="text-center"><a href="'.route('listCommissionDetail',$agentListCommission->id).'" class="btn btn-secondary btn-sm mr-3">Detail Commission</a>';
+         return Datatables::of($agentListProject)
+        ->addColumn('options',function($agentListProject){
+                return '<div class="text-center"><a href="'.route('listCommissionDetail',$agentListProject->id).'" class="btn btn-secondary btn-sm mr-3">Detail Project</a>';
          
         })->rawColumns(['options'])->make(true);
     }

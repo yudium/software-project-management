@@ -67,7 +67,9 @@ Route::auth();
     Route::get('/agent/agent-payment-history/{id}','AgentController@paymentHistory')->name('agentPaymentHistory');
     Route::get('/agent/agent-listCommission','AgentController@listCommission')->name('listCommission');
     Route::get('/agent/agent-commission-detail/{id}','AgentController@listCommissionDetail')->name('listCommissionDetail');
-    Route::get('/getListCommission','AgentController@getListCommission')->name('getListCommission');
+    Route::get('/getListProjectAgent','AgentController@getListProjectAgent')->name('getListProjectAgent');
+
+    Route::get('/loginAgent','AgentController@loginAgent')->name('loginAgent');
 
     Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
     Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');
