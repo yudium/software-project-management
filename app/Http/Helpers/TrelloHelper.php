@@ -141,9 +141,13 @@ function getTrelloProgressByBoardId(
             }
         }
 
+
         /**
          | get progress percent in tens
          | --------------------------------------------------------------- */
+         if ($number_of_task == 0) {
+             return 0;
+         }
          return ($number_of_task_complete / $number_of_task) * 100;
 }
 
