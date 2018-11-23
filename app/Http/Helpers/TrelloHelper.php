@@ -243,6 +243,7 @@ function getBatchTrelloProgressByBoardId(
             | --------------------------------------------------------------- */
             if ($number_of_tasks[$current_board] == 0) {
                 $progress_percents[$current_board] = 0;
+                continue;
             }
             $progress_percents[$current_board] =  ($number_of_task_completes[$current_board] / $number_of_tasks[$current_board]) * 100;
         }
