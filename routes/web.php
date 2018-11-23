@@ -35,6 +35,11 @@ Route::auth();
 
     Route::get('/prospect/prospect-list/','ClientController@prospectList')->name('prospectList');
     Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
+    Route::get('/prospect/prospect-detail/{id}','ClientController@prospectDetail')->name('prospectDetail');
+    Route::get('/prospect/prospect-edit/{id}','ClientController@prospectEdit')->name('prospectEdit');
+    Route::get('/prospect/prospect-type-edit/{id}','ClientController@prospectTypeEdit')->name('prospectTypeEdit');
+    Route::post('/prospect/prospect-update/{id}','ClientController@prospectUpdate')->name('prospectUpdate');
+    Route::get('/prospect/prospect-type-update/{id}/{prospect_type_id}','ClientController@prospectTypeUpdate')->name('prospectTypeUpdate');
 
     Route::get('/client/client-list','ClientController@clientList')->name('clientList');
     Route::get('/getClient','ClientController@getClient')->name('getClient');
@@ -47,7 +52,9 @@ Route::auth();
     Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
     Route::get('/client/client-detail/{id}','ClientController@clientDetail')->name('clientDetail');
     Route::get('/client/client-edit/{id}','ClientController@clientEdit')->name('clientEdit');
+    Route::get('/client/client-type-edit/{id}','ClientController@clientTypeEdit')->name('clientTypeEdit');
     Route::post('/client/client-update/{id}','ClientController@clientUpdate')->name('clientUpdate');
+    Route::get('/client/client-type-update/{id}/{client_type_id}','ClientController@clientTypeUpdate')->name('clientTypeUpdate');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');

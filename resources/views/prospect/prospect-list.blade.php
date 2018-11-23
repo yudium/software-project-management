@@ -80,8 +80,16 @@
                 targets: 0,
                 orderable:false,
                 render: function ( data, type, row ) {
-                    return '<div class="avatar d-block"  ><img src="/storage/clientImage/'+row['photo']+'"></img> <span class="avatar-status bg-green"></span></div>';
-                    }
+                        if (row['photo']) {
+                            return `
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['photo']) } )"></div>
+                            `;
+                        }
+
+                        return `
+                            <div class="avatar avatar-placeholder d-block"></div>
+                        `;
+                    },
                 },
                 {
                     targets: 1,
@@ -95,7 +103,8 @@
                     data:'type',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="fe fe-user"></i></i><div class="small text-muted">'+data.name+'</div></div>';
+                        return '<div class="text-center"><i class="icon-box" style="background: #e9ecef"><i style="color: #868e96" class="'+row['type']['icon']+'"></i></i><div class="small text-muted">' +
+                                data.name + '</div></div>';
                     },
                 },
                 {
@@ -103,11 +112,23 @@
                     data:'phone',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       let phone_html = ''
-                       data.forEach(function(value,index,array){
-                           phone_html +=value.phone + '<br>';
-                       })
-                       return phone_html;
+                        let phone_html = '';
+                       let more = 0;
+
+                       data.forEach(function(value, index, array){
+                           // only show 2 item
+                           if (index < 2) {
+                               phone_html += value.phone + '<br>';
+                           } else {
+                               // count the number of item after 2 item
+                               more++;
+                           }
+                       });
+
+                       // show information about many item (phone number) that not displayed
+                       if (more > 0) phone_html += `<span class="badge badge-info">${more}+ more</span>`
+
+                      return phone_html;
                     },
                 },
                 {
@@ -115,11 +136,22 @@
                     data:'email',
                     orderable:false,
                     render: function ( data, type, row ) {
-                       let email_html = ''
-                       data.forEach(function(value,index,array){
-                           email_html += value.email + '<br>';
-                       })
-                       return email_html;
+                        let email_html = '';
+                            let more = 0;
+
+                            data.forEach(function(value,index,array){
+                                if (index < 2) {
+                                    email_html +=value.email+'<br>';
+                                } else {    
+                                    // count the number of item after 2 item
+                                    more++;
+                                }
+                            });
+
+                            // show information about many item (email) that not displayed
+                            if (more > 0) email_html += `<span class="badge badge-info">${more}+ more</span>`
+
+                            return email_html;
                     },
                 },
                 {

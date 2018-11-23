@@ -141,26 +141,6 @@
                         @endif
                         </div>
 
-                   
-                        <div class="form-group">
-                                @if (count($errors->get('kota.*')))
-                                @component('includes.alert-danger')
-                                    @foreach ($errors->get('kota.*') as $messages)
-                                        @foreach ($messages as $message)
-                                            {{ $message }}<br>
-                                        @endforeach
-                                    @endforeach
-                                @endcomponent
-                            @endif
-    
-                            <label class="form-label">Kota</label>
-                            @include('includes.form-element.multiple-input', [
-                            'id' => 'multi-kota',
-                            'name' => 'kota[]',
-                            'number' => 1,
-                            ])
-                          
-                        </div>
                
                     </div>
                 </div>

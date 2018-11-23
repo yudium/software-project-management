@@ -81,60 +81,12 @@
                     {
                         data: 'name'
                     },
-//<<<<<<< HEAD
-//                },
-//                {
-//                    targets: 3,
-//                    data:'phone',
-//                    orderable:false,
-//                    render: function ( data, type, row ) {
-//                        let phone_html = '';
-//                        let more = 0;
-//
-//                        data.forEach(function(value, index, array){
-//                            // only show 2 item
-//                            if (index < 2) {
-//                                phone_html += value.phone + '<br>';
-//                            } else {
-//                                // count the number of item after 2 item
-//                                more++;
-//                            }
-//                        });
-//
-//                        // show information about many item (phone number) that not displayed
-//                        if (more > 0) phone_html += `<span class="badge badge-info">${more}+ more</span>`
-//
-//                       return phone_html;
-//                    },
-//                },
-//                {
-//                    targets: 4,
-//                    data:'email',
-//                    orderable:false,
-//                    render: function ( data, type, row ) {
-//                    let email_html = '';
-//                    let more = 0;
-//
-//                    data.forEach(function(value,index,array){
-//                        if (index < 2) {
-//                            email_html +=value.email+'<br>';
-//                        } else {
-//                            // count the number of item after 2 item
-//                            more++;
-//                        }
-//                    });
-//
-//                    // show information about many item (email) that not displayed
-//                    if (more > 0) email_html += `<span class="badge badge-info">${more}+ more</span>`
-//
-//                    return email_html;
-//=======
                     {
                         data: 'type.name'
                     },
                     {
                         data: 'phone'
-//>>>>>>> 1e5ad3f3cca03be386f59f25d9eff2c7cb8ec3ad
+
                     },
                     {
                         data: 'email'
@@ -151,8 +103,16 @@
                         targets: 0,
                         orderable: false,
                         render: function (data, type, row) {
-                            return '<div class="avatar d-block"  style="background-image: url(/storage/clientImage/'+row['photo']+')"><span class="avatar-status bg-green"></span></div>';
+                        if (row['photo']) {
+                            return `
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['photo']) } )"></div>
+                            `;
                         }
+
+                        return `
+                            <div class="avatar avatar-placeholder d-block"></div>
+                        `;
+                    },
                     },
                     {
                         targets: 1,
@@ -177,10 +137,22 @@
                         orderable: false,
                         render: function (data, type, row) {
                             let phone_html = '';
-                            data.forEach(function (value, index, array) {
-                                phone_html += value.phone + '<br>';
-                            });
-                            return phone_html;
+                       let more = 0;
+
+                       data.forEach(function(value, index, array){
+                           // only show 2 item
+                           if (index < 2) {
+                               phone_html += value.phone + '<br>';
+                           } else {
+                               // count the number of item after 2 item
+                               more++;
+                           }
+                       });
+
+                       // show information about many item (phone number) that not displayed
+                       if (more > 0) phone_html += `<span class="badge badge-info">${more}+ more</span>`
+
+                      return phone_html;
                         },
                     },
                     {
@@ -189,9 +161,20 @@
                         orderable: false,
                         render: function (data, type, row) {
                             let email_html = '';
-                            data.forEach(function (value, index, array) {
-                                email_html += value.email + '<br>';
+                            let more = 0;
+
+                            data.forEach(function(value,index,array){
+                                if (index < 2) {
+                                    email_html +=value.email+'<br>';
+                                } else {    
+                                    // count the number of item after 2 item
+                                    more++;
+                                }
                             });
+
+                            // show information about many item (email) that not displayed
+                            if (more > 0) email_html += `<span class="badge badge-info">${more}+ more</span>`
+
                             return email_html;
                         },
                     },

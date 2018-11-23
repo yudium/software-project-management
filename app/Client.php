@@ -31,11 +31,6 @@ class Client extends Model
         return $this->hasMany('App\ClientPhone','client_id');
     }
 
-    public function city()
-    {
-        return $this->hasOne('App\ClientCity');
-    }
-
     public function bankAccount()
     {
         return $this->hasMany('App\ClientBankAccount');

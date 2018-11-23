@@ -31,7 +31,6 @@ class StoreClient extends FormRequest
             'nama'=>'required|min:2',
             'statusHub'=>'',
             'alamat'=>'required',
-            'kota.*'=>'nullable|string',
              'telepon.*'=>'nullable|numeric',
              'email.*'=>'nullable|email',
             'norek.*'=>'nullable|numeric',
@@ -45,9 +44,6 @@ class StoreClient extends FormRequest
     {
         $input = $this->all();
 
-        if ($input['kota']) {
-            array_filter_null_element($input['kota']);
-        }
         if ($input['telepon']) {
             array_filter_null_element($input['telepon']);
         }

@@ -30,9 +30,9 @@
 @endsection
 @section('content')
 <div class="container">
-    @include('pagetitle', ['title' => 'Form Ubah Client'])
+    @include('pagetitle', ['title' => 'Form Ubah Prospect'])
 
-    <form method="post" action="{{ route('clientUpdate', ['id' => $client->id]) }}" enctype="multipart/form-data">
+    <form method="post" action="{{ route('prospectUpdate', ['id' => $prospect->id]) }}" enctype="multipart/form-data">
         @csrf
         <div class="row row-cards">
             <div class="col-4">
@@ -42,11 +42,15 @@
                             </div>
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body d-flex flex-column">
+                            <div class="card-body">
                                 <h6 class="text-center">Unggah Foto</h6>
-                                <div id="photo-preview" class="mb-2 mt-2">
-                                <img src="/storage/clientImage/{{$client->photo}}
+                                <div id="photo-preview" class="mb-4 mt-4">
+                                @if($prospect->photo)
+                                <img src="/storage/prospectImage/{{$prospect->photo}}
                                 " height="128" width="128" class="mx-9">
+                                @else
+                                <i class="fe fe-user"></i>
+                                @endif
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-file">
@@ -57,19 +61,19 @@
                             </div>
                         </div>
 
-                        <input name="client_id" type="hidden" value="{{ $client->id }}">
+                        <input name="prospect_id" type="hidden" value="{{ $prospect->id }}">
                     </div>
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group">
                                     <label  class="form-label">Nama</label>
-                                    <input type="text" name="nama" value="{{$client->name}}" class="form-control">
+                                    <input type="text" name="nama" value="{{$prospect->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Alamat</label>
                                     <textarea class="form-control {{ $errors->has('alamat') ? 'is-invalid' : '' }}"
-                                        name="alamat" type="text"> {{$client->address->address}}</textarea>
+                                        name="alamat" type="text"> {{$prospect->address->address}}</textarea>
                                     @if ($errors->has('alamat'))
                                     @foreach ($errors->get('alamat') as $message)
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -82,17 +86,17 @@
                                     <div class="selectgroup w-100">
                                         <label class="selectgroup-item">
                                             <input name="statusHub" value="Dekat" class="selectgroup-input" type="radio"
-                                                name="statusHub" {{($client->business_relationship_status=='Dekat'?'checked':'')}}>
+                                                name="statusHub" {{($prospect->business_relationship_status=='Dekat'?'checked':'')}}>
                                             <span class="selectgroup-button">Dekat</span>
                                         </label>
                                         <label class="selectgroup-item">
                                             <input name="statusHub" value="Normal" class="selectgroup-input" type="radio"
-                                                name="statusHub" {{($client->business_relationship_status=='Normal'?'checked':'')}}>
+                                                name="statusHub" {{($prospect->business_relationship_status=='Normal'?'checked':'')}}>
                                             <span class="selectgroup-button">Normal</span>
                                         </label>
                                         <label class="selectgroup-item">
                                             <input name="statusHub" value="Buruk" class="selectgroup-input" type="radio"
-                                                name="statusHub" {{($client->business_relationship_status=='Buruk'?'checked':'')}}>
+                                                name="statusHub" {{($prospect->business_relationship_status=='Buruk'?'checked':'')}}>
                                             <span class="selectgroup-button">Buruk</span>
                                         </label>
                                     </div>
@@ -118,7 +122,7 @@
                 @endif
 
                 <datalist id="telepon">
-                    @foreach ($client->phone as $phone)
+                    @foreach ($prospect->phone as $phone)
                     <option> {{$phone->phone}}</option>
                     @endforeach
                 </datalist>
@@ -127,7 +131,7 @@
                 'name' => 'telepon[]',
                 'number' => 1,
                 ])
-                @foreach ($client->phone as $phone)
+                @foreach ($prospect->phone as $phone)
                 <div class="input-group mb-2">
                     <input type="text" name="telepon[]" class="awesomplete form-control mb-2" list="telepon"
                         autocomplete="off" value="{{ $phone->phone }}">
@@ -153,16 +157,16 @@
                 @endif
 
                 <datalist id="webAddress">
-                    @foreach ($client->webAddress as $webAddress)
+                    @foreach ($prospect->webAddress as $webAddress)
                     <option> {{$webAddress->web_addresses}}</option>
                     @endforeach
                 </datalist>
                 @component('includes.form-element.multiple-input-custom', [
                 'id' => 'multi-web',
                 'name' => 'web[]',
-                'number' => 1,
+                'number' => 1   ,
                 ])
-                @foreach ($client->webAddress as $webAddress)
+                @foreach ($prospect->webAddress as $webAddress)
                 <div class="input-group mb-2">
                     <input type="text" name="web[]" class="awesomplete form-control mb-2" list="webAddress"
                         autocomplete="off" value="{{ $webAddress->web_addresses }}">
@@ -193,7 +197,7 @@
                 @endif
 
                 <datalist id="email">
-                    @foreach ($client->email as $email)
+                    @foreach ($prospect->email as $email)
                     <option> {{$email->email}}</option>
                     @endforeach
                 </datalist>
@@ -202,7 +206,7 @@
                 'name' => 'email[]',
                 'number' => 1,
                 ])
-                @foreach ($client->email as $email)
+                @foreach ($prospect->email as $email)
                 <div class="input-group mb-2">
                     <input type="text" name="email[]" class="awesomplete form-control mb-2" list="email" autocomplete="off"
                         value="{{ $email->email }}">
@@ -228,7 +232,7 @@
                 @endif
 
                 <datalist id="bankAccount">
-                    @foreach ($client->bankAccount as $bankAccount)
+                    @foreach ($prospect->bankAccount as $bankAccount)
                     <option> {{$bankAccount->bank_account}}</option>
                     @endforeach
                 </datalist>
@@ -237,7 +241,7 @@
                 'name' => 'norek[]',
                 'number' => 1,
                 ])
-                @foreach ($client->bankAccount as $bankAccount)
+                @foreach ($prospect->bankAccount as $bankAccount)
                 <div class="input-group mb-2">
                     <input type="text" name="norek[]" class="awesomplete form-control mb-2" list="bankAccount"
                         autocomplete="off" value="{{ $bankAccount->bank_account }}">

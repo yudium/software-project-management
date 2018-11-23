@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Detail Client')
+@section('title', 'Detail Prospect')
 
 @section('css')
 <style>
@@ -38,7 +38,7 @@ ol.link-list span.anticipate-long-text {
             @endif
         <div class="page-header">
             <h1 class="page-title">
-                Detail Client
+                Detail Prospect
             </h1>
         </div>
 
@@ -46,20 +46,20 @@ ol.link-list span.anticipate-long-text {
             <div class="col-4">
                 <div class="row row-cards">
                     <div class="col-12">
-                        <div class="card card-client">
+                        <div class="card card-prospect">
                             <div class="card-header">
-                                <h3 class="card-title">Data Client</h3>
+                                <h3 class="card-title">Data Prospect</h3>
                             </div>
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex align-items-center pt-2 mt-auto">
-                                    <div class="avatar avatar-md mr-3" style="background-image: url(/storage/clientImage/{{$client->photo}})"></div>
+                                    <div class="avatar avatar-md mr-3" style="background-image: url(/storage/prospectImage/{{$prospect->photo}})"></div>
                                     <div>
-                                        <a href="javascript:void(0)" class="text-default">{{ $client->name }}</a>
+                                        <a href="javascript:void(0)" class="text-default">{{ $prospect->name }}</a>
                                     <small class="d-block text-muted"></small>
                                  
                                     </div>
                                     <div class="ml-auto">
-                                        <!-- TODO: link to client's detail page -->
+                                        <!-- TODO: link to prospect's detail page -->
                                         <a href="#" class="icon d-none d-md-inline-block ml-3"><i class="fe fe-eye mr-1"></i></a>
                                     </div>
                                 </div>
@@ -67,8 +67,8 @@ ol.link-list span.anticipate-long-text {
                                     <div class="clearfix">
                                         <div class="left"></div>
                                         <div class="right">
-                                            <span class="badge badge-success">{{ ucfirst($client->type->name) }}</span>
-                                            <span class="badge badge-info">{{ ($client->status==0)?'Client':'Prospect' }}</span>
+                                            <span class="badge badge-success">{{ ucfirst($prospect->type->name) }}</span>
+                                            <span class="badge badge-info">{{ ($prospect->status==0)?'prospect':'Prospect' }}</span>
 
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@ ol.link-list span.anticipate-long-text {
             <div class="col-5">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Data Detail Client</h3>
+                        <h3 class="card-title">Data Detail prospect</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -90,8 +90,8 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                             <label class="form-label" for="alamat">Alamat</label>
                                             <div class="form-control-plaintext">
-                                                    @if($client->address)
-                                                    {{$client->address->address}}
+                                                    @if($prospect->address)
+                                                    {{$prospect->address->address}}
                                                     @else
                                                     <small class="text-muted">Belum diatur</small>
                                                 @endif
@@ -103,8 +103,8 @@ ol.link-list span.anticipate-long-text {
                                 <div class="form-group">
                                     <label class="form-label" for="telepon">Nomor Telepon</label>
                                     <div class="form-control-plaintext">
-                                            @if(count($client->phone)>0)
-                                            @foreach ($client->phone as $phone)
+                                            @if(count($prospect->phone)>0)
+                                            @foreach ($prospect->phone as $phone)
                                             {{$phone->phone}}
                                             <br>
                                             @endforeach
@@ -120,8 +120,8 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                                 <label class="form-label" for="email">Email</label>
                                                 <div class="form-control-plaintext">
-                                                        @if(count($client->email)>0)
-                                                        @foreach ($client->email as $email)
+                                                        @if(count($prospect->email)>0)
+                                                        @foreach ($prospect->email as $email)
                                                         {{$email->email}}
                                                         <br>
                                                         @endforeach
@@ -135,8 +135,8 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                                 <label class="form-label" for="webAddress">Web Address</label>
                                                 <div class="form-control-plaintext">
-                                                        @if(count($client->webAddress)>0)
-                                                        @foreach ($client->webAddress as $webAddress)
+                                                        @if(count($prospect->webAddress)>0)
+                                                        @foreach ($prospect->webAddress as $webAddress)
                                                         {{$webAddress->web_addresses}}
                                                         <br>
                                                         @endforeach
@@ -152,8 +152,8 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                                 <label class="form-label" for="bankAccount">Akun Bank</label>
                                                 <div class="form-control-plaintext">
-                                                        @if(count($client->bankAccount)>0)
-                                                        @foreach ($client->bankAccount as $bankAccount)
+                                                        @if(count($prospect->bankAccount) >0 )
+                                                        @foreach ($prospect->bankAccount as $bankAccount)
                                                         {{$bankAccount->bank_account}}
                                                         <br>
                                                         @endforeach
@@ -167,8 +167,8 @@ ol.link-list span.anticipate-long-text {
                                         <div class="form-group">
                                             <label class="form-label" for="status">Status Hubungan Bisnis</label>
                                             <div class="form-control-plaintext">
-                                                    @if($client->business_relationship_status)
-                                                    <div class="status-animated">{{$client->business_relationship_status}}</div>
+                                                    @if($prospect->business_relationship_status)
+                                                    <div class="status-animated">{{$prospect->business_relationship_status}}</div>
                                                     @else
                                                     <small class="text-muted">Belum diatur</small>
                                                 @endif
@@ -189,9 +189,9 @@ ol.link-list span.anticipate-long-text {
                                 <h4 class="card-title">Aksi</h4>
                             </div>
                             <div class="card-body">
-                                    <a href="{{ route('clientEdit', ['client_id' => $client->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah Data Client</a>
-                                    <a href="{{ route('clientTypeEdit',['client_id' => $client->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah Jenis Client</a>
-                                    <a href="{{ route('clientList') }}" class="btn btn-secondary btn-block btn-sm">Daftar Client</a>
+                                    <a href="{{ route('prospectEdit', ['prospect_id' => $prospect->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah Data prospect</a>
+                                    <a href="{{ route('prospectTypeEdit',['prospect_id' => $prospect->id]) }}" class="btn btn-secondary btn-block btn-sm">Ubah Jenis prospect</a>
+                                    <a href="{{ route('prospectList') }}" class="btn btn-secondary btn-block btn-sm">Daftar prospect</a>
                          
                             </div>
                         </div>
