@@ -82,14 +82,6 @@
                                 @endcomponent
                             @endcomponent
                         </div>
-{{--
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="tag">Tag</label>
-                                <input class="form-control" type="text" name="tag" value="{{ old('tag') }}">
-                            </div>
-                        </div>
---}}
                     </div>
                 </div>
 
