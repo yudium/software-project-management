@@ -35,7 +35,7 @@
                     render: function(data, type, row) {
                         return `
                             <a href='{{ url('/setting/edit') }}/${ row['name'] }' class='btn btn-secondary btn-sm mr-2'>Ubah</a>
-                            <a href='{{ url('/setting/delete') }}/${ row['name'] }' class='btn btn-secondary btn-sm'>Hapus</a>
+                            <a href='{{ url('/setting/delete/confirmation/') }}/${ row['name'] }' class='btn btn-secondary btn-sm'>Hapus</a>
                         `;
                     },
                     className: 'text-center',

@@ -55,11 +55,15 @@ class SettingController extends Controller
         return redirect()->route('setting-list');
     }
 
+    public function deleteConfirmation($name)
+    {
+        $setting = Setting::find($name);
+
+        return view('setting.delete_confirmation', compact('setting'));
+    }
+
     public function delete($name)
     {
-        // TODO: some setting is shouldn't deleted like trello_api_key or it
-        //       will raise error in some application page. My idea is add boolean column
-        //      'permanent' then don't delete setting that this column value is true.
         $setting = Setting::find($name);
         $setting->delete();
 

@@ -182,6 +182,7 @@ Route::auth();
     Route::get('/setting/edit/{name}', 'SettingController@edit')->name('edit-setting');
     Route::post('/setting/update/{name}', 'SettingController@update')->name('update-setting');
 
+    Route::get('/setting/delete/confirmation/{name}', 'SettingController@deleteConfirmation')->name('delete-setting-confirmation');
     Route::get('/setting/delete/{name}', 'SettingController@delete')->name('delete-setting');
 
     Route::get('/bank/list', 'BankController@get')->name('bank-list');
