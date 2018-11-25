@@ -132,7 +132,8 @@ class Project extends Model
      * @param $array    contains
      *                      (1) Response status (HTTP Code) for example: 200
      *                      (2) Response message for example: Error message
-     *                      (3) Data, contains:
+     *                      (3) Data, may contains all these data but it is not
+     *                          restricted:
      *                            (a) progress percent (number in tens),
      *                            (b) number of task (number),
      *                            (c) number of task complete (number)
