@@ -86,7 +86,7 @@ display: table;
         </div>
         <div class="row row-cards">
             <div class="col col-3 mx-auto">
-                <a id="next_button" href="{{ url('project/create/step-3') . '?client_id=' . $client_id }}" class="btn btn-primary">Berikutnya</a>
+                <a id="next_button" href="{{ url('project/create/step-3') . '?client_id=' . $client_id }}" class="btn btn-primary disabled">Berikutnya</a>
             </div>
         </div>
 
@@ -108,6 +108,8 @@ display: table;
                 let project_type_id = $(this).data('project-type-id');
                 $("#next_button").attr('href', $("#next_button").attr('href').replace(/&project_type_id=\d+/, ''));
                 $("#next_button").attr('href', $("#next_button").attr('href') + '&project_type_id=' + project_type_id);
+
+                $("#next_button").removeClass('disabled');
             });
         });
     });
