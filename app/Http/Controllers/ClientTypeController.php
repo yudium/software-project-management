@@ -41,8 +41,12 @@ class ClientTypeController extends Controller
 
     public function delete($name)
     {
-        //TODO: only allow delete for client type that has no relation with clients table.
         $client_type = ClientType::find($name);
+
+        if ($client_type->clients->count() > 0) {
+            abort(405, 'This client type has relation with clients tables. You should delete all these relation before delete.');
+        }
+
         $client_type->delete();
 
         return redirect()->route('client-type-list')

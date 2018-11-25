@@ -23,4 +23,14 @@ class ProjectType extends Model
     protected $hidden = [ ];
 
     public $timestamps = false;
+
+    public function projects()
+    {
+        return $this->hasMany('App\Project');
+    }
+
+    public function potential_projects()
+    {
+        return $this->hasMany('App\PotentialProject');
+    }
 }

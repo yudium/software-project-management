@@ -41,8 +41,13 @@ class ProjectTypeController extends Controller
 
     public function delete($name)
     {
-        //TODO: only allow delete for project type that has no relation with others table.
         $project_type = ProjectType::find($name);
+
+        if ( ($project_type->projects->count() > 0) OR
+             ($project_type->potential_projects->count() > 0) ) {
+            abort(405, 'This project type has relation with projects tables or/and potential projects. You should delete all these relation before delete.');
+        }
+
         $project_type->delete();
 
         return redirect()->route('project-type-list')

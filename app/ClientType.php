@@ -16,4 +16,9 @@ class ClientType extends Model
     ];
 
     public $timestamps = false;
+
+    public function clients()
+    {
+        return $this->hasMany('App\Client');
+    }
 }

@@ -40,8 +40,13 @@ class BankController extends Controller
 
     public function delete($id)
     {
-        //TODO: only allow delete for bank that has no relation with others table.
         $bank = Bank::find($id);
+
+        if ( ($bank->termin_payments->count() > 0) OR
+             ($bank->agent_commissions->count() > 0) ) {
+            abort(405, 'This bank has relation with termin payments tables or/and agent commissions. You should delete all these relation before delete.');
+        }
+
         $bank->delete();
 
         return redirect()->route('bank-list')
