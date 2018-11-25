@@ -200,8 +200,79 @@ class ProjectController extends Controller
 
         /**
         | Calculate progress percent for each project,
-        | but also take the number of task complete and total number of task
+        | And also take the number of task complete and total number of task
         | --------------------------------------------------------------- */
+        $trello_board_ids = [];
+        foreach ($projects as $project) {
+            if (! $project->trello_board_id) continue;
+
+            array_push($trello_board_ids, $project->trello_board_id);
+        }
+
+        $trello_fail = null;
+
+        try {
+            // array of number_of_task. indexed by board_id
+            $number_of_tasks = [];
+            // array of number_of_task_complete. indexed by board_id
+            $number_of_task_completes = [];
+
+            // array of progress_percent. indexed by board_id
+            $trello_progress_percents = getBatchTrelloProgressByBoardId(
+                $trello_board_ids,
+                $this->trello_auth,
+                $number_of_tasks,            // pass by reference
+                $number_of_task_completes    // pass by reference
+            );
+
+            // get last progress activity, the returned data is array contains
+            // detail data about the activity
+            $last_complete_tasks = getBatchTrelloLastProgress(
+                $trello_board_ids,
+                $this->trello_auth
+            );
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $trello_fail = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $trello_fail = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
+        }
+
         foreach ($projects as $project) {
 
             // we inform to ajax client that current project doesn't have
@@ -211,75 +282,34 @@ class ProjectController extends Controller
                 continue;
             }
 
-            try {
-                // calculate progress percent
-                $progress_percent = getTrelloProgressByBoardId(
-                    $project->trello_board_id,
-                    $this->trello_auth,
-                    $number_of_task,            // pass by reference
-                    $number_of_task_complete    // pass by reference
-                );
+            // if we can't connect to trello API server or if there is error
+            // then we will fill the each project's @property progress with fail
+            // message
+            if ($trello_fail) {
+                $project->progress = $trello_fail;
+                continue;
+            }
 
-                // get last progress activity
-                $last_complete_task = getTrelloLastProgress(
-                    $project->trello_board_id,
-                    $this->trello_auth
-                );
-                // in hours
-                $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
+            $progress_percent = $trello_progress_percents[$project->trello_board_id];
+            $number_of_task = $number_of_tasks[$project->trello_board_id];
+            $number_of_task_complete = $number_of_task_completes[$project->trello_board_id];
 
-                // now save to the current model as array
-                $project->progress = [
-                    'status' => 200,
-                    'message' => 'OK',
-                    'data' => compact(
-                        'progress_percent',
-                        'number_of_task',
-                        'number_of_task_complete',
-                        'last_progress_relative_time'
-                    ),
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ConnectException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => '502 HTTP Code. Try to check your internet connection',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ClientException $e)
-            {
-                $project->progress = [
-                    'status' => 400,
-                    'message' => 'Error 4XX HTTP Code',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Error. Too Many Redirection from Trello',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\RequestException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Networking Error',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ServerException $e)
-            {
-                $project->progress = [
-                    'status' => 500,
-                    'message' => 'Error 5XX HTTP Code',
-                    'data' => null
-                ];
-            }
+            // get last progress activity
+            $last_complete_task = $last_complete_tasks[$project->trello_board_id];
+            // in hours
+            $last_progress_relative_time = Carbon::now()->diffInHours(Carbon::parse($last_complete_task['date']));
+
+            // now save to the current model as array
+            $project->progress = [
+                'status' => 200,
+                'message' => 'OK',
+                'data' => compact(
+                    'progress_percent',
+                    'number_of_task',
+                    'number_of_task_complete',
+                    'last_progress_relative_time'
+                ),
+            ];
         }
 
         return DataTables::of($projects)->make(true);
@@ -504,9 +534,74 @@ class ProjectController extends Controller
 
         /**
         | Calculate progress percent for each project,
-        | but also take the number of task complete and total number of task
+        | And also take the number of task complete and total number of task
         | --------------------------------------------------------------- */
+        $trello_board_ids = [];
         foreach ($projects as $project) {
+            if (! $project->trello_board_id) continue;
+
+            array_push($trello_board_ids, $project->trello_board_id);
+        }
+
+        $trello_fail = null;
+
+        try {
+            // array of number_of_task. indexed by board_id
+            $number_of_tasks = [];
+            // array of number_of_task_complete. indexed by board_id
+            $number_of_task_completes = [];
+
+            // array of progress_percent. indexed by board_id
+            $trello_progress_percents = getBatchTrelloProgressByBoardId(
+                $trello_board_ids,
+                $this->trello_auth,
+                $number_of_tasks,            // pass by reference
+                $number_of_task_completes    // pass by reference
+            );
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $trello_fail = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $trello_fail = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
+        }
+
+        foreach ($projects as $project) {
+
             // we inform to ajax client that current project doesn't have
             // trello
             if (! $project->trello_board_id) {
@@ -514,66 +609,28 @@ class ProjectController extends Controller
                 continue;
             }
 
-            try {
-                // calculate progress percent
-                $progress_percent = getTrelloProgressByBoardId(
-                    $project->trello_board_id,
-                    $this->trello_auth,
-                    $number_of_task,            // pass by reference
-                    $number_of_task_complete    // pass by reference
-                );
+            // if we can't connect to trello API server or if there is error
+            // then we will fill the each project's @property progress with fail
+            // message
+            if ($trello_fail) {
+                $project->progress = $trello_fail;
+                continue;
+            }
 
-                // now save to the current model as array
-                $project->progress = [
-                    'status' => 200,
-                    'message' => 'OK',
-                    'data' => compact(
-                        'progress_percent',
-                        'number_of_task',
-                        'number_of_task_complete'
-                    ),
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ConnectException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => '502 HTTP Code. Try to check your internet connection',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ClientException $e)
-            {
-                $project->progress = [
-                    'status' => 400,
-                    'message' => 'Error 4XX HTTP Code',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Error. Too Many Redirection from Trello',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\RequestException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Networking Error',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ServerException $e)
-            {
-                $project->progress = [
-                    'status' => 500,
-                    'message' => 'Error 5XX HTTP Code',
-                    'data' => null
-                ];
-            }
+            $progress_percent = $trello_progress_percents[$project->trello_board_id];
+            $number_of_task = $number_of_tasks[$project->trello_board_id];
+            $number_of_task_complete = $number_of_task_completes[$project->trello_board_id];
+
+            // now save to the current model as array
+            $project->progress = [
+                'status' => 200,
+                'message' => 'OK',
+                'data' => compact(
+                    'progress_percent',
+                    'number_of_task',
+                    'number_of_task_complete'
+                ),
+            ];
         }
 
         return DataTables::of($projects)->make(true);
@@ -739,8 +796,72 @@ class ProjectController extends Controller
 
         /**
         | Calculate progress percent for each project,
-        | but also take the number of task complete and total number of task
+        | And also take the number of task complete and total number of task
         | --------------------------------------------------------------- */
+        $trello_board_ids = [];
+        foreach ($projects as $project) {
+            if (! $project->trello_board_id) continue;
+
+            array_push($trello_board_ids, $project->trello_board_id);
+        }
+
+        $trello_fail = null;
+
+        try {
+            // array of number_of_task. indexed by board_id
+            $number_of_tasks = [];
+            // array of number_of_task_complete. indexed by board_id
+            $number_of_task_completes = [];
+
+            // array of progress_percent. indexed by board_id
+            $trello_progress_percents = getBatchTrelloProgressByBoardId(
+                $trello_board_ids,
+                $this->trello_auth,
+                $number_of_tasks,            // pass by reference
+                $number_of_task_completes    // pass by reference
+            );
+        }
+        catch (\GuzzleHttp\Exception\ConnectException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => '502 HTTP Code. Try to check your internet connection',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            $trello_fail = [
+                'status' => 400,
+                'message' => 'Error 4XX HTTP Code',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Error. Too Many Redirection from Trello',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\RequestException $e)
+        {
+            $trello_fail = [
+                'status' => 502,
+                'message' => 'Networking Error',
+                'data' => null
+            ];
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e)
+        {
+            $trello_fail = [
+                'status' => 500,
+                'message' => 'Error 5XX HTTP Code',
+                'data' => null
+            ];
+        }
+
         foreach ($projects as $project) {
 
             // we inform to ajax client that current project doesn't have
@@ -750,66 +871,28 @@ class ProjectController extends Controller
                 continue;
             }
 
-            try {
-                // calculate progress percent
-                $progress_percent = getTrelloProgressByBoardId(
-                    $project->trello_board_id,
-                    $this->trello_auth,
-                    $number_of_task,            // pass by reference
-                    $number_of_task_complete    // pass by reference
-                );
+            // if we can't connect to trello API server or if there is error
+            // then we will fill the each project's @property progress with fail
+            // message
+            if ($trello_fail) {
+                $project->progress = $trello_fail;
+                continue;
+            }
 
-                // now save to the current model as array
-                $project->progress = [
-                    'status' => 200,
-                    'message' => 'OK',
-                    'data' => compact(
-                        'progress_percent',
-                        'number_of_task',
-                        'number_of_task_complete'
-                    ),
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ConnectException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => '502 HTTP Code. Try to check your internet connection',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ClientException $e)
-            {
-                $project->progress = [
-                    'status' => 400,
-                    'message' => 'Error 4XX HTTP Code',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\TooManyRedirectsException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Error. Too Many Redirection from Trello',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\RequestException $e)
-            {
-                $project->progress = [
-                    'status' => 502,
-                    'message' => 'Networking Error',
-                    'data' => null
-                ];
-            }
-            catch (\GuzzleHttp\Exception\ServerException $e)
-            {
-                $project->progress = [
-                    'status' => 500,
-                    'message' => 'Error 5XX HTTP Code',
-                    'data' => null
-                ];
-            }
+            $progress_percent = $trello_progress_percents[$project->trello_board_id];
+            $number_of_task = $number_of_tasks[$project->trello_board_id];
+            $number_of_task_complete = $number_of_task_completes[$project->trello_board_id];
+
+            // now save to the current model as array
+            $project->progress = [
+                'status' => 200,
+                'message' => 'OK',
+                'data' => compact(
+                    'progress_percent',
+                    'number_of_task',
+                    'number_of_task_complete'
+                ),
+            ];
         }
 
         return DataTables::of($projects)->make(true);
