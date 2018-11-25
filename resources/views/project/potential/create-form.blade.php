@@ -47,7 +47,7 @@
                         <input type="hidden" name="project_type_id" value="{{ $project_type->id }}">
                         <div class="form-group">
                             <label class="form-label" for="name">Nama proyek <span class="form-required">*</span></label>
-                            <input class="form-control" type="text" name="project_name">
+                            <input class="form-control" type="text" name="project_name" required>
                         </div>
                         <button class="btn btn-primary btn-block">Simpan</button>
                     </fieldset>
