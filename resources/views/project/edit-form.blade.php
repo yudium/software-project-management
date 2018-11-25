@@ -74,11 +74,15 @@
                             @component('includes.alert-info')
                                 Fitur autocomplete menyediakan nama PIC yang terekam di DB
                             @endcomponent
+
                             <datalist id="PIC_list">
                                 @foreach ($PICs as $PIC)
                                 <option>{{ $PIC->name }}</option>
                                 @endforeach
                             </datalist>
+
+                            <i><span class="form-required">*</span>) kolom wajib</i>
+
                             @component('includes.form-element.multiple-input-custom', [
                                 'id' => 'multi-pic',
                                 'name' => 'PIC[]',
@@ -153,7 +157,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label" for="name">Kuantitas</label>
+                                <label class="form-label" for="name">Kuantitas <span class="form-required">*</span></label>
                                 <input class="form-control {{ $errors->has('quantity') ? 'is-invalid' : '' }}" type="text" name="quantity" @echoIf('readonly', ! $project->is_draft) value="{{ old('quantity') ?? $project->quantity }}">
                                 @if ($errors->has('quantity'))
                                     @foreach ($errors->get('quantity') as $message)
@@ -166,7 +170,7 @@
                     <div class="row">
                         <div class="col-6 form-group">
                             @include('includes.form-element.input-money', [
-                                'label' => 'Harga',
+                                'label' => 'Harga <span class="form-required">*</span>',
                                 'name' => 'price',
                                 'class' => 'form-control',
                                 'value' => old('price') ?? $project->price,
@@ -182,7 +186,7 @@
                                 @endcomponent
                             @endif
                             @include('includes.form-element.datepicker', [
-                                'label' => 'Tanggal Bayar DP',
+                                'label' => 'Tanggal Bayar DP <span class="form-required">*</span>',
                                 'id' => 'DP-time',
                                 'name' => 'DP_time',
                                 'date_value' => $project->DP_time,
@@ -236,7 +240,7 @@
                                 @endcomponent
                             @endif
                             @include('includes.form-element.datepicker', [
-                                'label' => 'Mulai',
+                                'label' => 'Mulai <span class="form-required">*</span>',
                                 'id' => 'starttime',
                                 'name' => 'starttime',
                                 'date_value' => $project->starttime,
@@ -253,7 +257,7 @@
                                 @endcomponent
                             @endif
                             @include('includes.form-element.datepicker', [
-                                'label' => 'Berakhir',
+                                'label' => 'Berakhir <span class="form-required">*</span>',
                                 'id' => 'endtime',
                                 'name' => 'endtime',
                                 'date_value' => $project->endtime,

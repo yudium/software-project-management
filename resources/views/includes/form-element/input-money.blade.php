@@ -2,7 +2,7 @@
 
 <div class="form-group">
     @isset($label)
-    <label class="form-label" for="{{ $name }}">{{ $label }}</label>
+    <label class="form-label" for="{{ $name }}">{!! $label !!}</label>
     @endisset
 
     <div class="input-group">
