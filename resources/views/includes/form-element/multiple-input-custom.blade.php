@@ -37,11 +37,24 @@ require(['jquery'], function($) {
             });
         });
 
-        $("#{{ $id }}").on("click", "button", function(){
-            let el = $(this);
-            let parent = el.closest(".input-group");
-            parent.remove();
-        });
+        {{-- I define $remove_element_class because needed by termin/create.
+             The objective is want to remove one of multi field after
+             click remove button. To do so, we will remove the parent element
+             that one field. Because of that, we need know the parent element to remove.
+             so remove_element_class is parent element of the field --}}
+        @isset ($remove_element_class)
+            $("#{{ $id }}").on("click", "button", function(){
+                let el = $(this);
+                let parent = el.closest(".{{ $remove_element_class }}");
+                parent.remove();
+            });
+        @else
+            $("#{{ $id }}").on("click", "button", function(){
+                let el = $(this);
+                let parent = el.closest(".input-group");
+                parent.remove();
+            });
+        @endif
     });
 });
 </script>
