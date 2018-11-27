@@ -9,7 +9,7 @@
         <span class="input-group-prepend">
             <span class="input-group-text">Rp.</span>
         </span>
-        <input id="{{ $id ?? '' }}" name="{{ $name }}" class="{{ $class ?? '' }} {{ $errors->has($name) ? 'is-invalid' : '' }}" placeholder="{{ $placeholder ?? '' }}" type="text" value="{{ $value ?? '' }}" @echoIf('readonly', $readonly ?? false) @echoIf('required', $required ?? false) }}>
+        <input id="{{ $id ?? '' }}" name="{{ $name }}" class="{{ $class ?? '' }} {{ $errors->has($name) ? 'is-invalid' : '' }}" placeholder="{{ $placeholder ?? '' }}" type="text" value="{{ $value ?? '' }}" @echoIf('readonly', $readonly ?? false) @echoIf('required', $required ?? false)>
 
         @if ($errors->has($name))
             @foreach ($errors->get($name) as $message)
