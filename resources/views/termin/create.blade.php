@@ -139,6 +139,7 @@ span.content--anticipate-long-text:hover {
                                     'id' => 'termin-input-date',
                                     'name' => 'termin_date[]',
                                     'number' => 1,
+                                    'remove_element_class' => 'row-termin-date',
                                 ])
                                     <div class="row row-termin-date">
                                         <div class="form-group col-1">
@@ -147,7 +148,7 @@ span.content--anticipate-long-text:hover {
                                         <div class="form-group col-5">
                                             <div class="row gutters-xs">
                                                 <div class="col-4">
-                                                    <select name="termin_detail[due_date][year][]" class="due-date-year form-control custom-select">
+                                                    <select name="termin_detail[due_date][year][]" class="due-date-year form-control custom-select" required>
                                                         <option value="">Year</option>
                                                         @for ($year = date('Y'); $year <= date('Y') + 20; $year++)
                                                         <option value="{{ $year }}">{{ $year }}</option>
@@ -155,7 +156,7 @@ span.content--anticipate-long-text:hover {
                                                     </select>
                                                 </div>
                                                 <div class="col-5">
-                                                    <select name="termin_detail[due_date][month][]" class="due-date-month form-control custom-select">
+                                                    <select name="termin_detail[due_date][month][]" class="due-date-month form-control custom-select" required>
                                                         <option value="">Month</option>
                                                         <option value="1">January</option>
                                                         <option value="2">February</option>
@@ -172,7 +173,7 @@ span.content--anticipate-long-text:hover {
                                                     </select>
                                                 </div>
                                                 <div class="col-3">
-                                                    <select name="termin_detail[due_date][day][]" class="due-date-day form-control custom-select">
+                                                    <select name="termin_detail[due_date][day][]" class="due-date-day form-control custom-select" required>
                                                         <option value="">Day</option>
                                                         @for ($day = 1; $day <= 32; $day++)
                                                         <option value="{{ $day }}">{{ $day }}</option>
@@ -181,12 +182,16 @@ span.content--anticipate-long-text:hover {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-5">
                                             @include('includes.form-element.input-money', [
                                                 'name' => 'termin_detail[debt_amount][]',
                                                 'class' => 'debt-amount form-control multi-input-focus-target',
                                                 'placeholder' => 'nominal tagih',
+                                                'required' => true,
                                             ])
+                                        </div>
+                                        <div class="col-1">
+                                            <button style="height: 38px" type="button" class="btn btn-secondary"><i class="fe fe-trash-2"></i></button>
                                         </div>
                                     </div>
                                 @endcomponent
@@ -310,8 +315,10 @@ span.content--anticipate-long-text:hover {
 
                 // disable first row of termin date input
                 let periodic_type_field = $('.periodic-type:checked');
+                /*
                 if (periodic_type_field.val() == 'bulanan') disableFirstRowTerminDateInput(['month', 'year'])
                 if (periodic_type_field.val() == 'tahunan') disableFirstRowTerminDateInput(['year'])
+                 */
 
                 $('#periodic-type-hidden').val(periodic_type_field.val())
             });
