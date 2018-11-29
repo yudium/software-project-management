@@ -29,9 +29,8 @@ class StoreClient extends FormRequest
         return [
             'tipeProspect'=>'', // TODO: for what??
             'nama'=>'required|min:2',
-            'statusHub'=>'nullable',
-            'alamat'=>'nullable',
-            'kota.*'=>'nullable|string',
+            'statusHub'=>'',
+            'alamat'=>'required',
              'telepon.*'=>'nullable|numeric',
              'email.*'=>'nullable|email',
             'norek.*'=>'nullable|numeric',
@@ -41,25 +40,10 @@ class StoreClient extends FormRequest
         ];
     }
 
-    // public function messages()
-    // {
-    //     return [
-    //         'kota[].required' => 'The kota field  is required',
-    //         'telepon[].required'  => 'The telepon field  is required',
-    //         'email[].required' => 'The email field  is required',
-    //         'norek[].required'  => 'The norek field  is required',
-    //         'web[].required' => 'The web field  is required',
-       
-    //     ];
-    // }
-
     public function sanitize()
     {
         $input = $this->all();
 
-        if ($input['kota']) {
-            array_filter_null_element($input['kota']);
-        }
         if ($input['telepon']) {
             array_filter_null_element($input['telepon']);
         }

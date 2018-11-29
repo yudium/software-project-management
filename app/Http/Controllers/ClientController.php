@@ -33,7 +33,7 @@ class ClientController extends Controller
         
         return Datatables::of($prospect)
         ->addColumn('options',function($prospect){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteProspect('."'".$prospect->id."'".')" id="deleteProspect" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="'.route('prospectDetail',$prospect->id).'" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteProspect('."'".$prospect->id."'".')" id="deleteProspect" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
         })->rawColumns(['options'])->make(true);
     }
 
@@ -43,7 +43,7 @@ class ClientController extends Controller
 
         return Datatables::of($client)
         ->addColumn('options',function($client){
-            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" id="deleteClient" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
+            return '<div class="text-center"><div class="item-action dropdown"><a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a><div class="dropdown-menu dropdown-menu-right"><a href="'.route('clientDetail',$client->id).'" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Detail </a><a href="javascript:deleteClient('."'".$client->id."'".')" id="deleteClient" class="dropdown-item"><i class="dropdown-icon fe fe-trash"></i> Delete </a>';
         })->rawColumns(['options'])->make(true);
     }
 
@@ -114,7 +114,7 @@ class ClientController extends Controller
         {
             $clientImage      = $req->file('photo');
             // dd($clientImage);
-            $fileName   =  $clientImage->getClientOriginalName();
+            $fileName   =  $clientImage->hashName();
             Storage::putFileAs('public/clientImage', $clientImage, $fileName);
             $client->photo            = $fileName;
         }
@@ -128,10 +128,6 @@ class ClientController extends Controller
         $client->save();
 
         $client->address()->create(['address'=>$req->alamat]);
-
-        foreach ($req->kota as $kota) {
-            $client->city()->create(['city' => $kota]);
-        }
 
         foreach ($req->telepon as $telepon) {
             $client->phone()->create(['phone' => $telepon]);
@@ -178,7 +174,7 @@ class ClientController extends Controller
             {
                 echo 'tes dalam';
                 $clientImage = $req->file('fotoProfile')[$i];
-                $fileName    =  $clientImage->getClientOriginalName();
+                $fileName    =  $clientImage->hashName();
                 Storage::putFileAs('public/insiderClient', $clientImage, $fileName);
             
             
@@ -235,5 +231,195 @@ class ClientController extends Controller
         ->with('message', 'Berhasil menambah Insider Client')
         ->with('alert-class', 'alert-success');
      
+    }
+
+    public function clientDetail($client_id)
+    {
+        $client = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_CLIENT],['clients.id','=',$client_id]])->first();
+    
+        return view('client.client-detail',compact('client'));
+    }
+
+    public function clientEdit($client_id)
+    {
+        $client = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_CLIENT],['clients.id','=',$client_id]])->first();
+
+        return view('client.client-edit',compact('client'));
+    }
+
+    public function clientUpdate($client_id,\App\Http\Requests\StoreCLient $req)
+    {
+        // dd($req->all());
+        $client = Client::findorFail($client_id);
+        
+        if($req->hasFile('photo'))
+        {
+            Storage::delete('public/clientImage/'.$client->photo);
+            $clientImage      = $req->file('photo');
+            // dd($clientImage);
+            $fileName   =  $clientImage->hashName();
+            Storage::putFileAs('public/clientImage', $clientImage, $fileName);
+            $client->photo            = $fileName;
+        }
+
+        $client->name             = $req->nama;
+        $client->business_relationship_status = $req->statusHub;    
+        $client->save();
+
+        //delete previous address data
+        $client->address()->delete();
+        $client->address()->create(['address'=>$req->alamat]);
+
+        //delete previous telepon data
+        foreach ($client->phone as $old_telepon) {
+           $old_telepon->delete();
+        } 
+
+        foreach ($req->telepon as $telepon) {
+            $client->phone()->create(['phone' => $telepon]);
+        }
+
+        //delete previous email data
+        foreach ($client->email as $old_email) {
+            $old_email->delete();
+        } 
+        foreach ($req->email as $email) {
+            $client->email()->create(['email' => $email]);
+        }
+
+        //delete previous norek data
+        foreach ($client->bankAccount as $old_norek) {
+            $old_norek->delete();
+        } 
+
+        foreach ($req->norek as $norek) {
+            $client->bankAccount()->create(['bank_account' => $norek]);
+        }
+
+        //delete previous web data
+        foreach ($client->webAddress as $old_web) {
+            $old_web->delete();
+        } 
+        foreach ($req->web as $web) {
+            $client->webAddress()->create(['web_addresses' => $web]);
+        }
+ 
+        return redirect()->route('clientDetail')
+        ->with('message', 'Berhasil mengubah Data Client')
+        ->with('alert-class', 'alert-success');
+    }
+
+    public function clientTypeEdit($id)
+    {
+        $client = Client::find($id);
+        $client_types = ClientType::all();
+        return view('client.client-type-edit', compact('client', 'client_types'));
+    }
+
+    public function clientTypeUpdate($id, $client_type_id)
+    {
+        $client_type_id = ClientType::find($client_type_id);
+        $client = Client::find($id);
+        $client->type()->associate($client_type_id);
+        $client->save();
+
+        return redirect()->route('clientDetail', ['id' => $client->id])
+            ->with('message', 'Berhasil mengubah tipe client')
+            ->with('messageType', 'success');
+    }
+
+    public function prospectDetail($prospect_id)
+    {
+        $prospect = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_PROSPECT],['clients.id','=',$prospect_id]])->first();
+    
+        return view('prospect.prospect-detail',compact('prospect'));
+    }
+
+    public function prospectEdit($prospect_id)
+    {
+        $prospect = Client::with(['type','phone','email','bankAccount','webAddress','address'])->where([['clients.status','=',Client::IS_PROSPECT],['clients.id','=',$prospect_id]])->first();
+
+        return view('prospect.prospect-edit',compact('prospect'));
+    }
+
+    public function prospectUpdate($prospect_id,\App\Http\Requests\StoreCLient $req)
+    {
+        // dd($req->all());
+        $prospect = Client::findorFail($prospect_id);
+        
+        if($req->hasFile('photo'))
+        {
+            Storage::delete('public/clientImage/'.$prospect->photo);
+            $prospectImage      = $req->file('photo');
+            // dd($clientImage);
+            $fileName   =  $prospectImage->hashName();
+            Storage::putFileAs('public/clientImage', $prospectImage, $fileName);
+            $prospect->photo            = $fileName;
+        }
+
+        $prospect->name             = $req->nama;
+        $prospect->business_relationship_status = $req->statusHub;    
+        $prospect->save();
+
+        //delete previous address data
+        $prospect->address()->delete();
+        $prospect->address()->create(['address'=>$req->alamat]);
+
+        //delete previous telepon data
+        foreach ($prospect->phone as $old_telepon) {
+           $old_telepon->delete();
+        } 
+
+        foreach ($req->telepon as $telepon) {
+            $prospect->phone()->create(['phone' => $telepon]);
+        }
+
+        //delete previous email data
+        foreach ($prospect->email as $old_email) {
+            $old_email->delete();
+        } 
+        foreach ($req->email as $email) {
+            $prospect->email()->create(['email' => $email]);
+        }
+
+        //delete previous norek data
+        foreach ($prospect->bankAccount as $old_norek) {
+            $old_norek->delete();
+        } 
+
+        foreach ($req->norek as $norek) {
+            $prospect->bankAccount()->create(['bank_account' => $norek]);
+        }
+
+        //delete previous web data
+        foreach ($prospect->webAddress as $old_web) {
+            $old_web->delete();
+        } 
+        foreach ($req->web as $web) {
+            $prospect->webAddress()->create(['web_addresses' => $web]);
+        }
+ 
+        return redirect()->route('prospectDetail')
+        ->with('message', 'Berhasil mengubah Data prospect')
+        ->with('alert-class', 'alert-success');
+    }
+
+    public function prospectTypeEdit($id)
+    {
+        $prospect = Client::find($id);
+        $prospect_types = ClientType::all();
+        return view('prospect.prospect-type-edit', compact('prospect', 'prospect_types'));
+    }
+
+    public function prospectTypeUpdate($id, $prospect_type_id)
+    {
+        $prospect_type_id = ClientType::find($prospect_type_id);
+        $prospect = Client::find($id);
+        $prospect->type()->associate($prospect_type_id);
+        $prospect->save();
+
+        return redirect()->route('prospectDetail')
+            ->with('message', 'Berhasil mengubah tipe prospect')
+            ->with('messageType', 'success');
     }
 }

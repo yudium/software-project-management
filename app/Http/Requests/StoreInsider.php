@@ -26,43 +26,23 @@ class StoreInsider extends FormRequest
         $this->sanitize();
 
         return [
-            'nama'=>'required',
-            'jabatan'=>'required',
-            'alamat'=>'required',
-            'telepon'=>'required',
-            'email'=>'required',
+            'nama.*'=>'nullable',
+            'jabatan.*'=>'nullable',
+            'alamat.*'=>'nullable',
+            'telepon.*'=>'nullable',
+            'email.*'=>'nullable',
         ];
     }
 
     public function sanitize()
     {
         $input = $this->all();
-        // print_r($input);
-        $old_telepon = $input['telepon'];
-        $count_telepon = count($input['telepon']);
-        $input['telepon'] = [];
-        for($i=1 ; $i <=$count_telepon ; $i++)
-        {
-            $input['telepon'][$i] = [];
-            foreach($old_telepon[$i] as $key=>$telepon)
-            {
-                if(trim($telepon)) array_push($input['telepon'][$i],$telepon);
-            }
+        if ($input['telepon']) {
+            array_filter_null_element($input['telepon']);
         }
-     
-        $old_email = $input['email'];
-        $count_email = count($input['email']);
-        $input['email'] = [];
-        for($i=1 ; $i <=$count_email ; $i++)
-        {
-            $input['email'][$i] = [];
-            foreach($old_email[$i] as $key=>$email)
-            {
-                if(trim($email)) array_push($input['email'][$i],$email);
-            }
+        if ($input['email']) {
+            array_filter_null_element($input['email']);
         }
-
-       
         $this->replace($input);
         
     }

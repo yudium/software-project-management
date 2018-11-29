@@ -68,10 +68,15 @@
             columnDefs:[
                 {
                     render:function(data,type,row){
-                        return ' <div class="text-center"><div class="avatar d-block" style="background-image: url(demo/faces/female/26.jpg)"><span class="avatar-status bg-green"></span></div></div>';
-                    },
-                    orderable:false,
-                    targets:0,
+                        if (row['photo']) {
+                            return `
+                                <div class="avatar d-block" style="background-image: url( ${ require.toUrl('storage/clientImage/' + row['photo']) } )"></div>
+                            `;
+                        }
+
+                        return `
+                            <div class="avatar avatar-placeholder d-block"></div>
+                        `;
                 },
                 {
                     render:function(data,type,row){
@@ -106,9 +111,23 @@
                     render:function(data,type,row){
                         let phone_html = '';
                         data.forEach(function(value,index,array){
-                        phone_html +=value.phone+'<br>';
-                        });
-                        return phone_html;
+                            let phone_html = '';
+                       let more = 0;
+
+                       data.forEach(function(value, index, array){
+                           // only show 2 item
+                           if (index < 2) {
+                               phone_html += value.phone + '<br>';
+                           } else {
+                               // count the number of item after 2 item
+                               more++;
+                           }
+                       });
+
+                       // show information about many item (phone number) that not displayed
+                       if (more > 0) phone_html += `<span class="badge badge-info">${more}+ more</span>`
+
+                      return phone_html;
                         },
                     orderable:false,
                     targets:5,

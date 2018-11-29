@@ -35,6 +35,11 @@ Route::auth();
 
     Route::get('/prospect/prospect-list/','ClientController@prospectList')->name('prospectList');
     Route::get('/getProspect','ClientController@getProspect')->name('getProspect');
+    Route::get('/prospect/prospect-detail/{id}','ClientController@prospectDetail')->name('prospectDetail');
+    Route::get('/prospect/prospect-edit/{id}','ClientController@prospectEdit')->name('prospectEdit');
+    Route::get('/prospect/prospect-type-edit/{id}','ClientController@prospectTypeEdit')->name('prospectTypeEdit');
+    Route::post('/prospect/prospect-update/{id}','ClientController@prospectUpdate')->name('prospectUpdate');
+    Route::get('/prospect/prospect-type-update/{id}/{prospect_type_id}','ClientController@prospectTypeUpdate')->name('prospectTypeUpdate');
 
     Route::get('/client/client-list','ClientController@clientList')->name('clientList');
     Route::get('/getClient','ClientController@getClient')->name('getClient');
@@ -45,6 +50,11 @@ Route::auth();
     Route::get('/client/new/client-insider','ClientController@newClientInsider')->name('newClientInsider');
     Route::post('/client/new/client-insider','ClientController@createClientInsider')->name('createClientInsider');
     Route::post('/client/deleteClient/{id}','ClientController@deleteClient')->name('deleteClient');
+    Route::get('/client/client-detail/{id}','ClientController@clientDetail')->name('clientDetail');
+    Route::get('/client/client-edit/{id}','ClientController@clientEdit')->name('clientEdit');
+    Route::get('/client/client-type-edit/{id}','ClientController@clientTypeEdit')->name('clientTypeEdit');
+    Route::post('/client/client-update/{id}','ClientController@clientUpdate')->name('clientUpdate');
+    Route::get('/client/client-type-update/{id}/{client_type_id}','ClientController@clientTypeUpdate')->name('clientTypeUpdate');
 
     Route::get('/agent/agent-list','AgentController@index')->name('agentList');
     Route::get('/getAgent','AgentController@getAgent')->name('getAgent');
@@ -57,7 +67,9 @@ Route::auth();
     Route::get('/agent/agent-payment-history/{id}','AgentController@paymentHistory')->name('agentPaymentHistory');
     Route::get('/agent/agent-listCommission','AgentController@listCommission')->name('listCommission');
     Route::get('/agent/agent-commission-detail/{id}','AgentController@listCommissionDetail')->name('listCommissionDetail');
-    Route::get('/getListCommission','AgentController@getListCommission')->name('getListCommission');
+    Route::get('/getListProjectAgent','AgentController@getListProjectAgent')->name('getListProjectAgent');
+
+    Route::get('/loginAgent','AgentController@loginAgent')->name('loginAgent');
 
     Route::get('/project/list/onprogress', 'ProjectController@getOnProgress')->name('onprogress-project-list');
     Route::get('/project/list/onprogress/ajax', 'ProjectController@getOnProgressAjax')->name('onprogress-project-list-ajax');

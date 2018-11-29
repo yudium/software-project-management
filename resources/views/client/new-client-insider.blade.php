@@ -130,10 +130,10 @@
 </div>
 
 <div class="container">
-    @if(Session::has('message'))
-    <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span></p>
-    @endif
+        @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-success') }}">{{ Session::get('message') }}<span aria-hidden="true"></span><button type="button"
+            class="close" data-dismiss="alert" aria-label="Close"></button></p>
+        @endif
     <div class="page-header">
         <h1 class="page-title">
 
